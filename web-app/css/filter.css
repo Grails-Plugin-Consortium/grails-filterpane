@@ -1,0 +1,17 @@
+@CHARSET "ISO-8859-1";
+.filterPane {
+	position: absolute;
+	width:50%;
+        left: 50%;
+	margin-left: -25%;
+	top: 50%;
+	margin-top: -10%;
+	border: 2px solid #666666;
+	background-color: white;
+	padding: 5px;
+        z-index: 1;
+}
+
+.filterTable {
+	width: 100%;
+}
