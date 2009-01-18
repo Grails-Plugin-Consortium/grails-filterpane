@@ -1,4 +1,7 @@
 class FilterTagLib {
+
+    static namespace = 'filterpane'
+
     def availableOpsByType = ['text':[keys:['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'], 
             text:['', 'Contains', 'Does Not Contain', 'Contains (Case Sensitive)', 'Does Not Contain (Case Sensitive)', 'Equal To', 'Not Equal To', 'Is Null', 'Is Not Null']], 
 	                           'numeric':[keys:['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan', 'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'], 
