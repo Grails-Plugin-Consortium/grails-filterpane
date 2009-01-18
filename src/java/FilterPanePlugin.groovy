@@ -5,7 +5,7 @@
 class FilterPanePlugin {
 	def version = 0.1
     def author  = "Steve Krenek"
-    def authorEmail = "steve.krenek@gmail.com"
+    def authorEmail = "zeddmaxim@gmail.com"
     def title = "This plugin adds filtering capabilities to a Grails application's list pages."
     def description = """\
 This plugin adds automatic filtering capabilities to any Grails application. The main features of this plugin include:
