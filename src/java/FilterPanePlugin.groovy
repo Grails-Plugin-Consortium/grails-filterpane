@@ -1,6 +1,8 @@
+package com.zeddware.grails.plugins.filterpane
+
 /**
  *
- * @author steve.krenek
+ * @author Steve Krenek
  */
 class FilterPanePlugin {
 	def version = 0.2
