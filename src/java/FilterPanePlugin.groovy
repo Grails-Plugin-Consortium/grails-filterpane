@@ -3,7 +3,7 @@
  * @author steve.krenek
  */
 class FilterPanePlugin {
-	def version = 0.1
+	def version = 0.2
     def author  = "Steve Krenek"
     def authorEmail = "zeddmaxim@gmail.com"
     def title = "This plugin adds filtering capabilities to a Grails application's list pages."
