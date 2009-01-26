@@ -1,3 +1,5 @@
+package com.zeddware.grails.plugins.filterpane.util
+
 class FilterUtils {
     static def makeCamelCasePretty(def string) {
         if (string == null)
@@ -58,20 +60,6 @@ class FilterUtils {
 	
     static java.util.Date parseDateFromDatePickerParams(def paramProperty, def params) {
     	println "== parseDate params: ${params.toMapString()}"
-//        def opParam = params["op.${paramProperty}"]
-//    	if (!opParam) opParam = params["op.${paramProperty}"]
-//    	if (!opParam && paramProperty.startsWith("filter.")) opParam = params["filter.op.${paramProperty.substring(6I)}"]	
-//    	println "== parseDateFromDatePickerParams opParam is ${opParam} and param prop is ${paramProperty}"
-//        if (paramProperty.endsWith("To") || (opParam && opParam != "")) {
-//            def year = params["${paramProperty}_year"]
-//            def month = params["${paramProperty}_month"]
-//            def day = params["${paramProperty}_day"]
-//            def hour = params["${paramProperty}_hour"]
-//            def minute = params["${paramProperty}_minute"]
-//            return new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').parse("${year}-${month}-${day} ${hour}:${minute}")
-//        } else {
-//            return null
-//        }
 		try {
 			def year = params["${paramProperty}_year"]
             def month = params["${paramProperty}_month"]
