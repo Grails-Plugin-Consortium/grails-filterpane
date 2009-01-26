@@ -1,17 +1,17 @@
 class FilterpaneGrailsPlugin {
-    def version = 0.1
+    def version = 0.2
     def dependsOn = [:]
 
     // TODO Fill in these fields
     def author = "Steve Krenek"
-    def authorEmail = "steve.krenek@gmail.com"
+    def authorEmail = "zeddmaxim@gmail.com"
     def title = "Dynamically filter / search domain objects."
     def description = '''\
 This plugin adds automatic filtering capabilities to any Grails application's list views.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/Filterpane+Plugin"
+    def documentation = "http://grails.org/FilterPane+Plugin"
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
