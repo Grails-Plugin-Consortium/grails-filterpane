@@ -1,13 +1,11 @@
-<plugin name='filterpane' version='0.1'>
+<plugin name='filterpane' version='0.2'>
   <author>Steve Krenek</author>
-  <authorEmail>steve.krenek@gmail.com</authorEmail>
+  <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
   <description>This plugin adds automatic filtering capabilities to any Grails application's list views.
 </description>
-  <documentation>http://grails.org/Filterpane+Plugin</documentation>
+  <documentation>http://grails.org/FilterPane+Plugin</documentation>
   <resources>
-    <resource>DataSource</resource>
-    <resource>UrlMappings</resource>
     <resource>FilterService</resource>
     <resource>FilterTagLib</resource>
     <resource>FilterUtils</resource>

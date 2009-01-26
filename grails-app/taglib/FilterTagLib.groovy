@@ -1,36 +1,59 @@
+package com.zeddware.grails.plugins.filterpane.taglib
+
 class FilterTagLib {
-    def availableOpsByType = ['text':[keys:['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'], 
-            text:['', 'Contains', 'Does Not Contain', 'Contains (Case Sensitive)', 'Does Not Contain (Case Sensitive)', 'Equal To', 'Not Equal To', 'Is Null', 'Is Not Null']], 
-	                           'numeric':[keys:['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan', 'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'], 
-            text:['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To', 
-	                      	                  'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 
-	                    	                  'Is Not Null']],
-	                           'date':[keys:['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan', 'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-            text:['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To', 
-	                   	                  'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 
-	                	                  'Is Not Null']],
-	                           'boolean':[keys:['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'], 
-            text:['', 'Equal To', 'Not Equal To', 'Is Null', 'Is Not Null']]]
+
+    static namespace = 'filterpane'
+
     /**
-     * Usage:
-     * <g:filterControl  />
+     * This map contains available filter operations by type.  It is used when creating the
+     * individual rows in the filter pane.
+     */
+    def availableOpsByType = [
+        text:[
+            keys:['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+            text:['', 'Contains', 'Does Not Contain', 'Contains (Case Sensitive)', 
+                'Does Not Contain (Case Sensitive)', 'Equal To', 'Not Equal To', 'Is Null',
+                'Is Not Null']
+        ],
+        numeric:[
+            keys:['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+                'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
+            text:['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To',
+                'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 'Is Not Null']
+        ],
+        date:[
+            keys:['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+                'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
+            text:['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To',
+                'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 'Is Not Null']
+        ],
+        boolean:[
+            keys:['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+            text:['', 'Equal To', 'Not Equal To', 'Is Null', 'Is Not Null']
+        ]
+    ]
+    /**
+     * This tag is mainly for internal and test use.
      */
     def filterControl = { attrs, body ->
         out << createFilterControl(attrs, body)
-    } // end filterControl
+    }
     
     /**
-     *
+     * Creates a link (button) that displays the filter pane when pressed.  The title attribute
+     * may be used to modify the text on the button.  If omitted, the text will be "Filter".
      */
     def filterButton = { attrs, body ->
-        def title = attrs.title
-        if (title == null) title = "Filter"
+        def title = attrs.title ?: 'Filter'
         out << "<a href=\"\" onclick=\"showElement('filterPane'); return false;\">${title}</a>"
     }
 
+    /**
+     * This tag generates necessary style and script includes.  Use this tag in the head element 
+     * of your pages.  There are no attributes for this tag.
+     */
     def filterPaneIncludes = {
         out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${createLinkTo(dir:pluginContextPath +'/css', file:'filter.css')}\" />\n"
-        //out << javascript(src:"${createLinkTo(dir:pluginContextPath, file:'filter.js')}")
         out << "<script type=\"text/javascript\" src=\"${createLinkTo(dir:pluginContextPath + "/js", file:'filter.js')}\"></script>"
     }
 	
@@ -41,7 +64,7 @@ class FilterTagLib {
      * <table>
      * <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
      * <tr><td>filterBean</td><td>Yes</td><td>The model class to extract filter properties from.</td></tr>
-     * <tr><td>filterProperties</td><td>Yes</td><td>A <code>List</code> of filterBean's properties to include on the form.</td></tr> 
+     * <tr><td>filterProperties</td><td>Yes</td><td>A list of filterBean's properties to include on the form.</td></tr>
      * <tr><td>filterPaneId</td><td>The ID attribute for the container div.  Defaults to 'filterPane'</td></tr>
      * <tr><td>filterPaneStyle</td><td>The style attribute for the container div.</td></tr>
      * <tr><td>filterPaneClass</td><td>The style class for the container div.</td></tr>
