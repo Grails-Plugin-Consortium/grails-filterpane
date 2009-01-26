@@ -1,3 +1,5 @@
+package com.zeddware.grails.plugins.filterpane.service
+
 class FilterService {
 
     boolean transactional = true
