@@ -1,4 +1,4 @@
-package com.zeddware.grails.plugins.filterpane.service
+package com.zeddware.grails.plugins.filterpane
 
 class FilterService {
 

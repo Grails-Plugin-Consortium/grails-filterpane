@@ -1,4 +1,4 @@
-package com.zeddware.grails.plugins.filterpane.taglib
+package com.zeddware.grails.plugins.filterpane
 
 class FilterTagLib {
 

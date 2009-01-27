@@ -1,4 +1,4 @@
-package com.zeddware.grails.plugins.filterpane.util
+package com.zeddware.grails.plugins.filterpane
 
 class FilterUtils {
     static def makeCamelCasePretty(def string) {
