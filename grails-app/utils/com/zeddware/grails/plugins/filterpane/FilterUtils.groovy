@@ -59,7 +59,7 @@ class FilterUtils {
     }
 	
     static java.util.Date parseDateFromDatePickerParams(def paramProperty, def params) {
-    	println "== parseDate params: ${params.toMapString()}"
+    	//println "== parseDate params: ${params.toMapString()}"
 		try {
 			def year = params["${paramProperty}_year"]
             def month = params["${paramProperty}_month"]
@@ -68,7 +68,7 @@ class FilterUtils {
             def minute = params["${paramProperty}_minute"]
             return new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').parse("${year}-${month}-${day} ${hour}:${minute}")
 		} catch (Exception ex) {
-			println "${ex.class.simpleName} parsing date for property ${paramProperty}: ${ex.message}"
+			//println "${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}"
 			return null
 		}
     }
