@@ -1,8 +1,7 @@
 class FilterpaneGrailsPlugin {
-    def version = 0.3
+    def version = '0.3.1'
     def dependsOn = [:]
 
-    // TODO Fill in these fields
     def author = "Steve Krenek"
     def authorEmail = "zeddmaxim@gmail.com"
     def title = "Dynamically filter / search domain objects."

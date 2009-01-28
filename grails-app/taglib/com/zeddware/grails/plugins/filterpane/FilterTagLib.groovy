@@ -218,7 +218,7 @@ class FilterTagLib {
                 }
             } else if (type == "Date") {
             	finalAttrs['value'] = FilterUtils.parseDateFromDatePickerParams(finalAttrs.name, params)
-                println "Final date attrs are ${finalAttrs}"
+                //println "Final date attrs are ${finalAttrs}"
                 def spanStyle = (finalAttrs.style) ? "style=\"${finalAttrs.style}\"" : ""
                 stream = "<span id=\"" + finalAttrs['id'] + "-container\" ${spanStyle}>" + this.datePicker(finalAttrs) + "</span>"
             } else if (type == "Boolean" || type == "boolean") {

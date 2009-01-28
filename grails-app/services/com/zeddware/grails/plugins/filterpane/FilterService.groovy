@@ -13,7 +13,7 @@ class FilterService {
     }
 
     private def filter(def params, Class filterClass, boolean doCount) {
-    	println "filtering... params = ${params.filter.toMapString()}"
+    	if (log.isDebugEnabled()) log.debug("filtering... params = ${params.filter.toMapString()}")
     	def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
         def filterOpParams = filterParams.op
@@ -27,13 +27,13 @@ class FilterService {
                     def keyList = []
                     keyList.addAll(filterOpParams.keySet())
                     keyList = keyList.sort() // Sort them to get nested properties next to each other.
-                    println "op Keys = ${keyList}"
+                    if (log.isDebugEnabled()) log.debug("op Keys = ${keyList}")
     				
                     // op = map entry.  op.key = property name.  op.value = operator.
                     // params[op.key] is the value
                     keyList.each() { propName ->
-                    	println "\n=============================================================================."
-                    	println "== ${propName}"
+                    	if (log.isDebugEnabled()) log.debug("\n=============================================================================.")
+                    	if (log.isDebugEnabled()) log.debug("== ${propName}")
                         if (! propName.contains(".")) {// Skip associated property entries.  We'll use the map instead later.
                             
                             def filterOp = filterOpParams[propName]
@@ -43,7 +43,7 @@ class FilterService {
                             if (filterOp instanceof Map && rawValue instanceof Map) {
                                 // Are any of the values non-empty?
                                 if (filterOp.values().find {it.length() > 0} != null) {
-                                    println "== Adding association ${propName}"
+                                    if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
                                     c."${propName}"() {
                                         filterOp.each() { opEntry ->
                                             def realPropName = opEntry.key
@@ -59,11 +59,11 @@ class FilterService {
                             } else {
                             	def val = parseValue(propName, propName, rawValue, mc, filterParams)
                                 def val2 = parseValue(propName, "${propName}To", rawValue2, mc, filterParams)
-                                println "==  val2 is ${val2} of type ${val2?.class}"
+                                if (log.isDebugEnabled()) log.debug("==  val2 is ${val2} of type ${val2?.class}")
                                 addCriterion(c, propName, filterOp, val, val2)
                             }
                         }
-                    	println "==============================================================================='\n"
+                    	if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
                     } // end each op
                 } // end and
                 
@@ -91,7 +91,7 @@ class FilterService {
               
             }
             if (doCount && results instanceof List) {
-                println "Returning count of 0"
+                //println "Returning count of 0"
                 results = 0I
             }
             return results
@@ -187,7 +187,7 @@ class FilterService {
                 val = FilterUtils.parseDateFromDatePickerParams(paramName, params)
             }
         }
-    	println "== Parsing value ${rawValue} from param ${paramName}. type is ${mp.type}.  Final value ${val}. Type ${val?.class}"
+    	//println "== Parsing value ${rawValue} from param ${paramName}. type is ${mp.type}.  Final value ${val}. Type ${val?.class}"
     	return val
     }
 }
