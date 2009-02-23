@@ -13,11 +13,12 @@ class FilterService {
     }
 
     private def filter(def params, Class filterClass, boolean doCount) {
-    	if (log.isDebugEnabled()) log.debug("filtering... params = ${params.filter.toMapString()}")
+    	if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
     	def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
         def filterOpParams = filterParams.op
-        
+        def associationList = []
+
         if (filterProperties) {
             def c = filterClass.createCriteria()
             def criteriaClosure = {
@@ -54,6 +55,13 @@ class FilterService {
                                             def val2 = parseValue(realPropName, "${realPropName}To", realRawValue2, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
                                             addCriterion(c, realPropName, realOp, val, val2)
                                         }
+                                        if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
+                                            def parts = params.sort.split("\\.")
+                                            if (parts.size() == 2) {
+                                                associationList << propName
+                                                order(parts[1], params.order ?: 'asc')
+                                            }
+                                        }
                                     }
                                 }
                             } else {
@@ -79,7 +87,16 @@ class FilterService {
                         maxResults(params.max.toInteger())
                     }
                     if (params.sort) {
-                        order(params.sort, params.order ? params.order : 'asc')
+                        if (params.sort.indexOf('.') < 0) { // if not an association..
+                            order(params.sort, params.order ?: 'asc')
+                        } else {
+                            def parts = params.sort.split("\\.")
+                            if (!associationList.contains(parts[0])) {
+                                c."${parts[0]}" {
+                                    order(parts[1], params.order ?: 'asc')
+                                }
+                            }
+                        }
                     }
                 }
             } // end criteria
