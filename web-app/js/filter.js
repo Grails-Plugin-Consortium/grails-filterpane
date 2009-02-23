@@ -54,7 +54,7 @@ function filterOpChange(id, controlId) {
                 }
             }
             
-            var containerName = 'filter.' + prop+'-container'
+            var containerName = prop+'-container'
             if (selection.value == 'IsNull' || selection.value == 'IsNotNull') {
                 hideElement(controlId);
                 // Take care of date picker fields we created.
