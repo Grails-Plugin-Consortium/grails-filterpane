@@ -46,8 +46,8 @@ class FilterTagLib {
      * Their values must be the same.
      */
     def filterButton = {attrs, body ->
-        def title = attrs.title ?: 'Filter'
-        def filterPaneId = attrs.filterPaneId ?: 'filterPane'
+        def title = attrs.text ?: (attrs.title ?: 'Filter')
+        def filterPaneId = attrs.id ?: (attrs.filterPaneId ?: 'filterPane')
         out << "<a href=\"\" onclick=\"showElement('${filterPaneId}'); return false;\">${title}</a>"
     }
 
@@ -75,12 +75,11 @@ class FilterTagLib {
 
     /**
      * This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from
-     * the domain class as possible by default.  To continue using the old style filter pane, use the
-     * <code>legacyFilterPane</code> tag.
+     * the domain class as possible by default.  All attributes from 0.3.1 are still supported,
+     * but are considered deprecated in favor of more sensible alternatives.
      *
      * TODO: Document attributes.
      *
-     * @since 0.4
      */
     def filterPane = {attrs, body ->
         def domain = attrs.domain ?: (attrs.filterBean ?: null)
@@ -94,7 +93,7 @@ class FilterTagLib {
         String containerId = attrs.filterPaneId ?: (attrs.id ?: 'filterPane')
         String containerClass = attrs['class'] ?: (attrs.styleClass ?: (attrs.filterPaneClass ?: ''))
         String containerStyle = attrs.style ?: (attrs.filterPaneStyle ?: '')
-        String formName = attrs.filterFormName ?: 'filterForm'
+        String formName = attrs.formName ?: (attrs.filterFormName ?: 'filterForm')
 
         def props = [:]
         List beanPersistentProps = bean.persistentProperties as List
@@ -135,6 +134,24 @@ class FilterTagLib {
             }
         }
 
+        // Exclude anything they explicitly don't want filtered.
+        if (attrs.excludeProperties) {
+            def ep = (attrs.excludeProperties instanceof List) ? attrs.excludeProperties : []
+            if (attrs.excludeProperties instanceof String) {
+                ep = attrs.excludeProperties.split(",") as List
+            }
+            ep.each {
+                def name = it.trim()
+                def epObj = beanPersistentProps.find { bpp -> bpp.name == name }
+                if (epObj != null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Removing ${name} from filterable properties.")
+                    }
+                    beanPersistentProps.remove(epObj)
+                }
+            }
+        }
+
         // Put the persistent props in the final map.
         beanPersistentProps.each {
             props[it.name] = it
@@ -171,7 +188,7 @@ class FilterTagLib {
         */
 
         if (bean && props) {
-            def filterPaneId = attrs.id ?: 'filterPane'
+           // def filterPaneId = attrs.id ?: 'filterPane'
             def action = attrs.action ?: 'filter'
             def propsStr = ""
             int propsSize = props.size() - 1
@@ -205,7 +222,7 @@ class FilterTagLib {
   </div>
   <div class="buttons">
       <span class="button">
-        <input type="button" value="Cancel" onclick="return hideElement('${filterPaneId}');" />
+        <input type="button" value="Cancel" onclick="return hideElement('${containerId}');" />
       </span>
       <span class="button">
         <input type="button" value="Clear" onclick="return clearFilterPane('filterForm');" />
@@ -237,7 +254,7 @@ class FilterTagLib {
      * </table>
      * @deprecated Consider using the <code>filterPane</code> tag instead.
      */
-    def legacyFilterPane = {attrs, body ->
+    def filterPaneOld = {attrs, body ->
         def markup = new groovy.xml.MarkupBuilder(out)
         def formWriter = new StringWriter()
         def formBuilder = new groovy.xml.MarkupBuilder(formWriter)
