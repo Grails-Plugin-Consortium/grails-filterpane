@@ -1,4 +1,4 @@
-<plugin name='filterpane' version='0.3.1'>
+<plugin name='filterpane' version='0.4.1'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
