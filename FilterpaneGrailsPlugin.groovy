@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = '0.4.1'
+    def version = '0.4.2'
     def dependsOn = [:]
 
     def author = "Steve Krenek"

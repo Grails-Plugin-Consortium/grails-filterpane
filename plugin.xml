@@ -1,4 +1,4 @@
-<plugin name='filterpane' version='0.4.1'>
+<plugin name='filterpane' version='0.4.2' grailsVersion='1.1 &gt; *'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
@@ -6,8 +6,10 @@
 </description>
   <documentation>http://grails.org/FilterPane+Plugin</documentation>
   <resources>
+    <resource>UrlMappings</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterService</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterTagLib</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterUtils</resource>
   </resources>
+  <dependencies />
 </plugin>
