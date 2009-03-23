@@ -129,15 +129,6 @@ grails-app.taglib.com.zeddware.grails.plugins.filterpane</FONT>
     <TR BGCOLOR="white" CLASS="TableRowColor">
     <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
     <CODE><!--todo visibility e.g. protected--> &nbsp;def</CODE></FONT></TD>
-    <TD><CODE><B><A HREF="#filterControl">filterControl</A></B></CODE>
-
-    <BR>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-    </TR>
-  
-    <TR BGCOLOR="white" CLASS="TableRowColor">
-    <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-    <CODE><!--todo visibility e.g. protected--> &nbsp;def</CODE></FONT></TD>
     <TD><CODE><B><A HREF="#filterPane">filterPane</A></B></CODE>
 
     <BR>
@@ -148,6 +139,15 @@ grails-app.taglib.com.zeddware.grails.plugins.filterpane</FONT>
     <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
     <CODE><!--todo visibility e.g. protected--> &nbsp;def</CODE></FONT></TD>
     <TD><CODE><B><A HREF="#filterPaneIncludes">filterPaneIncludes</A></B></CODE>
+
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+    </TR>
+  
+    <TR BGCOLOR="white" CLASS="TableRowColor">
+    <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+    <CODE><!--todo visibility e.g. protected--> &nbsp;def</CODE></FONT></TD>
+    <TD><CODE><B><A HREF="#includes">includes</A></B></CODE>
 
     <BR>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -199,11 +199,49 @@ grails-app.taglib.com.zeddware.grails.plugins.filterpane</FONT>
 
   <TR BGCOLOR="white" CLASS="TableRowColor">
     <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1" CLASS="ClassItemFont">
+    <CODE>def</CODE></FONT></TD>
+    <TD><FONT CLASS="ClassItemFont"><CODE><B><a href="#buildPropertyRow(def, def, def, def)">buildPropertyRow</a></B>(def bean, def propertyEntry, def attrs, def params)</CODE></FONT>
+
+    <BR>
+    <FONT CLASS="ClassItemFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
+    </TD>
+  </TR>
+
+
+
+  <TR BGCOLOR="white" CLASS="TableRowColor">
+    <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1" CLASS="ClassItemFont">
     <CODE>String</CODE></FONT></TD>
     <TD><FONT CLASS="ClassItemFont"><CODE><B><a href="#createFilterControl(def, def, boolean)">createFilterControl</a></B>(def attrs, def body, boolean visible)</CODE></FONT>
 
     <BR>
     <FONT CLASS="ClassItemFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
+    </TD>
+  </TR>
+
+
+
+  <TR BGCOLOR="white" CLASS="TableRowColor">
+    <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1" CLASS="ClassItemFont">
+    <CODE>def</CODE></FONT></TD>
+    <TD><FONT CLASS="ClassItemFont"><CODE><B><a href="#createFilterControl(def, def, def, def)">createFilterControl</a></B>(def property, def formPropName, def attrs, def params)</CODE></FONT>
+
+    <BR>
+    <FONT CLASS="ClassItemFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT>
+    </TD>
+  </TR>
+
+
+
+  <TR BGCOLOR="white" CLASS="TableRowColor">
+    <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1" CLASS="ClassItemFont">
+    <CODE>def</CODE></FONT></TD>
+    <TD><FONT CLASS="ClassItemFont"><CODE><B><a href="#filterPaneLegacy(def, def)">filterPaneLegacy</a></B>(def attrs, def body)</CODE></FONT>
+
+    <BR>
+    <FONT CLASS="ClassItemFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creates a div that can be shown that contains a filter (search) form.
+
+ </FONT>
     </TD>
   </TR>
 
@@ -251,12 +289,77 @@ FilterTagLib</H3>
 </TR>
 </TABLE>
 
+<A NAME="buildPropertyRow(def, def, def, def)"><!-- --></A><H3>
+buildPropertyRow</H3>
+<PRE>def <B>buildPropertyRow</B>(def bean, def propertyEntry, def attrs, def params)</PRE>
+
+<DL>
+<DD>
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B><!--todo Returns:--></B><DD><!-- todo --></DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="createFilterControl(def, def, boolean)"><!-- --></A><H3>
 createFilterControl</H3>
 <PRE>String <B>createFilterControl</B>(def attrs, def body, boolean visible)</PRE>
 
 <DL>
 <DD>
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B><!--todo Returns:--></B><DD><!-- todo --></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="createFilterControl(def, def, def, def)"><!-- --></A><H3>
+createFilterControl</H3>
+<PRE>def <B>createFilterControl</B>(def property, def formPropName, def attrs, def params)</PRE>
+
+<DL>
+<DD>
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B><!--todo Returns:--></B><DD><!-- todo --></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="filterPaneLegacy(def, def)"><!-- --></A><H3>
+filterPaneLegacy</H3>
+<PRE>def <B>filterPaneLegacy</B>(def attrs, def body)</PRE>
+
+<DL>
+<DD> Creates a div that can be shown that contains a filter (search) form.
+
+ Parameters
+ <table>
+ <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
+ <tr><td>filterBean</td><td>Yes</td><td>The model class to extract filter properties from.</td></tr>
+ <tr><td>filterProperties</td><td>Yes</td><td>A list of filterBean's properties to include on the form.</td></tr>
+ <tr><td>filterPaneId</td><td>The ID attribute for the container div.  Defaults to 'filterPane'</td></tr>
+ <tr><td>filterPaneStyle</td><td>The style attribute for the container div.</td></tr>
+ <tr><td>filterPaneClass</td><td>The style class for the container div.</td></tr>
+ <tr><td>filterPaneTitle</td><td>The H2 (header) text for the form.  Defaults to 'Filter Settings'</td></tr>
+ <tr><td>filterFormName</td><td>The name attribute for the filter form.  Defaults to 'filterForm'</td></tr>
+ </table>
+ <DL><DT><B>deprecated:</B></DT><DD>Consider using the <code>filterPane</code> tag instead.</DD></DL>
+     
 <P>
 <DD><DL>
 </DL>
