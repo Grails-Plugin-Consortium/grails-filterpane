@@ -82,7 +82,16 @@ class FilterTagLib {
      *
      */
     def filterPane = {attrs, body ->
-        def domain = attrs.domain ?: (attrs.filterBean ?: null)
+
+        // If people want to use the old tag's logic, let them.
+        if (attrs.useLegacyFilterpane == "true") {
+            println "Calling legacy filterpane."
+            this.filterPaneLegacy(attrs, body)
+            println "Done with legacy filter pane."
+            return
+        }
+
+        def domain = attrs.domainBean ?: (attrs.filterBean ?: null)
         def bean = FilterUtils.resolveDomainClass(grailsApplication, domain)
         if (bean == null) {
             log.error("Unable to resolve filter domain class ${domain}")
@@ -254,7 +263,8 @@ class FilterTagLib {
      * </table>
      * @deprecated Consider using the <code>filterPane</code> tag instead.
      */
-    def filterPaneOld = {attrs, body ->
+    private def filterPaneLegacy (attrs, body) {
+        println "in legacy filterpane.  out is ${out}"
         def markup = new groovy.xml.MarkupBuilder(out)
         def formWriter = new StringWriter()
         def formBuilder = new groovy.xml.MarkupBuilder(formWriter)
