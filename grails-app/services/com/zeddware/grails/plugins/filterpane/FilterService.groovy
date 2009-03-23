@@ -51,9 +51,9 @@ class FilterService {
                                             def realOp = opEntry.value
                                             def realRawValue = rawValue[realPropName]
                                             def realRawValue2 = rawValue2 != null ? rawValue2["${realPropName}To"] : null
-                                            def val = parseValue(realPropName, realPropName, realRawValue, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
-                                            def val2 = parseValue(realPropName, "${realPropName}To", realRawValue2, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
-                                            addCriterion(c, realPropName, realOp, val, val2)
+                                            def val = this.parseValue(realPropName, realPropName, realRawValue, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
+                                            def val2 = this.parseValue(realPropName, "${realPropName}To", realRawValue2, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
+                                            this.addCriterion(c, realPropName, realOp, val, val2)
                                         }
                                         if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
                                             def parts = params.sort.split("\\.")
@@ -65,10 +65,10 @@ class FilterService {
                                     }
                                 }
                             } else {
-                            	def val = parseValue(propName, propName, rawValue, mc, filterParams)
-                                def val2 = parseValue(propName, "${propName}To", rawValue2, mc, filterParams)
+                            	def val = this.parseValue(propName, propName, rawValue, mc, filterParams)
+                                def val2 = this.parseValue(propName, "${propName}To", rawValue2, mc, filterParams)
                                 if (log.isDebugEnabled()) log.debug("==  val2 is ${val2} of type ${val2?.class}")
-                                addCriterion(c, propName, filterOp, val, val2)
+                                this.addCriterion(c, propName, filterOp, val, val2)
                             }
                         }
                     	if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
