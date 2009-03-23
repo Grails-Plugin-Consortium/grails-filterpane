@@ -64,17 +64,68 @@ class FilterUtils {
     }
 
     static java.util.Date parseDateFromDatePickerParams(def paramProperty, def params) {
-        //println "== parseDate params: ${params.toMapString()}"
         try {
             def year = params["${paramProperty}_year"]
             def month = params["${paramProperty}_month"]
             def day = params["${paramProperty}_day"]
             def hour = params["${paramProperty}_hour"]
             def minute = params["${paramProperty}_minute"]
-            return new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').parse("${year}-${month}-${day} ${hour}:${minute}")
+
+            if (log.isDebugEnabled()) {
+                log.debug("Parsing date from params: ${year} ${month} ${day} ${hour} ${minute}")
+            }
+
+            String format = ''
+            String value = ''
+            if (year != null) {
+                format = "yyyy"
+                value = year
+            }
+            if (month != null) {
+                format += 'MM'
+                value += zeroPad(month)
+            }
+            if (day != null) {
+                format += 'dd'
+                value += zeroPad(day)
+            }
+            if (hour != null) {
+                format += 'HH'
+                value += zeroPad(hour)
+            } else if (paramProperty.endsWith('To')) {
+                format += 'HH'
+                value += '23'
+            }
+
+            if (minute != null) {
+                format += 'mm'
+                value += zeroPad(minute)
+            } else if (paramProperty.endsWith('To')) {
+                format += 'mm:ss.SSS'
+                value += '59:59.999'
+            }
+
+            println "Parsing ${paramProperty} value ${value} with format ${format}"
+            if (log.isDebugEnabled()) debug("Parsing ${value} with format ${format}")
+            return new java.text.SimpleDateFormat(format).parse(value)
         } catch (Exception ex) {
-            //println "${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}"
+            log.error("${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}")
             return null
+        }
+    }
+
+    private static def zeroPad(def val) {
+        try {
+            if (val != null) {
+                int i = val as int
+                if (i < 10) {
+                    return "0${i}"
+                } else {
+                    return val
+                }
+            }
+        } catch (Exception ex) {
+            return val
         }
     }
 
