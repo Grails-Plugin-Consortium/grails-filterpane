@@ -521,7 +521,7 @@ class FilterTagLib {
             row += """\
       <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
         &nbsp;and&nbsp;
-        ${this.createFilterControl(property, paramName, filterCtrlAttrs, params)}
+        ${this.createFilterControl(property, filterCtrlAttrs.name, filterCtrlAttrs, params)}
       </span>
       """
         }
