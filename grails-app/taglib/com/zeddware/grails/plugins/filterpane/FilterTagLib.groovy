@@ -6,30 +6,31 @@ class FilterTagLib {
 
     /**
      * This map contains available filter operations by type.  It is used when creating the
-     * individual rows in the filter pane.
+     * individual rows in the filter pane.  The values in the text maps are key suffixes for the
+     * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
     def availableOpsByType = [
             text: [
-                    keys: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-                    text: ['', 'Contains', 'Does Not Contain', 'Contains (Case Sensitive)',
-                            'Does Not Contain (Case Sensitive)', 'Equal To', 'Not Equal To', 'Is Null',
-                            'Is Not Null']
+                    keys: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull']//,
+//                    text: ['', 'ilike', 'not-ilike', 'like',
+//                            'not-like', 'equal', 'not-equal', 'is-null',
+//                            'is-not-null']
             ],
             numeric: [
                     keys: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-                    text: ['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To',
-                            'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 'Is Not Null']
+                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull']//,
+//                    text: ['', 'equal', 'not-equal', 'lt', 'lte',
+//                            'gt', 'gte', 'between', 'is-null', 'is-not-null']
             ],
             date: [
                     keys: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-                    text: ['', 'Equal To', 'Not Equal To', 'Less Than', 'Less Than or Equal To',
-                            'Greater Than', 'Greater Than or Equal To', 'Between', 'Is Null', 'Is Not Null']
+                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull']//,
+//                    text: ['', 'equal', 'not-equal', 'lt', 'lte',
+//                            'gt', 'gte', 'between', 'is-null', 'is-not-null']
             ],
             boolean: [
-                    keys: ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-                    text: ['', 'Equal To', 'Not Equal To', 'Is Null', 'Is Not Null']
+                    keys: ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull']//,
+//                    text: ['', 'equal', 'not-equal', 'is-null', 'is-not-null']
             ]
     ]
     /**
@@ -46,9 +47,28 @@ class FilterTagLib {
      * Their values must be the same.
      */
     def filterButton = {attrs, body ->
-        def title = attrs.text ?: (attrs.title ?: 'Filter')
+        def textKey = attrs.textKey
+        def text
+        if (textKey != null) {
+            text = g.message(code:textKey, default:g.message(code:'fp.tag.filterButton.text', default:'Filter'))
+        } else {
+            text = attrs.text ?: (attrs.title ?: g.message(code:'fp.tag.filterButton.text', default:'Filter'))
+        }
         def filterPaneId = attrs.id ?: (attrs.filterPaneId ?: 'filterPane')
-        out << "<a href=\"\" onclick=\"showElement('${filterPaneId}'); return false;\">${title}</a>"
+        def styleClass = attrs.styleClass ?: ''
+        def style = attrs.style ? " style=\"${attrs.style}\"" : ''
+        if (FilterUtils.isFilterApplied(params)) {
+            styleClass = "filter-applied ${styleClass}"
+
+            if (attrs.appliedTextKey) {
+                text = g.message(code:attrs.appliedTextKey, default:g.message(code:'fp.tag.filterButton.appliedText', default:'Change Filter'))
+            } else if (attrs.appliedText && ! ''.equals(attrs.appliedText.trim())) {
+                text = attrs.appliedText
+            }
+        }
+        if (styleClass.length() > 0) styleClass = " class=\"${styleClass}\""
+
+        out << "<a href=\"\" onclick=\"showElement('${filterPaneId}'); return false;\"${styleClass}${style}>${text}</a>"
     }
 
     /**
@@ -73,6 +93,18 @@ class FilterTagLib {
         out << "<script type=\"text/javascript\" src=\"${createLinkTo(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
+    def isFiltered = { attrs, body ->
+        if (FilterUtils.isFilterApplied(params)) {
+            out << body()
+        }
+    }
+
+    def isNotFiltered = { attrs, body ->
+        if (! FilterUtils.isFilterApplied(params)) {
+            out << body()
+        }
+    }
+
     /**
      * This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from
      * the domain class as possible by default.  All attributes from 0.3.1 are still supported,
@@ -85,9 +117,9 @@ class FilterTagLib {
 
         // If people want to use the old tag's logic, let them.
         if (attrs.useLegacyFilterpane == "true") {
-            println "Calling legacy filterpane."
+            if (log.isDebugEnabled()) log.debug("Calling legacy filterpane.")
             this.filterPaneLegacy(attrs, body)
-            println "Done with legacy filter pane."
+            if (log.isDebugEnabled()) log.debug("Done with legacy filter pane.")
             return
         }
 
@@ -98,7 +130,13 @@ class FilterTagLib {
             return
         }
 
-        String title = attrs.title ?: (attrs.filterPaneTitle ?: 'Filter')
+        String titleKey = attrs.titleKey
+        String title
+        if (titleKey != null) {
+            title = g.message(code:titleKey, default:g.message(code:'fp.tag.filterPane.titleText', default:'Filter'))
+        } else {
+            title = attrs.title ?: (attrs.filterPaneTitle ?: g.message(code:'fp.tag.filterPane.titleText', default:'Filter'))
+        }
         String containerId = attrs.filterPaneId ?: (attrs.id ?: 'filterPane')
         String containerClass = attrs['class'] ?: (attrs.styleClass ?: (attrs.filterPaneClass ?: ''))
         String containerStyle = attrs.style ?: (attrs.filterPaneStyle ?: '')
@@ -208,6 +246,8 @@ class FilterTagLib {
                 }
             }
 
+            def sortKeys = props.collect { return it.key }
+
             def output = """\
 <div id="${containerId}"
      class="filterPane ${containerClass ?: ''}"
@@ -221,23 +261,23 @@ class FilterTagLib {
             output += """\
   </table>
   <div>
-      Order by
-      ${this.select(name: "sort", from: props.values(), optionKey: "name", optionValue: "naturalName", noSelection: ['': 'Select a Property'], value: params.sort)}
+      ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}
+      ${this.select(name: "sort", from: props.values(), keys:sortKeys, optionValue: "naturalName", noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')], value: params.sort)}
       &nbsp;
       ${this.radio(name: "order", value: "asc", checked: params.order == 'asc',)}
-      &nbsp;Ascending&nbsp;
+      &nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;
       ${this.radio(name: "order", value: "desc", checked: params.order == 'desc')}
-      &nbsp;Descending 
+      &nbsp;${g.message(code:'fp.tag.filterPane.sort.descending', default:'Descending')}
   </div>
   <div class="buttons">
       <span class="button">
-        <input type="button" value="Cancel" onclick="return hideElement('${containerId}');" />
+        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel')}" onclick="return hideElement('${containerId}');" />
       </span>
       <span class="button">
-        <input type="button" value="Clear" onclick="return clearFilterPane('filterForm');" />
+        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear')}" onclick="return clearFilterPane('filterForm');" />
       </span>
       <span class="button">
-        ${this.actionSubmit(action: action, value: "Apply")}
+        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
       </span>
   </div>
   </form>
@@ -271,13 +311,19 @@ class FilterTagLib {
         formBuilder.doubleQuotes = true
         if (attrs.filterBean && attrs.filterProperties) {
             def containerDivAttrs = ['class': 'filterPane ', style: 'display: none;', id: 'filterPane']
-            def filterPaneTitle = 'Filter Settings'
+            def filterPaneTitle
+            String titleKey = attrs.titleKey
+            if (titleKey != null) {
+                filterPaneTitle = g.message(code:titleKey, default:g.message(code:'fp.tag.filterPane.default-title', default:'Filter Settings'))
+            } else {
+                filterPaneTitle = attrs.title ?: (attrs.filterPaneTitle ?: g.message(code:'fp.tag.filterPane.default-title', default:'Filter Settings'))
+            }
             def filterFormName = 'filterForm'
             def action = 'filter'
             if (attrs.filterPaneId) containerDivAttrs.id = attrs.filterPaneId
             if (attrs.filterPaneStyle) containerDivAttrs.style += attrs.filterPaneStyle
             if (attrs.filterPaneClass) containerDivAttrs['class'] += containerDivAttrs.filterPaneClass
-            if (attrs.filterPaneTitle) filterPaneTitle = attrs.filterPaneTitle
+//            if (attrs.filterPaneTitle) filterPaneTitle = attrs.filterPaneTitle
             if (attrs.filterFormName) filterFormName = attrs.filterFormName
             if (attrs.filterPaneAction) action = attrs.filterPaneAction
 
@@ -313,8 +359,9 @@ class FilterTagLib {
                         td(FilterUtils.makeCamelCasePretty(prop))
                         td('') {
                             formWriter << this.select(name: opName,
-                                    from: this.availableOpsByType[type].text,
+                                    from: this.availableOpsByType[type].keys,
                                     keys: this.availableOpsByType[type].keys,
+                                    valueMessagePrefix: 'fp.op', 
                                     value: params[opName],
                                     onclick: "filterOpChange('${opName}', '${filterControlAttrs['id']}');")
                         }
@@ -334,25 +381,25 @@ class FilterTagLib {
                     }
                 }
                 tr(valign: 'middle') {
-                    td('Order By')
+                    td(g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by'))
                     td(colspan: '2', '') {
-                        formWriter << this.select(name: "sort", from: readableProps, keys: props, noSelection: ['': 'Select a Field'], value: params['sort'])
+                        formWriter << this.select(name: "sort", from: readableProps, keys: props, noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Field')], value: params['sort'])
                         formWriter << '&nbsp;'
-                        formWriter << this.radio(name: "order", value: "asc", checked: params['order'] == 'asc', "&nbsp;Ascending&nbsp;")
-                        formWriter << this.radio(name: "order", value: "desc", checked: params['order'] == 'desc', "&nbsp;Descending")
+                        formWriter << this.radio(name: "order", value: "asc", checked: params['order'] == 'asc', "&nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;")
+                        formWriter << this.radio(name: "order", value: "desc", checked: params['order'] == 'desc', "&nbsp;${g.message(code:'fp.tag.filterPane.sort.descending', default:'Descending')}}")
                     }
                 }
             } // end form table.
 
             formBuilder.div(class: "buttons") {
                 span(class: "button") {
-                    input(type: "button", value: "Cancel", onclick: "return hideElement('${containerDivAttrs.id}');")
+                    input(type: "button", value: g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel'), onclick: "return hideElement('${containerDivAttrs.id}');")
                 }
                 span(class: "button") {
-                    input(type: "button", value: "Clear", onclick: "return clearFilterPane('${filterFormName}');")
+                    input(type: "button", value: g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear'), onclick: "return clearFilterPane('${filterFormName}');")
                 }
                 span(class: "button", '') {
-                    formWriter << this.actionSubmit(action: action, value: "Apply")
+                    formWriter << this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))
                 }
             } // end form button div.
 
@@ -466,14 +513,14 @@ class FilterTagLib {
         }
 
         // filter operator keys and text default to max available for the type.
-        def opText = []; opText.addAll(this.availableOpsByType[type].text)
+        //def opText = []; opText.addAll(this.availableOpsByType[type].text)
         def opKeys = []; opKeys.addAll(this.availableOpsByType[type].keys)
 
         // If The property is not nullable, no need to allow them to filter in is or is not null.
         def constrainedProperty = property.domainClass.constrainedProperties[property.name]
         if ((constrainedProperty && !constrainedProperty.isNullable()) || property.name == 'id') {
-            opText.remove('Is Not Null')
-            opText.remove('Is Null')
+//            opText.remove('is-not-null')
+//            opText.remove('is-null')
             opKeys.remove("IsNotNull")
             opKeys.remove("IsNull")
         }
@@ -488,12 +535,13 @@ class FilterTagLib {
 
         // If the values list is now specified, limit the operators to == or <>
         if (filterCtrlAttrs.values) {
-            opText = ['', 'Equal To', 'Not Equal To']
+//            opText = ['', 'equal', 'not-equal']
             opKeys = ['', 'Equal', 'NotEqual']
         }
 
         // Create the operator dropdown.
-        def opDropdown = this.select(name: opName, from: opText, keys: opKeys, value: params[opName],
+        def opDropdown = this.select(name: opName, from: opKeys, keys: opKeys,
+            value: params[opName], valueMessagePrefix:'fp.op',
                 onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
         if (params[opName] == "IsNull" || params[opName] == "IsNotNull") {
             filterCtrlAttrs.style = 'display:none;'
@@ -520,7 +568,7 @@ class FilterTagLib {
             boolean showToCtrl = params[opName] == "Between" && filterCtrlAttrs?.value?.trim() != ""
             row += """\
       <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
-        &nbsp;and&nbsp;
+        &nbsp;${g.message(code:'fp.tag.filterPane.property.betweenValueSeparatorText', default:'and')}&nbsp;
         ${this.createFilterControl(property, filterCtrlAttrs.name, filterCtrlAttrs, params)}
       </span>
       """
