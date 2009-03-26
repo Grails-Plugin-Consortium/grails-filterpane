@@ -1,0 +1,7 @@
+== TODO: ==
+* Document textKey, appliedText, and appliedText attributes in filterButton tag.
+* Document filter-applied css class in filterButton tag.
+* Document titleKey attribute in filterPane tag.
+* Document new isFiltered and isNotFiltered tags.
+* Document message bundle keys.
+* Document fix of sorting bug with associated properties.
