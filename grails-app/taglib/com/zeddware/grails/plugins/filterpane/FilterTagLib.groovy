@@ -253,7 +253,7 @@ class FilterTagLib {
      class="filterPane ${containerClass ?: ''}"
      style="display:none;${containerStyle}">
   <h2>${title}</h2>
-  <form id="${formName}" name="${formName}" action="${action}">
+  <form id="${formName}" name="${formName}" action="${action}" method="post">
   <input type="hidden" name="filterProperties" value="${propsStr}" />
   <table cellspacing="0" cellpadding="0" class="filterTable">
 """
@@ -470,7 +470,7 @@ class FilterTagLib {
         return stream
     }
 
-    private def createFilterControl(def property, def formPropName, def attrs, def params) {
+    private def createFilterControl(def property, def formPropName, def attrs, def params, def opId) {
         def type = property.type
         def out = ""
         if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) || type == int.class || type == long.class || type == double.class || type == float.class) {
@@ -478,21 +478,28 @@ class FilterTagLib {
             if (attrs.values) {
                 def valueToken = attrs.valuesToken ?: ' '
                 def valueList = attrs.values instanceof List ? attrs.values : attrs.values.tokenize(valueToken)
-                attrs.putAll([from: valueList, value: params[formPropName]])
+                attrs.putAll([from: valueList, value: params[formPropName], onChange:"selectDefaultOperator('${opId}')"])
                 out = this.select(attrs)
             } else {
+                attrs.onChange = "selectDefaultOperator('${opId}')"
                 out = this.textField(attrs)
             }
         } else if (type == Date.class) {
             Date d = FilterUtils.parseDateFromDatePickerParams(formPropName, params)
             attrs.value = d
+            attrs.onChange = "selectDefaultOperator('${opId}')"
             String style = attrs.style ? "style=\"${attrs.style}\"" : ''
             out = "<span id=\"${attrs.id}-container\" ${style}>${this.datePicker(attrs)}</span>"
 
         } else if (type == Boolean.class || type == boolean.class) {
-            out = this.radioGroup([labels: ['Yes', 'No'], values: [true, false], value: params[formPropName], name: formPropName]) {
-                "<label for=\"${formPropName}\">${it.label} </label>${it.radio}"
-            }
+            def yes = radio(id:"${formPropName}.yes", name:formPropName, value:'true', checked:params[formPropName] == 'true', onClick:"selectDefaultOperator('${opId}')")
+            def no = radio(id:"${formPropName}.no", name:formPropName, value:'false', checked:params[formPropName] == 'false', onClick:"selectDefaultOperator('${opId}')")
+            out = """\
+            <label for="${formPropName}.yes">${g.message(code:'fp.tag.filterPane.property.boolean.true', default:'Yes ')}</label>
+            ${yes}
+            <label for="${formPropName}.no">${g.message(code:'fp.tag.filterPane.property.boolean.false', default:'No ')}</label>
+            ${no}
+            """
         }
         return out
     }
@@ -540,7 +547,7 @@ class FilterTagLib {
         }
 
         // Create the operator dropdown.
-        def opDropdown = this.select(name: opName, from: opKeys, keys: opKeys,
+        def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
             value: params[opName], valueMessagePrefix:'fp.op',
                 onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
         if (params[opName] == "IsNull" || params[opName] == "IsNotNull") {
@@ -548,17 +555,20 @@ class FilterTagLib {
         }
 
         // Take care of the name.
+        def fieldNameKey = "fp.property.text.${property.name}"
         def fieldName = property.naturalName
         if (property.domainClass != bean) {
+            fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
+        fieldName = g.message(code:fieldNameKey, default: fieldName)
 
         def row = """\
     <tr>
       <td>${fieldName}</td>
       <td>${opDropdown}</td>
       <td>
-        ${this.createFilterControl(property, paramName, filterCtrlAttrs, params)}"""
+        ${this.createFilterControl(property, paramName, filterCtrlAttrs, params, opName)}"""
 
         // For numeric and date types, build the "To" control, in case they select between.
         if (type == "numeric" || type == "date") {
@@ -569,7 +579,7 @@ class FilterTagLib {
             row += """\
       <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
         &nbsp;${g.message(code:'fp.tag.filterPane.property.betweenValueSeparatorText', default:'and')}&nbsp;
-        ${this.createFilterControl(property, filterCtrlAttrs.name, filterCtrlAttrs, params)}
+        ${this.createFilterControl(property, filterCtrlAttrs.name, filterCtrlAttrs, params, opName)}
       </span>
       """
         }
