@@ -67,3 +67,10 @@ function filterOpChange(id, controlId) {
         }
     }
 }
+
+function selectDefaultOperator(id) {
+    var dropdown = document.getElementById(id)
+    if (dropdown && dropdown.selectedIndex <= 0) {
+        dropdown.selectedIndex = 1
+    }
+}
