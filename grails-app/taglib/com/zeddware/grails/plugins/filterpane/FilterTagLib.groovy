@@ -228,6 +228,9 @@ class FilterTagLib {
             }
         }
 
+        // Sort the properties by domain class order.
+        def sortedProperties = props.values().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(bean))
+
         /*
         * Notes: bean.properties contains all properties as DefaultGrailsDomainClassProperty instances, including id, etc.
         * bean.persistentProperties excludes id and version
@@ -257,7 +260,7 @@ class FilterTagLib {
   <input type="hidden" name="filterProperties" value="${propsStr}" />
   <table cellspacing="0" cellpadding="0" class="filterTable">
 """
-            props.each { output += this.buildPropertyRow(bean, it, attrs, params) }
+            sortedProperties.each { output += this.buildPropertyRow(bean, it, attrs, params) }
             output += """\
   </table>
   <div>
@@ -504,9 +507,8 @@ class FilterTagLib {
         return out
     }
 
-    private def buildPropertyRow(def bean, def propertyEntry, def attrs, def params) {
-        def fullPropName = propertyEntry.key
-        def property = propertyEntry.value
+    private def buildPropertyRow(def bean, def property, def attrs, def params) {
+        def fullPropName = property.name
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
         def type = FilterUtils.getOperatorMapKey(property.type)
