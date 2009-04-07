@@ -184,7 +184,9 @@ class FilterService {
     	def mp = FilterUtils.getNestedMetaProperty(mc, prop)
     	def val = rawValue
         if (val) {
-            if (mp.type.getSimpleName().equalsIgnoreCase("boolean")) {
+            if (mp.type.isEnum()) {
+                val = Enum.valueOf(mp.type, val.toString())
+            } else if (mp.type.getSimpleName().equalsIgnoreCase("boolean")) {
                 val = val.toBoolean()
             } else if (mp.type == Integer || mp.type == int) {
                 val = val.toInteger()

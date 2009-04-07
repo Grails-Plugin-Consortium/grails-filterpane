@@ -28,17 +28,13 @@ class FilterTagLib {
 //                    text: ['', 'equal', 'not-equal', 'lt', 'lte',
 //                            'gt', 'gte', 'between', 'is-null', 'is-not-null']
             ],
-            boolean: [
+            'boolean': [
                     keys: ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull']//,
 //                    text: ['', 'equal', 'not-equal', 'is-null', 'is-not-null']
+            ],
+            'enum': [ keys: ['', 'Equal', 'NotEqual']
             ]
     ]
-    /**
-     * This tag is mainly for internal and test use.
-     */
-//  def filterControl = {attrs, body ->
-//    out << createFilterControl(attrs, body)
-//  }
 
     /**
      * Creates a link (button) that displays the filter pane when pressed.  The title attribute
@@ -144,6 +140,9 @@ class FilterTagLib {
 
         def props = [:]
         List beanPersistentProps = bean.persistentProperties as List
+        if (log.isDebugEnabled()) {
+            log.debug("Persistent props: ${beanPersistentProps}")
+        }
         List associatedProps = []
 
         // If the user specified the properties, only include those.
@@ -161,7 +160,7 @@ class FilterTagLib {
         }
 
         // Remove association properties.  We can't handle them directly.
-        associatedProps = beanPersistentProps.findAll { it.association == true }
+        associatedProps = beanPersistentProps.findAll { it.association == true && !it.type.isEnum() }
         beanPersistentProps.removeAll(associatedProps)
 
         // Add any non-default additional properties they specified.
@@ -479,7 +478,7 @@ class FilterTagLib {
     private def createFilterControl(def property, def formPropName, def attrs, def params, def opId) {
         def type = property.type
         def out = ""
-        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) || type == int.class || type == long.class || type == double.class || type == float.class) {
+        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) || type == int.class || type == long.class || type == double.class || type == float.class || type.isEnum()) {
 
             if (attrs.values) {
                 def valueToken = attrs.valuesToken ?: ' '
@@ -528,6 +527,12 @@ class FilterTagLib {
         //def opText = []; opText.addAll(this.availableOpsByType[type].text)
         def opKeys = []; opKeys.addAll(this.availableOpsByType[type].keys)
 
+        // Remove all but = <> for enum properties
+        if (property.type.isEnum()) {
+            opKeys.clear()
+            opKeys.addAll(this.availableOpsByType['enum'].keys)
+        }
+
         // If The property is not nullable, no need to allow them to filter in is or is not null.
         def constrainedProperty = property.domainClass.constrainedProperties[property.name]
         if ((constrainedProperty && !constrainedProperty.isNullable()) || property.name == 'id') {
@@ -542,6 +547,9 @@ class FilterTagLib {
             List inList = constrainedProperty?.getInList()
             if (inList) {
                 filterCtrlAttrs.values = inList
+            }
+            else if (property.type.isEnum()) {
+                filterCtrlAttrs.values = property.type.enumConstants as List
             }
         }
 
