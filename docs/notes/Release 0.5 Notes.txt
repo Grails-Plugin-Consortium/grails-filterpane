@@ -12,3 +12,4 @@
 
 == Dev TODO ==
 * Implement staticFilters map.  Constant filters which will apply to search, but not appear in filter form. (Courtesy Wang Xun).
+** Logged as GRAILSPLUGINS-1067
