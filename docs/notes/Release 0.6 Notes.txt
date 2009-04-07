@@ -1,0 +1,2 @@
+TODO:
+* Document enum support in available ops by type. (=, <>)
