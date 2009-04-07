@@ -249,7 +249,10 @@ class FilterTagLib {
                 }
             }
 
-            def sortKeys = props.collect { return it.key }
+            def sortKeys = []
+            sortedProperties.each { sp ->
+                sortKeys << (props.find { sp == it.value })?.key
+            }
 
             def output = """\
 <div id="${containerId}"
@@ -265,7 +268,7 @@ class FilterTagLib {
   </table>
   <div>
       ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}
-      ${this.select(name: "sort", from: props.values(), keys:sortKeys, optionValue: "naturalName", noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')], value: params.sort)}
+      ${this.select(name: "sort", from: sortedProperties, keys:sortKeys, optionValue: "naturalName", noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')], value: params.sort)}
       &nbsp;
       ${this.radio(name: "order", value: "asc", checked: params.order == 'asc',)}
       &nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;
