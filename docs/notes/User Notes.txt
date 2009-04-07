@@ -1,0 +1,5 @@
+Countries with known users:
+US
+Spain
+China
+Switzerland
