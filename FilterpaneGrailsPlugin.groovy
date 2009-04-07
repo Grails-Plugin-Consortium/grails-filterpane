@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = '0.4.3'
+    def version = '0.5'
     def dependsOn = [:]
 
     def author = "Steve Krenek"
@@ -10,7 +10,7 @@ This plugin adds automatic filtering capabilities to any Grails application's li
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/FilterPane+Plugin"
+    def documentation = "http://grails.org/plugin/filterpane"
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)

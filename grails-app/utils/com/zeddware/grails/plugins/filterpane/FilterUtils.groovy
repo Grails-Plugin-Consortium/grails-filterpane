@@ -105,8 +105,7 @@ class FilterUtils {
                 value += '59:59.999'
             }
 
-            println "Parsing ${paramProperty} value ${value} with format ${format}"
-            if (log.isDebugEnabled()) debug("Parsing ${value} with format ${format}")
+            if (log.isDebugEnabled()) log.debug("Parsing ${value} with format ${format}")
             return new java.text.SimpleDateFormat(format).parse(value)
         } catch (Exception ex) {
             log.error("${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}")
@@ -137,6 +136,17 @@ class FilterUtils {
             }
         }
         return ret
+    }
+
+    static boolean isFilterApplied(params) {
+        boolean isApplied = false
+        params.each { key, value ->
+            if (key.startsWith('filter.op') && value != null && ! ''.equals(value)) {
+                isApplied = true
+                return
+            }
+        }
+        return isApplied
     }
 
     static def resolveDomainClass(def grailsApplication, def bean) {

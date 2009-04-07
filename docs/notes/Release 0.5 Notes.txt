@@ -1,0 +1,15 @@
+== TODO: ==
+* Document textKey, appliedText, and appliedTextKey attributes in filterButton tag.
+* Document filter-applied css class in filterButton tag.
+* Document titleKey attribute in filterPane tag.
+* Document new isFiltered and isNotFiltered tags.
+* Document message bundle keys.
+* Document fix of sorting bug with associated properties.
+* Document Filter form method changed from GET to POST.
+* Document Entering a value into any filter field will automatically select the first operator for that
+  field, with the exception of Date fields (The Grails date picker doesn't allow onChange attributes).
+* Document message bundle lookup of property name display, defaulting to existing natural name.
+
+== Dev TODO ==
+* Implement staticFilters map.  Constant filters which will apply to search, but not appear in filter form. (Courtesy Wang Xun).
+** Logged as GRAILSPLUGINS-1067

@@ -1,10 +1,10 @@
-<plugin name='filterpane' version='0.4.3' grailsVersion='1.1 &gt; *'>
+<plugin name='filterpane' version='0.5' grailsVersion='1.1 &gt; *'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
   <description>This plugin adds automatic filtering capabilities to any Grails application's list views.
 </description>
-  <documentation>http://grails.org/FilterPane+Plugin</documentation>
+  <documentation>http://grails.org/plugin/filterpane</documentation>
   <resources>
     <resource>UrlMappings</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterService</resource>
