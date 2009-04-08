@@ -10,30 +10,13 @@ class FilterTagLib {
      * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
     def availableOpsByType = [
-            text: [
-                    keys: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull']//,
-//                    text: ['', 'ilike', 'not-ilike', 'like',
-//                            'not-like', 'equal', 'not-equal', 'is-null',
-//                            'is-not-null']
-            ],
-            numeric: [
-                    keys: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull']//,
-//                    text: ['', 'equal', 'not-equal', 'lt', 'lte',
-//                            'gt', 'gte', 'between', 'is-null', 'is-not-null']
-            ],
-            date: [
-                    keys: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                            'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull']//,
-//                    text: ['', 'equal', 'not-equal', 'lt', 'lte',
-//                            'gt', 'gte', 'between', 'is-null', 'is-not-null']
-            ],
-            'boolean': [
-                    keys: ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull']//,
-//                    text: ['', 'equal', 'not-equal', 'is-null', 'is-not-null']
-            ],
-            'enum': [ keys: ['', 'Equal', 'NotEqual']
-            ]
+            text: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+            numeric: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+                        'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
+            date: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+                        'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
+            'boolean': ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+            'enum': ['', 'Equal', 'NotEqual']
     ]
 
     /**
@@ -99,6 +82,22 @@ class FilterTagLib {
         if (! FilterUtils.isFilterApplied(params)) {
             out << body()
         }
+    }
+
+    def paginate = { attrs, body ->
+        def filterParams = FilterUtils.extractFilterParams(params)
+        def count = 0I
+
+        if (attrs.total != null) {
+            count = attrs.total
+        } else if (attrs.domainBean) {
+            def dc = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
+            //log.debug("paginate dc is ${dc}. clazz is ${dc.clazz}")
+            if (dc) count = dc.clazz.count()
+        }
+        attrs.total = count
+        attrs.params = filterParams
+        out << g.paginate(attrs, body)
     }
 
     /**
@@ -204,6 +203,7 @@ class FilterTagLib {
         }
 
         // Add any associated properties.
+        def associationNames = [:] // This prevents further churning through the list later.
         if (attrs.associatedProperties) {
             def ap = (attrs.associatedProperties instanceof List) ? attrs.associatedProperties : []
             if (attrs.associatedProperties instanceof String) {
@@ -217,9 +217,10 @@ class FilterTagLib {
                 if (association) {
                     def refDomain = association.referencedDomainClass
                     def refProperty = refDomain.persistentProperties.find { it.name == parts[1] }
-                    if (refProperty)
+                    if (refProperty) {
                         props[name] = refProperty
-                    else
+                        associationNames[refProperty] = name
+                    } else
                         log.error("Unable to find associated property for ${name}")
                 } else {
                     log.error("Unable to find associated domain class for ${parts[0]}")
@@ -262,7 +263,7 @@ class FilterTagLib {
   <input type="hidden" name="filterProperties" value="${propsStr}" />
   <table cellspacing="0" cellpadding="0" class="filterTable">
 """
-            sortedProperties.each { output += this.buildPropertyRow(bean, it, attrs, params) }
+            sortedProperties.each { output += this.buildPropertyRow(bean, it, associationNames[it], attrs, params) }
             output += """\
   </table>
   <div>
@@ -364,8 +365,8 @@ class FilterTagLib {
                         td(FilterUtils.makeCamelCasePretty(prop))
                         td('') {
                             formWriter << this.select(name: opName,
-                                    from: this.availableOpsByType[type].keys,
-                                    keys: this.availableOpsByType[type].keys,
+                                    from: this.availableOpsByType[type],
+                                    keys: this.availableOpsByType[type],
                                     valueMessagePrefix: 'fp.op', 
                                     value: params[opName],
                                     onclick: "filterOpChange('${opName}', '${filterControlAttrs['id']}');")
@@ -509,7 +510,7 @@ class FilterTagLib {
         return out
     }
 
-    private def buildPropertyRow(def bean, def property, def attrs, def params) {
+    private def buildPropertyRow(def bean, def property, def propertyNameKey, def attrs, def params) {
         def fullPropName = property.name
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
@@ -525,13 +526,13 @@ class FilterTagLib {
 
         // filter operator keys and text default to max available for the type.
         //def opText = []; opText.addAll(this.availableOpsByType[type].text)
-        def opKeys = []; opKeys.addAll(this.availableOpsByType[type].keys)
+        def opKeys = []; opKeys.addAll(this.availableOpsByType[type])
 
         // Remove all but = <> for enum properties
-        if (property.type.isEnum()) {
-            opKeys.clear()
-            opKeys.addAll(this.availableOpsByType['enum'].keys)
-        }
+//        if (property.type.isEnum()) {
+//            opKeys.clear()
+//            opKeys.addAll(this.availableOpsByType['enum'])
+//        }
 
         // If The property is not nullable, no need to allow them to filter in is or is not null.
         def constrainedProperty = property.domainClass.constrainedProperties[property.name]
@@ -568,10 +569,10 @@ class FilterTagLib {
         }
 
         // Take care of the name.
-        def fieldNameKey = "fp.property.text.${property.name}"
+        def fieldNameKey = "fp.property.text.${propertyNameKey}"
         def fieldName = property.naturalName
-        if (property.domainClass != bean) {
-            fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
+        if (property.domainClass != bean) { // association.
+           // fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: fieldName)
