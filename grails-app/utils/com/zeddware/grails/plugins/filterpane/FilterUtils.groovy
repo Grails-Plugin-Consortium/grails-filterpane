@@ -46,6 +46,8 @@ class FilterUtils {
             return 'numeric'
         } else if (java.util.Date.isAssignableFrom(opType)) {
             return 'date'
+        } else if (opType.isEnum()) {
+            return 'enum'
         }
         return 'text'
     }
