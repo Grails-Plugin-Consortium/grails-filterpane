@@ -107,6 +107,10 @@ class FilterUtils {
                 value += '59:59.999'
             }
 
+            if (value == '') { // Don't even bother parsing.  Just return null if blank.
+                return null
+            }
+
             if (log.isDebugEnabled()) log.debug("Parsing ${value} with format ${format}")
             return new java.text.SimpleDateFormat(format).parse(value)
         } catch (Exception ex) {
