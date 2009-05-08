@@ -572,7 +572,7 @@ class FilterTagLib {
         def fieldNameKey = "fp.property.text.${propertyNameKey}"
         def fieldName = property.naturalName
         if (property.domainClass != bean) { // association.
-           // fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
+            fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: fieldName)
