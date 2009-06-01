@@ -10,10 +10,10 @@ class FilterTagLib {
      * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
     def availableOpsByType = [
-            text: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-            numeric: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+        text: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+        numeric: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
                         'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-            date: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
+        date: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
                         'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
             'boolean': ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
             'enum': ['', 'Equal', 'NotEqual']
@@ -31,7 +31,7 @@ class FilterTagLib {
         if (textKey != null) {
             text = g.message(code:textKey, default:g.message(code:'fp.tag.filterButton.text', default:'Filter'))
         } else {
-            text = attrs.text ?: (attrs.title ?: g.message(code:'fp.tag.filterButton.text', default:'Filter'))
+            text = attrs.text ?: g.message(code:'fp.tag.filterButton.text', default:(attrs.title ?: 'Filter'))
         }
         def filterPaneId = attrs.id ?: (attrs.filterPaneId ?: 'filterPane')
         def styleClass = attrs.styleClass ?: ''
@@ -43,6 +43,8 @@ class FilterTagLib {
                 text = g.message(code:attrs.appliedTextKey, default:g.message(code:'fp.tag.filterButton.appliedText', default:'Change Filter'))
             } else if (attrs.appliedText && ! ''.equals(attrs.appliedText.trim())) {
                 text = attrs.appliedText
+            } else {
+                text = g.message(code:'fp.tag.filterButton.appliedText', default:text)
             }
         }
         if (styleClass.length() > 0) styleClass = " class=\"${styleClass}\""
@@ -84,6 +86,12 @@ class FilterTagLib {
         }
     }
 
+    /**
+     * Grails pagination tag wrapper for use with the filterpane plugin.
+     *
+     * attribute total - a custom count to be used in pagination
+     * attribute domainBean - the domain bean being filtered.  Ignored if total is specified.
+     */
     def paginate = { attrs, body ->
         def filterParams = FilterUtils.extractFilterParams(params)
         def count = 0I
@@ -98,6 +106,45 @@ class FilterTagLib {
         attrs.total = count
         attrs.params = filterParams
         out << g.paginate(attrs, body)
+    }
+
+    def currentCriteria = { attrs, body ->
+        def id = attrs.id ?: 'filterPaneCurrentCriteria'
+        def title = attrs.title ? "title=\"${attrs.title}\" " : ''
+        def clazz = attrs.class ? "class=\"${attrs.class}\" " : ''
+        def style = attrs.style ? "style=\"${attrs.style}\" " : ''
+        def dtFmt = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
+        def filterParams = FilterUtils.extractFilterParams(params)
+        def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
+
+        out << """<ul id="${id}" ${clazz}${style}${title}>"""
+        filterParams.each { key, filterOp ->
+            log.debug "key is ${key}, filterOp is ${filterOp}"
+            if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
+                def prop = key[10..-1]
+                def domainProp
+                if (prop.contains('.')) { // association.
+                    def parts = prop.split('\\.')
+                    domainProp = domainBean.getPropertyByName(parts[0])
+                    domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
+                } else {
+                    domainProp = domainBean.getPropertyByName(prop)
+                }
+                def filterVal = filterParams["filter.${prop}"]
+                if (filterVal == 'struct') {
+                    filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+                    if (filterVal) {
+                        def dateFormat = dtFmt
+                        if (dtFmt instanceof Map) {
+                            dateFormat = dtFmt[prop]
+                        }
+                        filterVal = g.formatDate(format:dateFormat, date:filterVal)
+                    }
+                }
+                out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"</li>"""
+            }
+        }
+        out << "</ul>"
     }
 
     /**
@@ -155,7 +202,7 @@ class FilterTagLib {
         def lastUpdated = beanPersistentProps.find { it.name == 'lastUpdated'}
         if (!attrs.filterProperties || !attrs.filterProperties.contains('lastUpdated')) {
             if (lastUpdated)
-                beanPersistentProps.remove(lastUpdated)
+            beanPersistentProps.remove(lastUpdated)
         }
 
         // Remove association properties.  We can't handle them directly.
@@ -221,7 +268,7 @@ class FilterTagLib {
                         props[name] = refProperty
                         associationNames[refProperty] = name
                     } else
-                        log.error("Unable to find associated property for ${name}")
+                    log.error("Unable to find associated property for ${name}")
                 } else {
                     log.error("Unable to find associated domain class for ${parts[0]}")
                 }
@@ -232,13 +279,13 @@ class FilterTagLib {
         def sortedProperties = props.values().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(bean))
 
         /*
-        * Notes: bean.properties contains all properties as DefaultGrailsDomainClassProperty instances, including id, etc.
-        * bean.persistentProperties excludes id and version
-        * bean.constrainedProperties contains the same as persistent, but instances are ConstrainedProperty instances.
-        */
+         * Notes: bean.properties contains all properties as DefaultGrailsDomainClassProperty instances, including id, etc.
+         * bean.persistentProperties excludes id and version
+         * bean.constrainedProperties contains the same as persistent, but instances are ConstrainedProperty instances.
+         */
 
         if (bean && props) {
-           // def filterPaneId = attrs.id ?: 'filterPane'
+            // def filterPaneId = attrs.id ?: 'filterPane'
             def action = attrs.action ?: 'filter'
             def propsStr = ""
             int propsSize = props.size() - 1
@@ -329,7 +376,7 @@ class FilterTagLib {
             if (attrs.filterPaneId) containerDivAttrs.id = attrs.filterPaneId
             if (attrs.filterPaneStyle) containerDivAttrs.style += attrs.filterPaneStyle
             if (attrs.filterPaneClass) containerDivAttrs['class'] += containerDivAttrs.filterPaneClass
-//            if (attrs.filterPaneTitle) filterPaneTitle = attrs.filterPaneTitle
+            //            if (attrs.filterPaneTitle) filterPaneTitle = attrs.filterPaneTitle
             if (attrs.filterFormName) filterFormName = attrs.filterFormName
             if (attrs.filterPaneAction) action = attrs.filterPaneAction
 
@@ -365,11 +412,11 @@ class FilterTagLib {
                         td(FilterUtils.makeCamelCasePretty(prop))
                         td('') {
                             formWriter << this.select(name: opName,
-                                    from: this.availableOpsByType[type],
-                                    keys: this.availableOpsByType[type],
-                                    valueMessagePrefix: 'fp.op', 
-                                    value: params[opName],
-                                    onclick: "filterOpChange('${opName}', '${filterControlAttrs['id']}');")
+                                from: this.availableOpsByType[type],
+                                keys: this.availableOpsByType[type],
+                                valueMessagePrefix: 'fp.op',
+                                value: params[opName],
+                                onclick: "filterOpChange('${opName}', '${filterControlAttrs['id']}');")
                         }
                         td('') {
                             formWriter << this.createFilterControl(filterControlAttrs, '', (params[opName] != "IsNull" && params[opName] != "IsNotNull"))
@@ -444,7 +491,7 @@ class FilterTagLib {
             if (!finalAttrs['id']) finalAttrs['id'] = finalAttrs['name']
 
             if (type == "String" || type == "char" || Number.class.isAssignableFrom(mp.type)
-                    || type == "int" || type == "long" || type == "double" || type == "float") {
+                || type == "int" || type == "long" || type == "double" || type == "float") {
                 if (attrs.values) {
                     def valueToken = attrs.valuesToken ? attrs.valuesToken : ' '
                     def valueList = (attrs.values instanceof List) ? attrs.values : attrs.values.tokenize(valueToken)
@@ -485,6 +532,15 @@ class FilterTagLib {
                 def valueToken = attrs.valuesToken ?: ' '
                 def valueList = attrs.values instanceof List ? attrs.values : attrs.values.tokenize(valueToken)
                 attrs.putAll([from: valueList, value: params[formPropName], onChange:"selectDefaultOperator('${opId}')"])
+                def valueMessagePrefix = "fp.property.text.${property.name}"
+                def valueMessageAltPrefix = "${property.domainClass.propertyName}.${property.name}"
+                def messageSource = grailsAttributes.getApplicationContext().getBean("messageSource")
+                def locale = org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)
+                if (messageSource.getMessage(valueMessagePrefix, null, null, locale) != null) {
+                 	attrs.valueMessagePrefix = valueMessagePrefix
+                } else if (messageSource.getMessage(valueMessageAltPrefix, null, null, locale) != null) {
+                 	attrs.valueMessagePrefix = valueMessageAltPrefix
+                }
                 out = this.select(attrs)
             } else {
                 attrs.onChange = "selectDefaultOperator('${opId}')"
@@ -511,7 +567,7 @@ class FilterTagLib {
     }
 
     private def buildPropertyRow(def bean, def property, def propertyNameKey, def attrs, def params) {
-        def fullPropName = property.name
+        def fullPropName = (property.domainClass == bean) ? property.name : propertyNameKey
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
         def type = FilterUtils.getOperatorMapKey(property.type)
@@ -529,16 +585,16 @@ class FilterTagLib {
         def opKeys = []; opKeys.addAll(this.availableOpsByType[type])
 
         // Remove all but = <> for enum properties
-//        if (property.type.isEnum()) {
-//            opKeys.clear()
-//            opKeys.addAll(this.availableOpsByType['enum'])
-//        }
+        //        if (property.type.isEnum()) {
+        //            opKeys.clear()
+        //            opKeys.addAll(this.availableOpsByType['enum'])
+        //        }
 
         // If The property is not nullable, no need to allow them to filter in is or is not null.
         def constrainedProperty = property.domainClass.constrainedProperties[property.name]
         if ((constrainedProperty && !constrainedProperty.isNullable()) || property.name == 'id') {
-//            opText.remove('is-not-null')
-//            opText.remove('is-null')
+            //            opText.remove('is-not-null')
+            //            opText.remove('is-null')
             opKeys.remove("IsNotNull")
             opKeys.remove("IsNull")
         }
@@ -556,26 +612,28 @@ class FilterTagLib {
 
         // If the values list is now specified, limit the operators to == or <>
         if (filterCtrlAttrs.values) {
-//            opText = ['', 'equal', 'not-equal']
+            //            opText = ['', 'equal', 'not-equal']
             opKeys = ['', 'Equal', 'NotEqual']
         }
 
         // Create the operator dropdown.
         def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
             value: params[opName], valueMessagePrefix:'fp.op',
-                onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
+            onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
         if (params[opName] == "IsNull" || params[opName] == "IsNotNull") {
             filterCtrlAttrs.style = 'display:none;'
         }
 
         // Take care of the name.
         def fieldNameKey = "fp.property.text.${propertyNameKey}"
+        def fieldNameAltKey = "${bean.propertyName}.${property.name}"
         def fieldName = property.naturalName
         if (property.domainClass != bean) { // association.
             fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
+            fieldNameAltKey = "${property.domainClass.propertyName}.${property.name}"
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
-        fieldName = g.message(code:fieldNameKey, default: fieldName)
+        fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:fieldName))
 
         def row = """\
     <tr>
