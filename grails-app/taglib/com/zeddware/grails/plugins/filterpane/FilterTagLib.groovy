@@ -70,8 +70,8 @@ class FilterTagLib {
      * @since 0.4
      */
     def includes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${createLinkTo(dir: pluginContextPath + '/css', file: 'filter.css')}\" />\n"
-        out << "<script type=\"text/javascript\" src=\"${createLinkTo(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${resource(dir: pluginContextPath + '/css', file: 'filter.css')}\" />\n"
+        out << "<script type=\"text/javascript\" src=\"${resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
     def isFiltered = { attrs, body ->
@@ -109,42 +109,50 @@ class FilterTagLib {
     }
 
     def currentCriteria = { attrs, body ->
-        def id = attrs.id ?: 'filterPaneCurrentCriteria'
-        def title = attrs.title ? "title=\"${attrs.title}\" " : ''
-        def clazz = attrs.class ? "class=\"${attrs.class}\" " : ''
-        def style = attrs.style ? "style=\"${attrs.style}\" " : ''
-        def dtFmt = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
-        def filterParams = FilterUtils.extractFilterParams(params)
-        def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
+        if (FilterUtils.isFilterApplied(params)) {
+            def id = attrs.id ?: 'filterPaneCurrentCriteria'
+            def title = attrs.title ? "title=\"${attrs.title}\" " : ''
+            def clazz = attrs.class ? "class=\"${attrs.class}\" " : ''
+            def style = attrs.style ? "style=\"${attrs.style}\" " : ''
+            def dtFmt = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
+            def filterParams = FilterUtils.extractFilterParams(params)
+            def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
+            def action = attrs.action ?: 'filter'
 
-        out << """<ul id="${id}" ${clazz}${style}${title}>"""
-        filterParams.each { key, filterOp ->
-            log.debug "key is ${key}, filterOp is ${filterOp}"
-            if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
-                def prop = key[10..-1]
-                def domainProp
-                if (prop.contains('.')) { // association.
-                    def parts = prop.split('\\.')
-                    domainProp = domainBean.getPropertyByName(parts[0])
-                    domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
-                } else {
-                    domainProp = domainBean.getPropertyByName(prop)
-                }
-                def filterVal = filterParams["filter.${prop}"]
-                if (filterVal == 'struct') {
-                    filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
-                    if (filterVal) {
-                        def dateFormat = dtFmt
-                        if (dtFmt instanceof Map) {
-                            dateFormat = dtFmt[prop]
-                        }
-                        filterVal = g.formatDate(format:dateFormat, date:filterVal)
+            out << """<ul id="${id}" ${clazz}${style}${title}>"""
+            filterParams.each { key, filterOp ->
+                log.debug "key is ${key}, filterOp is ${filterOp}"
+                if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
+                    def prop = key[10..-1]
+                    def domainProp
+                    if (prop.contains('.')) { // association.
+                        def parts = prop.split('\\.')
+                        domainProp = domainBean.getPropertyByName(parts[0])
+                        domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
+                    } else {
+                        domainProp = domainBean.getPropertyByName(prop)
                     }
+                    def filterVal = filterParams["filter.${prop}"]
+                    if (filterVal == 'struct') {
+                        filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+                        if (filterVal) {
+                            def dateFormat = dtFmt
+                            if (dtFmt instanceof Map) {
+                                dateFormat = dtFmt[prop]
+                            }
+                            filterVal = g.formatDate(format:dateFormat, date:filterVal)
+                        }
+                    }
+                    def newParams = [:]
+                    newParams.putAll(filterParams)
+                    newParams[key] = '' // <== This is what removes the criteria from the list.
+                    def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
+                    def removeLink = """<a href="${g.createLink(action:action,params:newParams)}">${removeText}</a>"""
+                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}" ${removeLink}</li>"""
                 }
-                out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"</li>"""
             }
+            out << "</ul>"
         }
-        out << "</ul>"
     }
 
     /**
