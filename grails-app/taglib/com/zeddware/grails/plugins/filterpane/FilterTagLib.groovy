@@ -59,7 +59,7 @@ class FilterTagLib {
      * @deprecated Use the "includes" tag instead, as it is more DRY. 
      */
     def filterPaneIncludes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${createLinkTo(dir: pluginContextPath + '/css', file: 'filter.css')}\" />\n"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${createLinkTo(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
         out << "<script type=\"text/javascript\" src=\"${createLinkTo(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
@@ -70,7 +70,7 @@ class FilterTagLib {
      * @since 0.4
      */
     def includes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${resource(dir: pluginContextPath + '/css', file: 'filter.css')}\" />\n"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
         out << "<script type=\"text/javascript\" src=\"${resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
@@ -147,7 +147,7 @@ class FilterTagLib {
                     newParams.putAll(filterParams)
                     newParams[key] = '' // <== This is what removes the criteria from the list.
                     def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
-                    def removeLink = """<a href="${g.createLink(action:action,params:newParams)}">${removeText}</a>"""
+                    def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
                     out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}" ${removeLink}</li>"""
                 }
             }
