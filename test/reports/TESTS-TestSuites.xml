@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="0" failures="0" hostname="stevekrenek" id="0" name="FilterTabLibTests" package="com.zeddware.grails.plugins.filterpane" tests="1" time="1.14" timestamp="2009-06-03T04:22:09">
+      <properties />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTabLibTests" name="testIncludes" time="0.328" />
+
+      <system-out><![CDATA[--Output from testIncludes--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testIncludes--
+]]></system-err>
+
+  </testsuite>
+</testsuites>
