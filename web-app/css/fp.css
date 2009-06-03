@@ -15,3 +15,7 @@
 .filterTable {
 	width: 100%;
 }
+
+a.remove img {
+    border:none;
+}
