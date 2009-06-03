@@ -12,6 +12,19 @@ This plugin adds automatic filtering capabilities to any Grails application's li
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/filterpane"
 
+    def pluginExcludes = [
+        'grails-app/domain/**/*.groovy',
+        'grails-app/i18n/messages-filterpane_es.properties',
+        'grails-app/controllers/**/*.groovy',
+        'grails-app/views/**/*.gsp',
+        'web-app/css/tree/**/*',
+        'web-app/css/main.css',
+        'web-app/images/**/*',
+        'web-app/js/prototype/**/*',
+        'web-app/js/application.js',
+        'web-app/**/*.gsp'
+    ]
+
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
     }
