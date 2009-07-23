@@ -56,10 +56,14 @@ class FilterUtils {
         def nest = propertyName.tokenize('.')
         MetaClass currMc = mc
         def mp = null
+        if (log.isDebugEnabled())
+            log.debug("Getting nested meta properties for mc ${mc} and prop ${propertyName}.  Nest is ${nest}")
         nest.each() {egg ->
             mp = currMc.getMetaProperty(egg)
+            log.debug("${egg} mp is ${mp}")
             if (mp != null) {
                 currMc = mp.type.getMetaClass()
+                //println "${egg} mp is ${mp}. type is ${mp.type.name} metaclass is ${mp.type.metaClass}"
             }
         }
         return mp
@@ -73,9 +77,9 @@ class FilterUtils {
             def hour = params["${paramProperty}_hour"]
             def minute = params["${paramProperty}_minute"]
 
-            if (log.isDebugEnabled()) {
-                log.debug("Parsing date from params: ${year} ${month} ${day} ${hour} ${minute}")
-            }
+//            if (log.isDebugEnabled()) {
+//                log.debug("Parsing date from params: ${year} ${month} ${day} ${hour} ${minute}")
+//            }
 
             String format = ''
             String value = ''

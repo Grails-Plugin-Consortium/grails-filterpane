@@ -63,9 +63,10 @@
             </div>
             <filterpane:filterPane domainBean="Book"
                                    additionalProperties="identifier"
-                                   associatedProperties="author.lastName,author.firstName"
+                                   associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName"
                                    excludeProperties="cost"
-                                   filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'month']]}"/>
+                                   filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'month'], bookType:[displayProperty:'display'], 'author.favoriteGenre':[displayProperty:'display']]}"
+                                   titleKey="fp.tag.filterPane.titleText"/>
         </div>
     </body>
 </html>

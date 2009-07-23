@@ -15,6 +15,7 @@ This plugin adds automatic filtering capabilities to any Grails application's li
     def pluginExcludes = [
         'grails-app/domain/**/*.groovy',
         'grails-app/i18n/messages-filterpane_es.properties',
+        'grails-app/i18n/messages.properties',
         'grails-app/controllers/**/*.groovy',
         'grails-app/views/**/*.gsp',
         'web-app/css/tree/**/*',

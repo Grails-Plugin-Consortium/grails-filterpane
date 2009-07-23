@@ -41,7 +41,7 @@ environments {
 // log4j configuration
 log4j = {
     appenders {
-        console name:'stdout', layout:pattern(conversionPattern: '[%r] %c %m%n')
+        console name:'stdout', layout:pattern(conversionPattern: '%-5p %c{1} %m%n')
 
     }
 

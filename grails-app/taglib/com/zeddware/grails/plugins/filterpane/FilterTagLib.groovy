@@ -15,8 +15,8 @@ class FilterTagLib {
                         'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
         date: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
                         'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-            'boolean': ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-            'enum': ['', 'Equal', 'NotEqual']
+        'boolean': ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
+        'enum': ['', 'Equal', 'NotEqual']
     ]
 
     /**
@@ -70,8 +70,8 @@ class FilterTagLib {
      * @since 0.4
      */
     def includes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
-        out << "<script type=\"text/javascript\" src=\"${resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
+        out << "<script type=\"text/javascript\" src=\"${g.resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
     def isFiltered = { attrs, body ->
@@ -143,12 +143,31 @@ class FilterTagLib {
                             filterVal = g.formatDate(format:dateFormat, date:filterVal)
                         }
                     }
+                    def filterValTo = null
+                    if ('between'.equalsIgnoreCase(filterOp)) {
+                        filterValTo = filterParams["filter.${prop}To"]
+                        if (filterValTo == 'struct') {
+                            filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
+                            if (filterValTo) {
+                                def dateFormat = dtFmt
+                                if (dtFmt instanceof Map) {
+                                    dateFormat = dtFmt[prop]
+                                }
+                                filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
+                            }
+                        }
+                    }
                     def newParams = [:]
                     newParams.putAll(filterParams)
                     newParams[key] = '' // <== This is what removes the criteria from the list.
                     def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
                     def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
-                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}" ${removeLink}</li>"""
+                    if (filterValTo) {
+                        filterValTo = " and \"${filterValTo}\""
+                    } else {
+                        filterValTo = ''
+                    }
+                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
                 }
             }
             out << "</ul>"
@@ -274,9 +293,11 @@ class FilterTagLib {
                     def refProperty = refDomain.persistentProperties.find { it.name == parts[1] }
                     if (refProperty) {
                         props[name] = refProperty
-                        associationNames[refProperty] = name
+                        if (!associationNames[refProperty])
+                            associationNames[refProperty] = []
+                        associationNames[refProperty] << name
                     } else
-                    log.error("Unable to find associated property for ${name}")
+                        log.error("Unable to find associated property for ${name}")
                 } else {
                     log.error("Unable to find associated domain class for ${parts[0]}")
                 }
@@ -318,7 +339,13 @@ class FilterTagLib {
   <input type="hidden" name="filterProperties" value="${propsStr}" />
   <table cellspacing="0" cellpadding="0" class="filterTable">
 """
-            sortedProperties.each { output += this.buildPropertyRow(bean, it, associationNames[it], attrs, params) }
+            sortedProperties.each {
+                def assocName = associationNames[it]
+                if (assocName) {
+                    assocName = assocName.remove(0)
+                }
+                output += this.buildPropertyRow(bean, it, assocName, attrs, params)
+            }
             output += """\
   </table>
   <div>
@@ -365,7 +392,7 @@ class FilterTagLib {
      * @deprecated Consider using the <code>filterPane</code> tag instead.
      */
     private def filterPaneLegacy (attrs, body) {
-        println "in legacy filterpane.  out is ${out}"
+        //println "in legacy filterpane.  out is ${out}"
         def markup = new groovy.xml.MarkupBuilder(out)
         def formWriter = new StringWriter()
         def formBuilder = new groovy.xml.MarkupBuilder(formWriter)
@@ -534,14 +561,41 @@ class FilterTagLib {
     private def createFilterControl(def property, def formPropName, def attrs, def params, def opId) {
         def type = property.type
         def out = ""
-        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) || type == int.class || type == long.class || type == double.class || type == float.class || type.isEnum()) {
-
+        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) 
+                || type == int.class || type == long.class || type == double.class
+                || type == float.class || type.isEnum()) {
+                
             if (attrs.values) {
-                def valueToken = attrs.valuesToken ?: ' '
-                def valueList = attrs.values instanceof List ? attrs.values : attrs.values.tokenize(valueToken)
+                def valueList
+
+                if (type.isEnum() && attrs.displayProperty) {
+                    valueList = []
+                    type.enumConstants.each {
+                        def value = it
+//                        if (attrs.valueProperty) {
+//                            if (attrs.valueProperty == 'ordinal') {
+//                                value = it.ordinal()
+//                            } else {
+//                                value = it[attrs.valueProperty]
+//                            }
+//                        }
+                        // the name property of an enum does not conform to the bean spec.  The method is just "name()"
+                        def display = attrs.displayProperty == 'name' ? it.name() : it[attrs.displayProperty]
+                        valueList << [id:value, name:display]
+                    }
+
+                    attrs.optionKey = 'id'
+                    attrs.optionValue = 'name'
+                } else {
+                    def valueToken = attrs.valuesToken ?: ' '
+                    valueList = attrs.values instanceof List ? attrs.values : attrs.values.tokenize(valueToken)
+                }
+
                 attrs.putAll([from: valueList, value: params[formPropName], onChange:"selectDefaultOperator('${opId}')"])
+
                 def valueMessagePrefix = "fp.property.text.${property.name}"
                 def valueMessageAltPrefix = "${property.domainClass.propertyName}.${property.name}"
+
                 def messageSource = grailsAttributes.getApplicationContext().getBean("messageSource")
                 def locale = org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)
                 if (messageSource.getMessage(valueMessagePrefix, null, null, locale) != null) {
@@ -579,6 +633,7 @@ class FilterTagLib {
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
         def type = FilterUtils.getOperatorMapKey(property.type)
+        if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
 
         def filterCtrlAttrs = [name: paramName, value: params[paramName]]
         if (attrs.filterPropertyValues && attrs.filterPropertyValues[property.name]) {
@@ -620,7 +675,6 @@ class FilterTagLib {
 
         // If the values list is now specified, limit the operators to == or <>
         if (filterCtrlAttrs.values) {
-            //            opText = ['', 'equal', 'not-equal']
             opKeys = ['', 'Equal', 'NotEqual']
         }
 
@@ -633,16 +687,23 @@ class FilterTagLib {
         }
 
         // Take care of the name.
-        def fieldNameKey = "fp.property.text.${propertyNameKey}"
-        def fieldNameAltKey = "${bean.propertyName}.${property.name}"
+        def fieldNameKey = "fp.property.text.${fullPropName}" // Default.
+        def fieldNameAltKey = fieldNameKey // default for alt key.
+        def fieldNamei18NTemplateKey = "${bean.propertyName}.${property.name}"
         def fieldName = property.naturalName
+
         if (property.domainClass != bean) { // association.
-            fieldNameKey = "fp.property.text.${property.domainClass.name}.${property.name}"
-            fieldNameAltKey = "${property.domainClass.propertyName}.${property.name}"
+            fieldNameKey = "fp.property.text.${property.domainClass.propertyName}.${property.name}"
+            fieldNamei18NTemplateKey = "${property.domainClass.propertyName}.${property.name}"
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
-        fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:fieldName))
-
+        fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
+        if (log.isDebugEnabled()) {
+            log.debug("fieldNameKey is ${fieldNameKey}")
+            log.debug("fieldNameAltKey is ${fieldNameAltKey}")
+            log.debug("fieldNamei18NTemplateKey is ${fieldNamei18NTemplateKey}")
+            log.debug("fieldName is ${fieldName}")
+        }
         def row = """\
     <tr>
       <td>${fieldName}</td>
