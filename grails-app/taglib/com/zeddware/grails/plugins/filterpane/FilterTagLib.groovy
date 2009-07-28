@@ -636,8 +636,11 @@ class FilterTagLib {
         if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
 
         def filterCtrlAttrs = [name: paramName, value: params[paramName]]
-        if (attrs.filterPropertyValues && attrs.filterPropertyValues[property.name]) {
-            filterCtrlAttrs.putAll(attrs.filterPropertyValues[property.name])
+        if (attrs.filterPropertyValues && (attrs.filterPropertyValues[property.name] || attrs.filterPropertyValues[propertyNameKey])) {
+            if (attrs.filterPropertyValues[property.name])
+                filterCtrlAttrs.putAll(attrs.filterPropertyValues[property.name])
+            if (attrs.filterPropertyValues[propertyNameKey])
+                filterCtrlAttrs.putAll(attrs.filterPropertyValues[propertyNameKey])
         }
         if (!filterCtrlAttrs.id) {
             filterCtrlAttrs.id = property.name
