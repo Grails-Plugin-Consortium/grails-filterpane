@@ -1,0 +1,5 @@
+TODO:
+* Document enum support in available ops by type. (=, <>)
+* Document paginate tag.
+* Document GRAILSPLUGINS-1203 additions (i18n-template format support)
+* Document currentCriteria tag.

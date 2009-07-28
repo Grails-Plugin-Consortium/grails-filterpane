@@ -26,7 +26,10 @@ class FilterService {
                 and {
                     // First pull out the op map and store a list of its keys.
                     def keyList = []
-                    keyList.addAll(filterOpParams.keySet())
+                    keyList.addAll(filterOpParams.keySet())//.findAll{
+//                        log.debug("Finding valid ops: ${it.key} = ${it.value}")
+//                        return it.value instanceof String
+//                    }.keySet())
                     keyList = keyList.sort() // Sort them to get nested properties next to each other.
                     if (log.isDebugEnabled()) log.debug("op Keys = ${keyList}")
     				
@@ -51,8 +54,12 @@ class FilterService {
                                             def realOp = opEntry.value
                                             def realRawValue = rawValue[realPropName]
                                             def realRawValue2 = rawValue2 != null ? rawValue2["${realPropName}To"] : null
-                                            def val = this.parseValue(realPropName, realPropName, realRawValue, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
-                                            def val2 = this.parseValue(realPropName, "${realPropName}To", realRawValue2, mc.getMetaProperty(propName).type.getMetaClass(), filterParams)
+                                            //log.debug("real prop name is ${realPropName}")
+                                            //log.debug("mc is ${mc} name ${mc.name}");
+                                            //log.debug("mp is ${mc.getMetaProperty(propName)} and its type is ${mc.getMetaProperty(propName).type.name}")
+                                            def thisMc = mc.theClass.getDeclaredField(propName).type.getMetaClass()
+                                            def val = this.parseValue(realPropName, realPropName, realRawValue, thisMc, filterParams)
+                                            def val2 = this.parseValue(realPropName, "${realPropName}To", realRawValue2, thisMc, filterParams)
                                             this.addCriterion(c, realPropName, realOp, val, val2)
                                         }
                                         if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
@@ -67,7 +74,7 @@ class FilterService {
                             } else {
                             	def val = this.parseValue(propName, propName, rawValue, mc, filterParams)
                                 def val2 = this.parseValue(propName, "${propName}To", rawValue2, mc, filterParams)
-                                if (log.isDebugEnabled()) log.debug("==  val2 is ${val2} of type ${val2?.class}")
+                                if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
                                 this.addCriterion(c, propName, filterOp, val, val2)
                             }
                         }
@@ -182,9 +189,18 @@ class FilterService {
     
     def parseValue(def prop, def paramName, def rawValue, MetaClass mc, def params) {
     	def mp = FilterUtils.getNestedMetaProperty(mc, prop)
+        //log.debug("prop is ${prop}")
+        //log.debug("mc is ${mc}, mc class is ${mc.theClass.name}")
+        //log.debug("mp is ${mp}, name is ${mp.name} and type is ${mp.type} and is enum is ${mp.type.isEnum()}")
     	def val = rawValue
+        //log.debug("cls is ${cls}")
+
         if (val) {
-            if (mp.type.getSimpleName().equalsIgnoreCase("boolean")) {
+            Class cls = mc.theClass.getDeclaredField(prop).type
+            if (cls.isEnum()) {
+                val = Enum.valueOf(cls, val.toString())
+                //println "val is ${val} and raw val is ${rawValue}"
+            } else if (mp.type.getSimpleName().equalsIgnoreCase("boolean")) {
                 val = val.toBoolean()
             } else if (mp.type == Integer || mp.type == int) {
                 val = val.toInteger()

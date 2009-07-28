@@ -1,5 +1,7 @@
 Countries with known users:
-US
-Spain
-China
-Switzerland
+* US
+* Spain
+* China
+* Switzerland
+* Germany
+* Brazil
