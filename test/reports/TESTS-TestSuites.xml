@@ -1,14 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuites>
-  <testsuite errors="0" failures="0" hostname="stevekrenek" id="0" name="FilterTabLibTests" package="com.zeddware.grails.plugins.filterpane" tests="1" time="1.14" timestamp="2009-06-03T04:22:09">
+  <testsuite errors="1" failures="0" hostname="SteveKrenek" id="0" name="FilterServiceTests" package="com.zeddware.grails.plugins.filterpane" tests="1" time="0.135" timestamp="2009-06-21T02:05:02">
       <properties />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTabLibTests" name="testIncludes" time="0.328" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testFilterBooksNoCount" time="0.091">
+          <error message="No such property: Book for class: com.zeddware.grails.plugins.filterpane.FilterServiceTests" type="groovy.lang.MissingPropertyException">groovy.lang.MissingPropertyException: No such property: Book for class: com.zeddware.grails.plugins.filterpane.FilterServiceTests
+	at com.zeddware.grails.plugins.filterpane.FilterServiceTests.testFilterBooksNoCount(FilterServiceTests.groovy:24)
+	at _GrailsTest_groovy$_run_closure4.doCall(_GrailsTest_groovy:203)
+	at _GrailsTest_groovy$_run_closure4.call(_GrailsTest_groovy)
+	at _GrailsTest_groovy$_run_closure2.doCall(_GrailsTest_groovy:147)
+	at _GrailsTest_groovy$_run_closure1_closure19.doCall(_GrailsTest_groovy:113)
+	at _GrailsTest_groovy$_run_closure1.doCall(_GrailsTest_groovy:96)
+	at TestApp$_run_closure1.doCall(TestApp.groovy:66)
+	at gant.Gant$_dispatch_closure4.doCall(Gant.groovy:324)
+	at gant.Gant$_dispatch_closure6.doCall(Gant.groovy:334)
+	at gant.Gant$_dispatch_closure6.doCall(Gant.groovy)
+	at gant.Gant.withBuildListeners(Gant.groovy:344)
+	at gant.Gant.this$2$withBuildListeners(Gant.groovy)
+	at gant.Gant$this$2$withBuildListeners.callCurrent(Unknown Source)
+	at gant.Gant.dispatch(Gant.groovy:334)
+	at gant.Gant.this$2$dispatch(Gant.groovy)
+	at gant.Gant.invokeMethod(Gant.groovy)
+	at gant.Gant.processTargets(Gant.groovy:495)
+	at gant.Gant.processTargets(Gant.groovy:480)
+</error>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testFilterBooksNoCount--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testFilterBooksNoCount--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="SteveKrenek" id="1" name="FilterTagLibTests" package="com.zeddware.grails.plugins.filterpane" tests="5" time="0.579" timestamp="2009-06-21T02:05:02">
+      <properties />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIncludes" time="0.211" />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredNoOutput" time="0.1" />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredWithOutput" time="0.085" />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredNoOutput" time="0.088" />
+
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredWithOutput" time="0.083" />
 
       <system-out><![CDATA[--Output from testIncludes--
+out is '<link rel="stylesheet" type="text/css" href="/css/fp.css" />
+<script type="text/javascript" src="/js/filter.js"></script>'
+--Output from testIsFilteredNoOutput--
+out is ''
+--Output from testIsFilteredWithOutput--
+out is 'testing'
+--Output from testIsNotFilteredNoOutput--
+out is ''
+--Output from testIsNotFilteredWithOutput--
+out is 'testing'
 ]]></system-out>
 
       <system-err><![CDATA[--Output from testIncludes--
+--Output from testIsFilteredNoOutput--
+--Output from testIsFilteredWithOutput--
+--Output from testIsNotFilteredNoOutput--
+--Output from testIsNotFilteredWithOutput--
 ]]></system-err>
 
   </testsuite>
