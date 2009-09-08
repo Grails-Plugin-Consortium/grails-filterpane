@@ -175,4 +175,15 @@ class FilterUtils {
         }
         return null
     }
+
+    static def resolveDomainProperty(def grailsApplication, def domainClass, def property) {
+
+        if ("id".equals(property) || "identifier".equals(property))
+            return domainClass.identifier
+
+        def thisDomainProp = domainClass.persistentProperties.find {
+            it.name == property
+        }
+        return thisDomainProp
+    }
 }
