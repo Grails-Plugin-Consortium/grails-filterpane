@@ -1,3 +1,5 @@
+import com.zeddware.grails.plugins.filterpane.*
+
 class BootStrap {
 
     def init = { servletContext ->
