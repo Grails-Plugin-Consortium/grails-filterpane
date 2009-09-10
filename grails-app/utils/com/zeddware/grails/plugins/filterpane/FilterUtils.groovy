@@ -166,7 +166,7 @@ class FilterUtils {
         }
         String beanName = null
         if (bean instanceof Class) {
-            beanName = bean.simpleName
+            beanName = bean.name
         } else if(bean instanceof String) {
             beanName = bean
         }
