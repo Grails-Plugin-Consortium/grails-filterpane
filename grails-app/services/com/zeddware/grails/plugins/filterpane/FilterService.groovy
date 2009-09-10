@@ -14,14 +14,14 @@ class FilterService {
     }
 
     private def filter(def params, Class filterClass, boolean doCount) {
-    	if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
-    	def filterProperties = params?.filterProperties?.tokenize(',')
+        if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
+    	//def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
         def filterOpParams = filterParams.op
         def associationList = []
         def domainClass = FilterUtils.resolveDomainClass(grailsApplication, filterClass)
 
-        if (filterProperties != null) {
+        //if (filterProperties != null) {
 
             def c = filterClass.createCriteria()
 
@@ -132,12 +132,12 @@ class FilterService {
                 results = 0I
             }
             return results
-    	} else {
-            if (doCount) {
-                return 0I
-            }
-            return filterClass.list(params)
-    	}
+//    	} else {
+//            if (doCount) {
+//                return 0I
+//            }
+//            return filterClass.list(params)
+//    	}
     }
     
     private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
