@@ -12,10 +12,10 @@
     <resource>UrlMappings</resource>
     <resource>AuthorController</resource>
     <resource>BookController</resource>
-    <resource>Author</resource>
-    <resource>Book</resource>
-    <resource>BookType</resource>
-    <resource>FavoriteGenre</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Author</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Book</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.BookType</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.FavoriteGenre</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterService</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterTagLib</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterUtils</resource>
