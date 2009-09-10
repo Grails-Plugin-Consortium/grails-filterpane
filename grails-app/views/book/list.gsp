@@ -19,7 +19,7 @@
             <g:if test="${flash.message}">
                 <div class="message">${flash.message}</div>
             </g:if>
-            <filterpane:currentCriteria domainBean="Book" dateFormat="${[title:'MM/dd/yyyy',releaseDate:'MMM dd, yyyy']}"
+            <filterpane:currentCriteria domainBean="com.zeddware.grails.plugins.filterpane.Book" dateFormat="${[title:'MM/dd/yyyy',releaseDate:'MMM dd, yyyy']}"
                 removeImgDir="images" removeImgFile="bullet_delete.png" />
             <div class="list">
                 <table>
@@ -61,7 +61,7 @@
                 <filterpane:isNotFiltered>Pure and Unfiltered!</filterpane:isNotFiltered>
                 <filterpane:isFiltered>Filter Applied!</filterpane:isFiltered>
             </div>
-            <filterpane:filterPane domainBean="Book"
+            <filterpane:filterPane domainBean="com.zeddware.grails.plugins.filterpane.Book"
                                    additionalProperties="identifier"
                                    associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName"
                                    excludeProperties="cost"
