@@ -1,3 +1,4 @@
+package com.zeddware.grails.plugins.filterpane
 enum FavoriteGenre {
     SciFi('Science Fiction'), Fantasy(), Romance(), Mystery(), Fiction(), Reference(), Satire();
 

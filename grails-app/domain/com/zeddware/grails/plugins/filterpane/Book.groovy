@@ -1,3 +1,4 @@
+package com.zeddware.grails.plugins.filterpane
 class Book {
     Author author
     Author coAuthor

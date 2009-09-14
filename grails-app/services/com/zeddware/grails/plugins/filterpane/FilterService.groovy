@@ -3,6 +3,7 @@ package com.zeddware.grails.plugins.filterpane
 class FilterService {
 
     boolean transactional = true
+    def grailsApplication
     
     def filter(def params, Class filterClass) {
         return filter(params, filterClass, false)
@@ -13,24 +14,25 @@ class FilterService {
     }
 
     private def filter(def params, Class filterClass, boolean doCount) {
-    	if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
-    	def filterProperties = params?.filterProperties?.tokenize(',')
+        if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
+    	//def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
         def filterOpParams = filterParams.op
         def associationList = []
+        def domainClass = FilterUtils.resolveDomainClass(grailsApplication, filterClass)
 
-        if (filterProperties) {
+        //if (filterProperties != null) {
+
             def c = filterClass.createCriteria()
+
             def criteriaClosure = {
                 def mc = filterClass.getMetaClass()
                 and {
                     // First pull out the op map and store a list of its keys.
                     def keyList = []
-                    keyList.addAll(filterOpParams.keySet())//.findAll{
-//                        log.debug("Finding valid ops: ${it.key} = ${it.value}")
-//                        return it.value instanceof String
-//                    }.keySet())
+                    keyList.addAll(filterOpParams.keySet())
                     keyList = keyList.sort() // Sort them to get nested properties next to each other.
+
                     if (log.isDebugEnabled()) log.debug("op Keys = ${keyList}")
     				
                     // op = map entry.  op.key = property name.  op.value = operator.
@@ -38,28 +40,37 @@ class FilterService {
                     keyList.each() { propName ->
                     	if (log.isDebugEnabled()) log.debug("\n=============================================================================.")
                     	if (log.isDebugEnabled()) log.debug("== ${propName}")
-                        if (! propName.contains(".")) {// Skip associated property entries.  We'll use the map instead later.
+
+                        // Skip associated property entries.  (They'll have a dot in them.)  We'll use the map instead later.
+                        if (! propName.contains(".")) {
                             
                             def filterOp = filterOpParams[propName]
                             def rawValue = filterParams[propName]
                             def rawValue2 = filterParams["${propName}To"]
-			    			
+
+                            // If the filterOp is a Map, then the propName is an association (e.g. Book.author)
                             if (filterOp instanceof Map && rawValue instanceof Map) {
+
                                 // Are any of the values non-empty?
                                 if (filterOp.values().find {it.length() > 0} != null) {
+
                                     if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
+
                                     c."${propName}"() {
+
                                         filterOp.each() { opEntry ->
+                                            def associatedDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+                                            def associatedDomainClass = associatedDomainProp.referencedDomainClass
                                             def realPropName = opEntry.key
                                             def realOp = opEntry.value
                                             def realRawValue = rawValue[realPropName]
                                             def realRawValue2 = rawValue2 != null ? rawValue2["${realPropName}To"] : null
-                                            //log.debug("real prop name is ${realPropName}")
-                                            //log.debug("mc is ${mc} name ${mc.name}");
-                                            //log.debug("mp is ${mc.getMetaProperty(propName)} and its type is ${mc.getMetaProperty(propName).type.name}")
-                                            def thisMc = mc.theClass.getDeclaredField(propName).type.getMetaClass()
-                                            def val = this.parseValue(realPropName, realPropName, realRawValue, thisMc, filterParams)
-                                            def val2 = this.parseValue(realPropName, "${realPropName}To", realRawValue2, thisMc, filterParams)
+                                            def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, associatedDomainClass, realPropName)
+//                                            log.debug("real prop name is ${realPropName}")
+                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams)
+                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams)
+//                                            log.debug("val is ${val} and val2 is ${val2}")
+
                                             this.addCriterion(c, realPropName, realOp, val, val2)
                                         }
                                         if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
@@ -69,11 +80,13 @@ class FilterService {
                                                 order(parts[1], params.order ?: 'asc')
                                             }
                                         }
-                                    }
-                                }
+                                    } // end c.propName closure.
+                                } // end if any values not empty.
                             } else {
-                            	def val = this.parseValue(propName, propName, rawValue, mc, filterParams)
-                                def val2 = this.parseValue(propName, "${propName}To", rawValue2, mc, filterParams)
+                                log.debug("propName is ${propName}")
+                                def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams)
+                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams)
                                 if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
                                 this.addCriterion(c, propName, filterOp, val, val2)
                             }
@@ -119,12 +132,12 @@ class FilterService {
                 results = 0I
             }
             return results
-    	} else {
-            if (doCount) {
-                return 0I
-            }
-            return filterClass.list(params)
-    	}
+//    	} else {
+//            if (doCount) {
+//                return 0I
+//            }
+//            return filterClass.list(params)
+//    	}
     }
     
     private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
@@ -186,41 +199,35 @@ class FilterService {
         } // end op switch
     	//println "== addCriterion OUT =="
     }
-    
-    def parseValue(def prop, def paramName, def rawValue, MetaClass mc, def params) {
-    	def mp = FilterUtils.getNestedMetaProperty(mc, prop)
-        //log.debug("prop is ${prop}")
-        //log.debug("mc is ${mc}, mc class is ${mc.theClass.name}")
-        //log.debug("mp is ${mp}, name is ${mp.name} and type is ${mp.type} and is enum is ${mp.type.isEnum()}")
-    	def val = rawValue
-        //log.debug("cls is ${cls}")
 
+    def parseValue(def domainProperty, def val, def params) {
         if (val) {
-            Class cls = mc.theClass.getDeclaredField(prop).type
+            Class cls = domainProperty.referencedPropertyType
+            String clsName = cls.simpleName.toLowerCase()
+            //log.debug("domainProperty is ${domainProperty}, val is ${val}, clsName is ${clsName}")
+
             if (cls.isEnum()) {
                 val = Enum.valueOf(cls, val.toString())
-                //println "val is ${val} and raw val is ${rawValue}"
-            } else if (mp.type.getSimpleName().equalsIgnoreCase("boolean")) {
+            } else if ("boolean".equals(clsName)) {
                 val = val.toBoolean()
-            } else if (mp.type == Integer || mp.type == int) {
+            } else if ("int".equals(clsName) || "integer".equals(clsName)) {
                 val = val.toInteger()
-            } else if (mp.type == Long || mp.type == long) {
+            } else if ("long".equals(clsName)) {
                 val = val.toLong()
-            } else if (mp.type == Double || mp.type == double) {
+            } else if ("double".equals(clsName)) {
                 val = val.toDouble()
-            } else if (mp.type == Float || mp.type == float) {
+            } else if ("float".equals(clsName)) {
                 val = val.toFloat()
-            } else if (mp.type == Short || mp.type == short) {
+            } else if ("short".equals(clsName)) {
                 val = val.toShort()
-            } else if (mp.type == BigDecimal) {
+            } else if ("bigdecimal".equals(clsName)) {
                 val = val.toBigDecimal()
-            } else if (mp.type == BigInteger) {
+            } else if ("biginteger".equals(clsName)) {
                 val = val.toBigInteger()
-            } else if (java.util.Date.isAssignableFrom(mp.type)) {
-                val = FilterUtils.parseDateFromDatePickerParams(paramName, params)
+            } else if (java.util.Date.isAssignableFrom(cls)) {
+                val = FilterUtils.parseDateFromDatePickerParams(domainProperty.name, params)
             }
         }
-    	//println "== Parsing value ${rawValue} from param ${paramName}. type is ${mp.type}.  Final value ${val}. Type ${val?.class}"
-    	return val
+        return val
     }
 }

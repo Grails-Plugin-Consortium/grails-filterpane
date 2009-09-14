@@ -1,4 +1,4 @@
-            
+import com.zeddware.grails.plugins.filterpane.*            
 class BookController {
     
     def filterService

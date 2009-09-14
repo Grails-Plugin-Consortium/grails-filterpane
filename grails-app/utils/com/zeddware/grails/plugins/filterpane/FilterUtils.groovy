@@ -166,7 +166,7 @@ class FilterUtils {
         }
         String beanName = null
         if (bean instanceof Class) {
-            beanName = bean.simpleName
+            beanName = bean.name
         } else if(bean instanceof String) {
             beanName = bean
         }
@@ -174,5 +174,16 @@ class FilterUtils {
             return grailsApplication.getDomainClass(beanName)
         }
         return null
+    }
+
+    static def resolveDomainProperty(def grailsApplication, def domainClass, def property) {
+
+        if ("id".equals(property) || "identifier".equals(property))
+            return domainClass.identifier
+
+        def thisDomainProp = domainClass.persistentProperties.find {
+            it.name == property
+        }
+        return thisDomainProp
     }
 }

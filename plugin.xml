@@ -1,4 +1,4 @@
-<plugin name='filterpane' version='0.6.1' grailsVersion='1.1.1 &gt; *'>
+<plugin name='filterpane' version='0.6.2' grailsVersion='1.1.1 &gt; *'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
@@ -12,10 +12,10 @@
     <resource>UrlMappings</resource>
     <resource>AuthorController</resource>
     <resource>BookController</resource>
-    <resource>Author</resource>
-    <resource>Book</resource>
-    <resource>BookType</resource>
-    <resource>FavoriteGenre</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Author</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Book</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.BookType</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.FavoriteGenre</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterService</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterTagLib</resource>
     <resource>com.zeddware.grails.plugins.filterpane.FilterUtils</resource>

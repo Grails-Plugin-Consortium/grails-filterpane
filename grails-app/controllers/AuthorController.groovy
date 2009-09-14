@@ -1,5 +1,7 @@
-            
+import com.zeddware.grails.plugins.filterpane.*        
 class AuthorController {
+
+    def filterService
     
     def index = { redirect(action:list,params:params) }
 
@@ -9,6 +11,11 @@ class AuthorController {
     def list = {
         if(!params.max) params.max = 10
         [ authorList: Author.list( params ) ]
+    }
+
+    def filter = {
+        if(!params.max) params.max = 10
+        render( view:'list', model:[ authorList: filterService.filter( params, Author ), authorCount: filterService.count( params, Author ), filterParams: com.zeddware.grails.plugins.filterpane.FilterUtils.extractFilterParams(params), params:params ] )
     }
 
     def show = {

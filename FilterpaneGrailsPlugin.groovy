@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = '0.6.1'
+    def version = '0.6.2'
     def dependsOn = [:]
 
     def author = "Steve Krenek"
@@ -23,7 +23,8 @@ This plugin adds automatic filtering capabilities to any Grails application's li
         'web-app/images/**/*',
         'web-app/js/prototype/**/*',
         'web-app/js/application.js',
-        'web-app/**/*.gsp'
+        'web-app/**/*.gsp',
+        'docs/**/*'
     ]
 
     def doWithSpring = {

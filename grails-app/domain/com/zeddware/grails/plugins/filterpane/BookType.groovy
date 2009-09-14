@@ -1,3 +1,4 @@
+package com.zeddware.grails.plugins.filterpane
 /**
  *
  * @author steve.krenek

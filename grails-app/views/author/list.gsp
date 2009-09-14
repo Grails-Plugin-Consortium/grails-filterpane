@@ -5,6 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
         <title>Author List</title>
+        <filterpane:includes />
     </head>
     <body>
         <div class="nav">
@@ -21,11 +22,11 @@
                     <thead>
                         <tr>
                         
-                   	        <g:sortableColumn property="id" title="Id" />
+                   	        <g:sortableColumn property="id" title="Id" params="${filterParams}" />
                         
-                   	        <g:sortableColumn property="firstName" title="First Name" />
+                   	        <g:sortableColumn property="firstName" title="First Name" params="${filterParams}" />
                         
-                   	        <g:sortableColumn property="lastName" title="Last Name" />
+                   	        <g:sortableColumn property="lastName" title="Last Name" params="${filterParams}" />
                         
                         </tr>
                     </thead>
@@ -45,8 +46,14 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <g:paginate total="${Author.count()}" />
+                <filterpane:paginate total="${authorCount}" domainBean="Author" />
+                <filterpane:filterButton textKey="fp.tag.filterButton.text" appliedTextKey="fp.tag.filterButton.appliedText" text="Filter Me" appliedText="Change Filter" />
+                <filterpane:isNotFiltered>Pure and Unfiltered!</filterpane:isNotFiltered>
+                <filterpane:isFiltered>Filter Applied!</filterpane:isFiltered>
             </div>
+            <filterpane:filterPane domainBean="Author"
+                                   associatedProperties="books.title, books.bookType"
+                                   titleKey="fp.tag.filterPane.titleText"/>
         </div>
     </body>
 </html>
