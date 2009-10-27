@@ -48,4 +48,10 @@ class FilterServiceTests extends GrailsUnitTestCase {
         params.filter.author = [lastName:'Lewis']
         assertEquals('association filter failed.', 'Clive', filterService.filter(params, Book.class)[0].author.firstName)
     }
+
+	void testEmptyParams() {
+		params = [:]
+		int count = Book.count()
+		assertEquals('empty params test failed.', count, filterService.filter(params, Book.class).size())
+	}
 }
