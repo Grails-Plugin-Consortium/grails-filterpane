@@ -22,6 +22,7 @@ class FilterService {
         def domainClass = FilterUtils.resolveDomainClass(grailsApplication, filterClass)
 
         //if (filterProperties != null) {
+		if (filterOpParams != null && filterOpParams.size() > 0) {
 
             def c = filterClass.createCriteria()
 
@@ -132,12 +133,12 @@ class FilterService {
                 results = 0I
             }
             return results
-//    	} else {
-//            if (doCount) {
-//                return 0I
-//            }
-//            return filterClass.list(params)
-//    	}
+    	} else {
+            if (doCount) {
+                return filterClass.count()//0I
+            }
+            return filterClass.list(params)
+    	}
     }
     
     private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
