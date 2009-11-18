@@ -18,6 +18,12 @@ class AuthorController {
         render( view:'list', model:[ authorList: filterService.filter( params, Author ), authorCount: filterService.count( params, Author ), filterParams: com.zeddware.grails.plugins.filterpane.FilterUtils.extractFilterParams(params), params:params ] )
     }
 
+	def filterCustomForm = {
+		log.debug('Doing custom form filter.')
+		if(!params.max) params.max = 10
+        render( view:'list', model:[ authorList: filterService.filter( params, Author ), authorCount: filterService.count( params, Author ), filterParams: com.zeddware.grails.plugins.filterpane.FilterUtils.extractFilterParams(params), params:params ] )
+	}
+
     def show = {
         def author = Author.get( params.id )
 

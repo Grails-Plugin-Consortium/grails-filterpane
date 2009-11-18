@@ -31,10 +31,12 @@ function clearFilterPane(id) {
 	
 	for (var i = 0; i < form.elements.length; i++) {
 		var el = form.elements[i]
-		if (el.type == 'select-one') {
-			el.selectedIndex = 0
-		} else if (el.type == 'text' || el.type == 'textarea') { 
-			form.elements[i].value = ''
+		if (el.name.indexOf('filter.') == 0) {
+			if (el.type == 'select-one') {
+				el.selectedIndex = 0
+			} else if (el.type == 'text' || el.type == 'textarea') {
+				form.elements[i].value = ''
+			}
 		}
 	}
 }
