@@ -330,12 +330,26 @@ class FilterTagLib {
                 sortKeys << (props.find { sp == it.value })?.key
             }
 
+			// Added for 0.6.4 as a new attribute to the tag.
+			boolean customForm = "true".equals(attrs.customForm) || attrs.customForm == true
+			def openFormTag = ''
+			def closeFormTag = ''
+			def applyButton = ''
+			if (customForm == false) {
+				openFormTag = """<form id="${formName}" name="${formName}" action="${action}" method="post">"""
+				closeFormTag = '</form>'
+				applyButton = """<span class="button">
+        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
+      </span>"""
+			}
+			
+
             def output = """\
 <div id="${containerId}"
      class="filterPane ${containerClass ?: ''}"
      style="display:none;${containerStyle}">
   <h2>${title}</h2>
-  <form id="${formName}" name="${formName}" action="${action}" method="post">
+  ${openFormTag}
   <input type="hidden" name="filterProperties" value="${propsStr}" />
   <table cellspacing="0" cellpadding="0" class="filterTable">
 """
@@ -365,13 +379,11 @@ class FilterTagLib {
         <input type="button" value="${g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel')}" onclick="return hideElement('${containerId}');" />
       </span>
       <span class="button">
-        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear')}" onclick="return clearFilterPane('filterForm');" />
+        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear')}" onclick="return clearFilterPane('${formName}');" />
       </span>
-      <span class="button">
-        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
-      </span>
+      ${applyButton}
   </div>
-  </form>
+  ${closeFormTag}
 </div>
       """
             out << output

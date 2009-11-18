@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuites>
-  <testsuite errors="0" failures="0" hostname="SteveKrenek.local" id="0" name="FilterServiceTests" package="com.zeddware.grails.plugins.filterpane" tests="6" time="0.406" timestamp="2009-10-27T14:16:00">
+  <testsuite errors="0" failures="0" hostname="stevekrenek" id="0" name="FilterServiceTests" package="com.zeddware.grails.plugins.filterpane" tests="6" time="0.453" timestamp="2009-11-18T06:08:15">
       <properties />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testFilterBooksNoCount" time="0.139" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testFilterBooksNoCount" time="0.223" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testFilterCount" time="0.035" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testFilterCount" time="0.019" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testIdFilter" time="0.096" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testIdFilter" time="0.065" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testAssociatedCollectionFilter" time="0.035" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testAssociatedCollectionFilter" time="0.033" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testAssociationFilter" time="0.017" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testAssociationFilter" time="0.019" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testEmptyParams" time="0.036" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterServiceTests" name="testEmptyParams" time="0.034" />
 
       <system-out><![CDATA[--Output from testFilterBooksNoCount--
 --Output from testFilterCount--
@@ -32,18 +32,18 @@
 ]]></system-err>
 
   </testsuite>
-  <testsuite errors="0" failures="0" hostname="SteveKrenek.local" id="1" name="FilterTagLibTests" package="com.zeddware.grails.plugins.filterpane" tests="5" time="0.735" timestamp="2009-10-27T14:16:00">
+  <testsuite errors="0" failures="0" hostname="stevekrenek" id="1" name="FilterTagLibTests" package="com.zeddware.grails.plugins.filterpane" tests="5" time="0.473" timestamp="2009-11-18T06:08:16">
       <properties />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIncludes" time="0.178" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIncludes" time="0.168" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredNoOutput" time="0.078" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredNoOutput" time="0.082" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredWithOutput" time="0.071" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsFilteredWithOutput" time="0.073" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredNoOutput" time="0.272" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredNoOutput" time="0.071" />
 
-      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredWithOutput" time="0.099" />
+      <testcase classname="com.zeddware.grails.plugins.filterpane.FilterTagLibTests" name="testIsNotFilteredWithOutput" time="0.068" />
 
       <system-out><![CDATA[--Output from testIncludes--
 out is '<link rel="stylesheet" type="text/css" href="/css/fp.css" />

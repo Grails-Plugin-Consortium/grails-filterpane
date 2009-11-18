@@ -46,14 +46,18 @@
                 </table>
             </div>
             <div class="paginateButtons">
-                <filterpane:paginate total="${authorCount}" domainBean="Author" />
-                <filterpane:filterButton textKey="fp.tag.filterButton.text" appliedTextKey="fp.tag.filterButton.appliedText" text="Filter Me" appliedText="Change Filter" />
+                <filterpane:paginate total="${authorCount}" domainBean="com.zeddware.grails.plugins.filterpane.Author" />
+                <filterpane:filterButton textKey="fp.tag.author.filterButton.text" appliedTextKey="fp.tag.filterButton.appliedText" text="Filter Me" appliedText="Change Filter" id="author-filter-pane" />
                 <filterpane:isNotFiltered>Pure and Unfiltered!</filterpane:isNotFiltered>
                 <filterpane:isFiltered>Filter Applied!</filterpane:isFiltered>
             </div>
-            <filterpane:filterPane domainBean="Author"
+			<form id="author-form" name="author-form" method="post">
+			  <filterpane:filterPane id="author-filter-pane" domainBean="com.zeddware.grails.plugins.filterpane.Author"
                                    associatedProperties="books.title, books.bookType"
-                                   titleKey="fp.tag.filterPane.titleText"/>
+                                   titleKey="fp.tag.filterPane.titleText" customForm="true"
+								   formName="author-form"/>
+			  <g:actionSubmit value="Apply Filter From Outside Filter Pane" action="filterCustomForm" />
+			</form>
         </div>
     </body>
 </html>
