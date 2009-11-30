@@ -132,15 +132,17 @@ class FilterTagLib {
                     } else {
                         domainProp = domainBean.getPropertyByName(prop)
                     }
-                    def filterVal = filterParams["filter.${prop}"]
-                    if (filterVal == 'struct') {
+                    def filterVal = "${filterParams["filter.${prop}"]}"
+					if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
+						filterVal = ''
+					} else if (filterVal == 'struct') {
                         filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
                         if (filterVal) {
                             def dateFormat = dtFmt
                             if (dtFmt instanceof Map) {
                                 dateFormat = dtFmt[prop]
                             }
-                            filterVal = g.formatDate(format:dateFormat, date:filterVal)
+                            filterVal = "\"${g.formatDate(format:dateFormat, date:filterVal)}\""
                         }
                     }
                     def filterValTo = null
@@ -167,7 +169,7 @@ class FilterTagLib {
                     } else {
                         filterValTo = ''
                     }
-                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
+                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} ${filterVal}${filterValTo} ${removeLink}</li>"""
                 }
             }
             out << "</ul>"
@@ -390,6 +392,7 @@ class FilterTagLib {
         }
     }
 
+// <editor-fold defaultstate="collapsed">
     /**
      * Creates a div that can be shown that contains a filter (search) form.
      *
@@ -516,7 +519,7 @@ class FilterTagLib {
             }
         }
     }
-
+// </editor-fold>
     private String createFilterControl(def attrs, def body, boolean visible) {
         def stream = ""
         if (attrs.filterBean && attrs.filterProperty) {
@@ -648,7 +651,7 @@ class FilterTagLib {
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
         def type = FilterUtils.getOperatorMapKey(property.type)
-        if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
+        //if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
 
         def filterCtrlAttrs = [name: paramName, value: params[paramName]]
         if (attrs.filterPropertyValues && (attrs.filterPropertyValues[property.name] || attrs.filterPropertyValues[propertyNameKey])) {
@@ -716,12 +719,12 @@ class FilterTagLib {
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
-        if (log.isDebugEnabled()) {
-            log.debug("fieldNameKey is ${fieldNameKey}")
-            log.debug("fieldNameAltKey is ${fieldNameAltKey}")
-            log.debug("fieldNamei18NTemplateKey is ${fieldNamei18NTemplateKey}")
-            log.debug("fieldName is ${fieldName}")
-        }
+//        if (log.isDebugEnabled()) {
+//            log.debug("fieldNameKey is ${fieldNameKey}")
+//            log.debug("fieldNameAltKey is ${fieldNameAltKey}")
+//            log.debug("fieldNamei18NTemplateKey is ${fieldNamei18NTemplateKey}")
+//            log.debug("fieldName is ${fieldName}")
+//        }
         def row = """\
     <tr>
       <td>${fieldName}</td>

@@ -60,16 +60,17 @@ class FilterService {
                                     c."${propName}"() {
 
                                         filterOp.each() { opEntry ->
-                                            def associatedDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+											def associatedDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
                                             def associatedDomainClass = associatedDomainProp.referencedDomainClass
                                             def realPropName = opEntry.key
                                             def realOp = opEntry.value
                                             def realRawValue = rawValue[realPropName]
                                             def realRawValue2 = rawValue2 != null ? rawValue2["${realPropName}To"] : null
+											def parsingName = "${propName}.${realPropName}"
                                             def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, associatedDomainClass, realPropName)
 //                                            log.debug("real prop name is ${realPropName}")
-                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams)
-                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams)
+                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams, parsingName)
+                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams, parsingName)
 //                                            log.debug("val is ${val} and val2 is ${val2}")
 
                                             this.addCriterion(c, realPropName, realOp, val, val2)
@@ -86,8 +87,8 @@ class FilterService {
                             } else {
                                 log.debug("propName is ${propName}")
                                 def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams)
-                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams)
+                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
+                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, null)
                                 if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
                                 this.addCriterion(c, propName, filterOp, val, val2)
                             }
@@ -142,7 +143,7 @@ class FilterService {
     }
     
     private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
-    	//println "== addCriterion IN =="
+    	if (log.isDebugEnabled()) log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
     	switch(op) {
             case 'Equal':
             criteria.eq(propertyName, value)
@@ -201,11 +202,11 @@ class FilterService {
     	//println "== addCriterion OUT =="
     }
 
-    def parseValue(def domainProperty, def val, def params) {
+    def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
         if (val) {
             Class cls = domainProperty.referencedPropertyType
             String clsName = cls.simpleName.toLowerCase()
-            //log.debug("domainProperty is ${domainProperty}, val is ${val}, clsName is ${clsName}")
+            log.debug("domainProperty is ${domainProperty}, val is ${val}, clsName is ${clsName}")
 
             if (cls.isEnum()) {
                 val = Enum.valueOf(cls, val.toString())
@@ -226,7 +227,8 @@ class FilterService {
             } else if ("biginteger".equals(clsName)) {
                 val = val.toBigInteger()
             } else if (java.util.Date.isAssignableFrom(cls)) {
-                val = FilterUtils.parseDateFromDatePickerParams(domainProperty.name, params)
+				def paramName = associatedPropertyParamName ?: domainProperty.name
+                val = FilterUtils.parseDateFromDatePickerParams(paramName, params)
             }
         }
         return val

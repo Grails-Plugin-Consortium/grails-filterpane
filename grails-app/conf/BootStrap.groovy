@@ -1,14 +1,15 @@
 import com.zeddware.grails.plugins.filterpane.*
+import java.sql.Date
 
 class BootStrap {
 
     def init = { servletContext ->
-        Author da = new Author(firstName:'Douglas', lastName:'Adams', favoriteGenre:FavoriteGenre.SciFi).save()
-        Author cl = new Author(firstName:'Clive', lastName:'Lewis', favoriteGenre:FavoriteGenre.Fantasy).save()
-        Author ra = new Author(firstName:'Richard', lastName:'Adams', favoriteGenre:FavoriteGenre.Fiction).save()
-        Author mt = new Author(firstName:'Mark', lastName:'Twain', favoriteGenre:FavoriteGenre.Satire).save()
-        Author sk = new Author(firstName:'Steve', lastName:'Krug', favoriteGenre:FavoriteGenre.Reference).save()
-        Author sf = new Author(firstName:'Scott', lastName:'Fox', favoriteGenre:FavoriteGenre.Reference).save()
+        Author da = new Author(firstName:'Douglas', lastName:'Adams', favoriteGenre:FavoriteGenre.SciFi, birthdate:Date.valueOf('1952-03-11')).save()
+        Author cl = new Author(firstName:'Clive', lastName:'Lewis', favoriteGenre:FavoriteGenre.Fantasy, birthdate:Date.valueOf('1898-11-29')).save()
+        Author ra = new Author(firstName:'Richard', lastName:'Adams', favoriteGenre:FavoriteGenre.Fiction, birthdate:Date.valueOf('1920-05-10')).save()
+        Author mt = new Author(firstName:'Mark', lastName:'Twain', favoriteGenre:FavoriteGenre.Satire, birthdate:Date.valueOf('1835-11-30')).save()
+        Author sk = new Author(firstName:'Steve', lastName:'Krug', favoriteGenre:FavoriteGenre.Reference, birthdate:Date.valueOf('1950-01-01')).save()
+        Author sf = new Author(firstName:'Scott', lastName:'Fox', favoriteGenre:FavoriteGenre.Reference, birthdate:Date.valueOf('1969-01-01')).save()
         Author mg = new Author(firstName:'Malcolm', lastName:'Gladwell', favoriteGenre:FavoriteGenre.Reference).save()
         Author hm = new Author(firstName:'Herman', lastName:'Melville', favoriteGenre:FavoriteGenre.Fiction).save()
         Author ac = new Author(firstName:'Arthur', lastName:'Clarke', favoriteGenre:FavoriteGenre.SciFi).save()

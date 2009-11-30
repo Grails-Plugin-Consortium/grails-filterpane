@@ -29,7 +29,7 @@
                             <g:sortableColumn property="id" title="Id" params="${filterParams}" />
                             <g:sortableColumn property="title" title="Title" params="${filterParams}" />
                             <g:sortableColumn property="author" title="Author" params="${filterParams}" />
-                            <g:sortableColumn property="bookType" title="Book Type" params="${filterParams}" />
+							<g:sortableColumn property="bookType" title="Book Type" params="${filterParams}" />
                             <g:sortableColumn property="readPriority" title="Read Priority" params="${filterParams}" />
                             <g:sortableColumn property="releaseDate" title="Release Date" params="${filterParams}" />
                             <g:sortableColumn property="price" title="Price" params="${filterParams}" />
@@ -44,7 +44,7 @@
                                 <td><g:link action="show" id="${book.id}">${book.id?.encodeAsHTML()}</g:link></td>
                                 <td>${book.title?.encodeAsHTML()}</td>
                                 <td>${book.author?.encodeAsHTML()}</td>
-                                <td>${book.bookType.encodeAsHTML()}</td>
+								<td>${book.bookType.encodeAsHTML()}</td>
                                 <td>${book.readPriority?.encodeAsHTML()}</td>
                                 <td>${book.releaseDate?.encodeAsHTML()}</td>
                                 <td>${book.price?.encodeAsHTML()}</td>
@@ -63,7 +63,7 @@
             </div>
             <filterpane:filterPane domainBean="com.zeddware.grails.plugins.filterpane.Book"
                                    additionalProperties="identifier"
-                                   associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName"
+                                   associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName,author.birthdate"
                                    excludeProperties="cost"
                                    filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'month'], bookType:[displayProperty:'display'], 'author.favoriteGenre':[displayProperty:'display']]}"
                                    titleKey="fp.tag.filterPane.titleText"/>
