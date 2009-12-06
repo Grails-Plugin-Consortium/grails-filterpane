@@ -5,6 +5,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
         <title>Author List</title>
+		<g:javascript library="prototype" />
+        <g:javascript library="scriptaculous" />
         <filterpane:includes />
     </head>
     <body>

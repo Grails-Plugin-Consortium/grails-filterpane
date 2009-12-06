@@ -7,7 +7,7 @@
         <title>Book List</title>
         <g:javascript library="prototype" />
         <g:javascript library="scriptaculous" />
-        <filterpane:filterPaneIncludes />
+        <filterpane:includes />
     </head>
     <body>
         <div class="nav">
