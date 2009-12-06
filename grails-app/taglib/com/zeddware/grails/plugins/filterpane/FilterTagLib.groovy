@@ -124,7 +124,7 @@ class FilterTagLib {
                 log.debug "key is ${key}, filterOp is ${filterOp}"
                 if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
                     def prop = key[10..-1]
-                    def domainProp
+					def domainProp
                     if (prop.contains('.')) { // association.
                         def parts = prop.split('\\.')
                         domainProp = domainBean.getPropertyByName(parts[0])
@@ -132,44 +132,52 @@ class FilterTagLib {
                     } else {
                         domainProp = domainBean.getPropertyByName(prop)
                     }
-                    def filterVal = "${filterParams["filter.${prop}"]}"
-					if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
-						filterVal = ''
-					} else if (filterVal == 'struct') {
-                        filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
-                        if (filterVal) {
-                            def dateFormat = dtFmt
-                            if (dtFmt instanceof Map) {
-                                dateFormat = dtFmt[prop]
-                            }
-                            filterVal = "\"${g.formatDate(format:dateFormat, date:filterVal)}\""
-                        }
-                    }
-                    def filterValTo = null
-                    if ('between'.equalsIgnoreCase(filterOp)) {
-                        filterValTo = filterParams["filter.${prop}To"]
-                        if (filterValTo == 'struct') {
-                            filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
-                            if (filterValTo) {
-                                def dateFormat = dtFmt
-                                if (dtFmt instanceof Map) {
-                                    dateFormat = dtFmt[prop]
-                                }
-                                filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
-                            }
-                        }
-                    }
-                    def newParams = [:]
-                    newParams.putAll(filterParams)
-                    newParams[key] = '' // <== This is what removes the criteria from the list.
-                    def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
-                    def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
-                    if (filterValTo) {
-                        filterValTo = " and \"${filterValTo}\""
-                    } else {
-                        filterValTo = ''
-                    }
-                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} ${filterVal}${filterValTo} ${removeLink}</li>"""
+					def filterVal = "${filterParams["filter.${prop}"]}"
+					boolean isNumericType = (domainProp.referencedPropertyType
+						? Number.isAssignableFrom(domainProp.referencedPropertyType)
+						: false)
+					boolean isNumericAndBlank = isNumericType && ! "".equals(filterVal.toString().trim())
+
+                    if (filterVal != null && (!isNumericType || isNumericAndBlank)) {
+
+						if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
+							filterVal = ''
+						} else if (filterVal == 'struct') {
+							filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+							if (filterVal) {
+								def dateFormat = dtFmt
+								if (dtFmt instanceof Map) {
+									dateFormat = dtFmt[prop]
+								}
+								filterVal = "${g.formatDate(format:dateFormat, date:filterVal)}"
+							}
+						}
+						def filterValTo = null
+						if ('between'.equalsIgnoreCase(filterOp)) {
+							filterValTo = filterParams["filter.${prop}To"]
+							if (filterValTo == 'struct') {
+								filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
+								if (filterValTo) {
+									def dateFormat = dtFmt
+									if (dtFmt instanceof Map) {
+										dateFormat = dtFmt[prop]
+									}
+									filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
+								}
+							}
+						}
+						def newParams = [:]
+						newParams.putAll(filterParams)
+						newParams[key] = '' // <== This is what removes the criteria from the list.
+						def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
+						def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
+						if (filterValTo) {
+							filterValTo = " and \"${filterValTo}\""
+						} else {
+							filterValTo = ''
+						}
+						out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
+					} // end if filterVal != null
                 }
             }
             out << "</ul>"
@@ -690,7 +698,7 @@ class FilterTagLib {
                 filterCtrlAttrs.values = inList
             }
             else if (property.type.isEnum()) {
-                filterCtrlAttrs.values = property.type.enumConstants as List
+                filterCtrlAttrs.values = property.type.enumConstants
             }
         }
 
@@ -702,7 +710,7 @@ class FilterTagLib {
         // Create the operator dropdown.
         def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
             value: params[opName], valueMessagePrefix:'fp.op',
-            onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
+            onChange: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
         if (params[opName] == "IsNull" || params[opName] == "IsNotNull") {
             filterCtrlAttrs.style = 'display:none;'
         }

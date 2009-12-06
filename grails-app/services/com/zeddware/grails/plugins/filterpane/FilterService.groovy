@@ -88,7 +88,7 @@ class FilterService {
                                 log.debug("propName is ${propName}")
                                 def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
                                 def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
-                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, null)
+                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                                 if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
                                 this.addCriterion(c, propName, filterOp, val, val2)
                             }
@@ -110,7 +110,7 @@ class FilterService {
                     }
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
-                            order(params.sort, params.order ?: 'asc')
+                            order(params.sort, )
                         } else {
                             def parts = params.sort.split("\\.")
                             if (!associationList.contains(parts[0])) {
@@ -119,7 +119,12 @@ class FilterService {
                                 }
                             }
                         }
-                    }
+//                    } else if (filterClass.hasProperty('mapping') && filterClass.mapping.hasProperty('mapping') && filterClass.mapping.mapping.hasProperty('sort')) {
+//						if (log.debugEnabled) log.debug('No sort specified and default is specified on domain.  Using it.')
+//						order(domainClass.mapping.sort, params.order ?: 'asc')
+					} else {
+						if (log.debugEnabled) log.debug('No sort parameter or default sort specified.')
+					}
                 }
             } // end criteria
             def results = null
@@ -144,71 +149,81 @@ class FilterService {
     
     private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
     	if (log.isDebugEnabled()) log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
-    	switch(op) {
-            case 'Equal':
-            criteria.eq(propertyName, value)
-            break
-            case 'NotEqual': 
-            criteria.ne(propertyName, value)
-            break
-            case 'LessThan': 
-            criteria.lt(propertyName, value)
-            break
-            case 'LessThanEquals':
-            criteria.le(propertyName, value)
-            break
-            case 'GreaterThan':
-            criteria.gt(propertyName, value)
-            break
-            case 'GreaterThanEquals':
-            criteria.ge(propertyName, value)
-            break
-            case 'Like':
-            if (!value.startsWith('*')) value = "*${value}"
-            if (!value.endsWith('*')) value = "${value}*"
-            criteria.like(propertyName, value?.replaceAll("\\*", "%"))
-            break
-            case 'ILike':
-            if (!value.startsWith('*')) value = "*${value}"
-            if (!value.endsWith('*')) value = "${value}*"
-            criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
-            break
-            case 'NotLike':
+		boolean added = true
+		if (value) {
+			switch(op) {
+				case 'Equal':
+				criteria.eq(propertyName, value)
+				break
+				case 'NotEqual':
+				criteria.ne(propertyName, value)
+				break
+				case 'LessThan':
+				criteria.lt(propertyName, value)
+				break
+				case 'LessThanEquals':
+				criteria.le(propertyName, value)
+				break
+				case 'GreaterThan':
+				criteria.gt(propertyName, value)
+				break
+				case 'GreaterThanEquals':
+				criteria.ge(propertyName, value)
+				break
+				case 'Like':
+				if (!value.startsWith('*')) value = "*${value}"
+				if (!value.endsWith('*')) value = "${value}*"
+				criteria.like(propertyName, value?.replaceAll("\\*", "%"))
+				break
+				case 'ILike':
+				if (!value.startsWith('*')) value = "*${value}"
+				if (!value.endsWith('*')) value = "${value}*"
+				criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
+				break
+				case 'NotLike':
             	if (!value.startsWith('*')) value = "*${value}"
             	if (!value.endsWith('*')) value = "${value}*"
             	criteria.not {
             		criteria.like(propertyName, value?.replaceAll("\\*", "%"))
             	}
             	break
-            case 'NotILike':
+				case 'NotILike':
             	if (!value.startsWith('*')) value = "*${value}"
                 if (!value.endsWith('*')) value = "${value}*"
             	criteria.not {
             		criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
             	}
             	break
-            case 'IsNull':
-            criteria.isNull(propertyName)
-            break
-            case 'IsNotNull':
-            criteria.isNotNull(propertyName)
-            break
-            case 'Between':
-            criteria.between(propertyName, value, value2)
-            break
-            default:
-            break
-        } // end op switch
+				case 'IsNull':
+				criteria.isNull(propertyName)
+				break
+				case 'IsNotNull':
+				criteria.isNotNull(propertyName)
+				break
+				case 'Between':
+				criteria.between(propertyName, value, value2)
+				break
+				default:
+				break
+			} // end op switch
+		} else {  // value is null
+			added = false
+		}
     	//println "== addCriterion OUT =="
     }
 
     def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
         if (val) {
-            Class cls = domainProperty.referencedPropertyType
+            Class cls = null
+			if (domainProperty.isAssociation() && domainProperty.referencedPropertyType != null)
+				cls = domainProperty.referencedPropertyType
+			else 
+				cls = domainProperty.type
+				
             String clsName = cls.simpleName.toLowerCase()
-            log.debug("domainProperty is ${domainProperty}, val is ${val}, clsName is ${clsName}")
+            log.debug("domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} val is ${val}, clsName is ${clsName}")
 
-            if (cls.isEnum()) {
+            if (domainProperty.isEnum()) {
                 val = Enum.valueOf(cls, val.toString())
             } else if ("boolean".equals(clsName)) {
                 val = val.toBoolean()
