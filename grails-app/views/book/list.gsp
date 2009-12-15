@@ -65,7 +65,7 @@
                                    additionalProperties="identifier"
                                    associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName,author.birthdate"
                                    excludeProperties="cost"
-                                   filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'month'], bookType:[displayProperty:'display'], 'author.favoriteGenre':[displayProperty:'display']]}"
+                                   filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'day'], bookType:[displayProperty:'display'], 'author.favoriteGenre':[displayProperty:'display']]}"
                                    titleKey="fp.tag.filterPane.titleText"/>
         </div>
     </body>

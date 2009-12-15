@@ -53,7 +53,7 @@ class FilterService {
                             if (filterOp instanceof Map && rawValue instanceof Map) {
 
                                 // Are any of the values non-empty?
-                                if (filterOp.values().find {it.length() > 0} != null) {
+                                if (filterOp.values().find {println it; it.length() > 0} != null) {
 
                                     if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
 
@@ -73,7 +73,7 @@ class FilterService {
                                             def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams, parsingName)
 //                                            log.debug("val is ${val} and val2 is ${val2}")
 
-                                            this.addCriterion(c, realPropName, realOp, val, val2)
+                                            this.addCriterion(c, realPropName, realOp, val, val2, filterParams, thisDomainProp)
                                         }
                                         if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
                                             def parts = params.sort.split("\\.")
@@ -90,7 +90,7 @@ class FilterService {
                                 def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
                                 def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                                 if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
-                                this.addCriterion(c, propName, filterOp, val, val2)
+                                this.addCriterion(c, propName, filterOp, val, val2, filterParams, thisDomainProp)
                             }
                         }
                     	if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
@@ -147,9 +147,23 @@ class FilterService {
     	}
     }
     
-    private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
+    private def addCriterion(def criteria, def propertyName, def op, def value, def value2, def filterParams, def domainProperty) {
     	if (log.isDebugEnabled()) log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
 		boolean added = true
+
+		// GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
+		// precision on date picker was 'day', turn this into a between from
+		// midnight to 1 ms before midnight of the next day.
+		boolean isDayPrecision = "y".equals(filterParams["${domainProperty.domainClass.name}.${domainProperty.name}_isDayPrecision"])
+		boolean isOpAlterable  = (op == 'Equal' || op == 'NotEqual')
+		if (value != null && isDayPrecision == true && Date.isAssignableFrom(value.class) && isOpAlterable) {
+			op = (op == 'Equal') ? 'Between' : 'NotBetween'
+			value = FilterUtils.getBeginningOfDay(value)
+			value2 = FilterUtils.getEndOfDay(value)
+			if (log.isDebugEnabled())
+				log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
+		}
+
 		if (value) {
 			switch(op) {
 				case 'Equal':
@@ -202,6 +216,9 @@ class FilterService {
 				break
 				case 'Between':
 				criteria.between(propertyName, value, value2)
+				break
+				case 'NotBetween':
+				criteria.not { between(propertyName, value, value2) }
 				break
 				default:
 				break
