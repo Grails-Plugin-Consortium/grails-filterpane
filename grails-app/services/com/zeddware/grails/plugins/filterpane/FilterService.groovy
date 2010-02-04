@@ -231,12 +231,7 @@ class FilterService {
 
     def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
         if (val) {
-            Class cls = null
-			if (domainProperty.isAssociation() && domainProperty.referencedPropertyType != null)
-				cls = domainProperty.referencedPropertyType
-			else 
-				cls = domainProperty.type
-				
+            Class cls = domainProperty.referencedPropertyType ?: domainProperty.type
             String clsName = cls.simpleName.toLowerCase()
             log.debug("domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} val is ${val}, clsName is ${clsName}")
 
