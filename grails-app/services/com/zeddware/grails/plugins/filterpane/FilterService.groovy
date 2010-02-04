@@ -53,26 +53,27 @@ class FilterService {
                             if (filterOp instanceof Map && rawValue instanceof Map) {
 
                                 // Are any of the values non-empty?
-                                if (filterOp.values().find {it.length() > 0} != null) {
+                                if (filterOp.values().find {println it; it.length() > 0} != null) {
 
                                     if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
 
                                     c."${propName}"() {
 
                                         filterOp.each() { opEntry ->
-                                            def associatedDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+											def associatedDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
                                             def associatedDomainClass = associatedDomainProp.referencedDomainClass
                                             def realPropName = opEntry.key
                                             def realOp = opEntry.value
                                             def realRawValue = rawValue[realPropName]
                                             def realRawValue2 = rawValue2 != null ? rawValue2["${realPropName}To"] : null
+											def parsingName = "${propName}.${realPropName}"
                                             def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, associatedDomainClass, realPropName)
 //                                            log.debug("real prop name is ${realPropName}")
-                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams)
-                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams)
+                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams, parsingName)
+                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams, parsingName)
 //                                            log.debug("val is ${val} and val2 is ${val2}")
 
-                                            this.addCriterion(c, realPropName, realOp, val, val2)
+                                            this.addCriterion(c, realPropName, realOp, val, val2, filterParams, thisDomainProp)
                                         }
                                         if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
                                             def parts = params.sort.split("\\.")
@@ -86,10 +87,10 @@ class FilterService {
                             } else {
                                 log.debug("propName is ${propName}")
                                 def thisDomainProp = FilterUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams)
-                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams)
+                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
+                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                                 if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
-                                this.addCriterion(c, propName, filterOp, val, val2)
+                                this.addCriterion(c, propName, filterOp, val, val2, filterParams, thisDomainProp)
                             }
                         }
                     	if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
@@ -109,7 +110,7 @@ class FilterService {
                     }
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
-                            order(params.sort, params.order ?: 'asc')
+                            order(params.sort, )
                         } else {
                             def parts = params.sort.split("\\.")
                             if (!associationList.contains(parts[0])) {
@@ -118,7 +119,12 @@ class FilterService {
                                 }
                             }
                         }
-                    }
+//                    } else if (filterClass.hasProperty('mapping') && filterClass.mapping.hasProperty('mapping') && filterClass.mapping.mapping.hasProperty('sort')) {
+//						if (log.debugEnabled) log.debug('No sort specified and default is specified on domain.  Using it.')
+//						order(domainClass.mapping.sort, params.order ?: 'asc')
+					} else {
+						if (log.debugEnabled) log.debug('No sort parameter or default sort specified.')
+					}
                 }
             } // end criteria
             def results = null
@@ -141,73 +147,95 @@ class FilterService {
     	}
     }
     
-    private def addCriterion(def criteria, def propertyName, def op, def value, def value2) {
-    	//println "== addCriterion IN =="
-    	switch(op) {
-            case 'Equal':
-            criteria.eq(propertyName, value)
-            break
-            case 'NotEqual': 
-            criteria.ne(propertyName, value)
-            break
-            case 'LessThan': 
-            criteria.lt(propertyName, value)
-            break
-            case 'LessThanEquals':
-            criteria.le(propertyName, value)
-            break
-            case 'GreaterThan':
-            criteria.gt(propertyName, value)
-            break
-            case 'GreaterThanEquals':
-            criteria.ge(propertyName, value)
-            break
-            case 'Like':
-            if (!value.startsWith('*')) value = "*${value}"
-            if (!value.endsWith('*')) value = "${value}*"
-            criteria.like(propertyName, value?.replaceAll("\\*", "%"))
-            break
-            case 'ILike':
-            if (!value.startsWith('*')) value = "*${value}"
-            if (!value.endsWith('*')) value = "${value}*"
-            criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
-            break
-            case 'NotLike':
+    private def addCriterion(def criteria, def propertyName, def op, def value, def value2, def filterParams, def domainProperty) {
+    	if (log.isDebugEnabled()) log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
+		boolean added = true
+
+		// GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
+		// precision on date picker was 'day', turn this into a between from
+		// midnight to 1 ms before midnight of the next day.
+		boolean isDayPrecision = "y".equals(filterParams["${domainProperty.domainClass.name}.${domainProperty.name}_isDayPrecision"])
+		boolean isOpAlterable  = (op == 'Equal' || op == 'NotEqual')
+		if (value != null && isDayPrecision == true && Date.isAssignableFrom(value.class) && isOpAlterable) {
+			op = (op == 'Equal') ? 'Between' : 'NotBetween'
+			value = FilterUtils.getBeginningOfDay(value)
+			value2 = FilterUtils.getEndOfDay(value)
+			if (log.isDebugEnabled())
+				log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
+		}
+
+		if (value) {
+			switch(op) {
+				case 'Equal':
+				criteria.eq(propertyName, value)
+				break
+				case 'NotEqual':
+				criteria.ne(propertyName, value)
+				break
+				case 'LessThan':
+				criteria.lt(propertyName, value)
+				break
+				case 'LessThanEquals':
+				criteria.le(propertyName, value)
+				break
+				case 'GreaterThan':
+				criteria.gt(propertyName, value)
+				break
+				case 'GreaterThanEquals':
+				criteria.ge(propertyName, value)
+				break
+				case 'Like':
+				if (!value.startsWith('*')) value = "*${value}"
+				if (!value.endsWith('*')) value = "${value}*"
+				criteria.like(propertyName, value?.replaceAll("\\*", "%"))
+				break
+				case 'ILike':
+				if (!value.startsWith('*')) value = "*${value}"
+				if (!value.endsWith('*')) value = "${value}*"
+				criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
+				break
+				case 'NotLike':
             	if (!value.startsWith('*')) value = "*${value}"
             	if (!value.endsWith('*')) value = "${value}*"
             	criteria.not {
             		criteria.like(propertyName, value?.replaceAll("\\*", "%"))
             	}
             	break
-            case 'NotILike':
+				case 'NotILike':
             	if (!value.startsWith('*')) value = "*${value}"
                 if (!value.endsWith('*')) value = "${value}*"
             	criteria.not {
             		criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
             	}
             	break
-            case 'IsNull':
-            criteria.isNull(propertyName)
-            break
-            case 'IsNotNull':
-            criteria.isNotNull(propertyName)
-            break
-            case 'Between':
-            criteria.between(propertyName, value, value2)
-            break
-            default:
-            break
-        } // end op switch
+				case 'IsNull':
+				criteria.isNull(propertyName)
+				break
+				case 'IsNotNull':
+				criteria.isNotNull(propertyName)
+				break
+				case 'Between':
+				criteria.between(propertyName, value, value2)
+				break
+				case 'NotBetween':
+				criteria.not { between(propertyName, value, value2) }
+				break
+				default:
+				break
+			} // end op switch
+		} else {  // value is null
+			added = false
+		}
     	//println "== addCriterion OUT =="
     }
 
-    def parseValue(def domainProperty, def val, def params) {
+    def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
         if (val) {
-            Class cls = domainProperty.referencedPropertyType
+            Class cls = domainProperty.referencedPropertyType ?: domainProperty.type
             String clsName = cls.simpleName.toLowerCase()
-            //log.debug("domainProperty is ${domainProperty}, val is ${val}, clsName is ${clsName}")
+            log.debug("domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} val is ${val}, clsName is ${clsName}")
 
-            if (cls.isEnum()) {
+            if (domainProperty.isEnum()) {
                 val = Enum.valueOf(cls, val.toString())
             } else if ("boolean".equals(clsName)) {
                 val = val.toBoolean()
@@ -226,7 +254,8 @@ class FilterService {
             } else if ("biginteger".equals(clsName)) {
                 val = val.toBigInteger()
             } else if (java.util.Date.isAssignableFrom(cls)) {
-                val = FilterUtils.parseDateFromDatePickerParams(domainProperty.name, params)
+				def paramName = associatedPropertyParamName ?: domainProperty.name
+                val = FilterUtils.parseDateFromDatePickerParams(paramName, params)
             }
         }
         return val

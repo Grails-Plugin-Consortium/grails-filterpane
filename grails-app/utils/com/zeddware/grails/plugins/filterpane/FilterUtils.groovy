@@ -2,6 +2,8 @@ package com.zeddware.grails.plugins.filterpane
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.web.converters.ConverterUtil
 
 class FilterUtils {
     private static Logger log = Logger.getLogger(FilterUtils.class)
@@ -116,12 +118,42 @@ class FilterUtils {
             }
 
             if (log.isDebugEnabled()) log.debug("Parsing ${value} with format ${format}")
-            return new java.text.SimpleDateFormat(format).parse(value)
+            return Date.parse(format, value)// new java.text.SimpleDateFormat(format).parse(value)
         } catch (Exception ex) {
             log.error("${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}")
             return null
         }
     }
+
+	static Date getBeginningOfDay(def aDate) {
+		if (aDate == null) return null
+		if (Date.isAssignableFrom(aDate.class)) {
+			Date date = (Date)aDate;
+			Calendar calendar = Calendar.getInstance()
+			calendar.setTime(date);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			return calendar.getTime();
+		}
+		return null
+	}
+
+	static Date getEndOfDay(def aDate) {
+		if (aDate == null) return null
+		if (Date.isAssignableFrom(aDate.class)) {
+			Date date = (Date)aDate
+			Calendar calendar = Calendar.getInstance()
+			calendar.setTime(date);
+			calendar.set(Calendar.HOUR_OF_DAY, 23);
+			calendar.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			calendar.set(Calendar.MILLISECOND, 999);
+			return calendar.getTime();
+
+		}
+	}
 
     private static def zeroPad(def val) {
         try {
@@ -161,7 +193,7 @@ class FilterUtils {
 
     static def resolveDomainClass(def grailsApplication, def bean) {
         if (log.isDebugEnabled()) log.debug("resolveDomainClass: bean is ${bean?.class}")
-        if(bean instanceof DefaultGrailsDomainClass) {
+        if(bean instanceof GrailsDomainClass) {
             return bean
         }
         String beanName = null
@@ -171,7 +203,10 @@ class FilterUtils {
             beanName = bean
         }
         if (beanName) {
-            return grailsApplication.getDomainClass(beanName)
+            def result = grailsApplication.getDomainClass(beanName)
+			if (result == null)
+				result = ConverterUtil.getDomainClass(beanName)
+			return result
         }
         return null
     }

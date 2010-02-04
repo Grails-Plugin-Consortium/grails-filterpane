@@ -34,7 +34,7 @@ class FilterTagLib {
             text = attrs.text ?: g.message(code:'fp.tag.filterButton.text', default:(attrs.title ?: 'Filter'))
         }
         def filterPaneId = attrs.id ?: (attrs.filterPaneId ?: 'filterPane')
-        def styleClass = attrs.styleClass ?: ''
+        def styleClass = attrs.styleClass ?: attrs.class ?: ''
         def style = attrs.style ? " style=\"${attrs.style}\"" : ''
         if (FilterUtils.isFilterApplied(params)) {
             styleClass = "filter-applied ${styleClass}"
@@ -124,7 +124,7 @@ class FilterTagLib {
                 log.debug "key is ${key}, filterOp is ${filterOp}"
                 if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
                     def prop = key[10..-1]
-                    def domainProp
+					def domainProp
                     if (prop.contains('.')) { // association.
                         def parts = prop.split('\\.')
                         domainProp = domainBean.getPropertyByName(parts[0])
@@ -132,42 +132,52 @@ class FilterTagLib {
                     } else {
                         domainProp = domainBean.getPropertyByName(prop)
                     }
-                    def filterVal = filterParams["filter.${prop}"]
-                    if (filterVal == 'struct') {
-                        filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
-                        if (filterVal) {
-                            def dateFormat = dtFmt
-                            if (dtFmt instanceof Map) {
-                                dateFormat = dtFmt[prop]
-                            }
-                            filterVal = g.formatDate(format:dateFormat, date:filterVal)
-                        }
-                    }
-                    def filterValTo = null
-                    if ('between'.equalsIgnoreCase(filterOp)) {
-                        filterValTo = filterParams["filter.${prop}To"]
-                        if (filterValTo == 'struct') {
-                            filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
-                            if (filterValTo) {
-                                def dateFormat = dtFmt
-                                if (dtFmt instanceof Map) {
-                                    dateFormat = dtFmt[prop]
-                                }
-                                filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
-                            }
-                        }
-                    }
-                    def newParams = [:]
-                    newParams.putAll(filterParams)
-                    newParams[key] = '' // <== This is what removes the criteria from the list.
-                    def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
-                    def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
-                    if (filterValTo) {
-                        filterValTo = " and \"${filterValTo}\""
-                    } else {
-                        filterValTo = ''
-                    }
-                    out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
+					def filterVal = "${filterParams["filter.${prop}"]}"
+					boolean isNumericType = (domainProp.referencedPropertyType
+						? Number.isAssignableFrom(domainProp.referencedPropertyType)
+						: false)
+					boolean isNumericAndBlank = isNumericType && ! "".equals(filterVal.toString().trim())
+
+                    if (filterVal != null && (!isNumericType || isNumericAndBlank)) {
+
+						if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
+							filterVal = ''
+						} else if (filterVal == 'struct') {
+							filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+							if (filterVal) {
+								def dateFormat = dtFmt
+								if (dtFmt instanceof Map) {
+									dateFormat = dtFmt[prop]
+								}
+								filterVal = "${g.formatDate(format:dateFormat, date:filterVal)}"
+							}
+						}
+						def filterValTo = null
+						if ('between'.equalsIgnoreCase(filterOp)) {
+							filterValTo = filterParams["filter.${prop}To"]
+							if (filterValTo == 'struct') {
+								filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
+								if (filterValTo) {
+									def dateFormat = dtFmt
+									if (dtFmt instanceof Map) {
+										dateFormat = dtFmt[prop]
+									}
+									filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
+								}
+							}
+						}
+						def newParams = [:]
+						newParams.putAll(filterParams)
+						newParams[key] = '' // <== This is what removes the criteria from the list.
+						def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
+						def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
+						if (filterValTo) {
+							filterValTo = " and \"${filterValTo}\""
+						} else {
+							filterValTo = ''
+						}
+						out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
+					} // end if filterVal != null
                 }
             }
             out << "</ul>"
@@ -214,7 +224,7 @@ class FilterTagLib {
         def props = [:]
         List beanPersistentProps = bean.persistentProperties as List
         if (log.isDebugEnabled()) {
-            log.debug("Persistent props: ${beanPersistentProps}")
+            log.debug("${beanPersistentProps.size()} Persistent props: ${beanPersistentProps}")
         }
         List associatedProps = []
 
@@ -363,11 +373,23 @@ class FilterTagLib {
             output += """\
   </table>
   <div>
-      ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}
-      ${this.select(name: "sort", from: sortedProperties, keys:sortKeys,
+      ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}"""
+
+	  // Do an if check.  If the messages don't exist, default to the legacy natural name.'
+	  def valueMessagePrefix = attrs.sortValueMessagePrefix ?: 'fp.property.text'
+	  def firstKeyMsg = g.message(code:"${valueMessagePrefix}.${sortKeys[0]}", default:'false')
+	  if (firstKeyMsg.equals('false')) {
+		  output += this.select(name: "sort", from: sortedProperties, keys:sortKeys,
 			optionValue: "naturalName",
 			noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
-			value: params.sort)}
+			value: params.sort)
+	  } else {
+		  output += this.select(name: "sort", from: sortedProperties, keys: sortKeys,
+			valueMessagePrefix: valueMessagePrefix,
+			noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
+			value: params.sort)
+	  }
+output += """\
       &nbsp;
       ${this.radio(name: "order", value: "asc", checked: params.order == 'asc',)}
       &nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;
@@ -390,6 +412,7 @@ class FilterTagLib {
         }
     }
 
+// <editor-fold defaultstate="collapsed">
     /**
      * Creates a div that can be shown that contains a filter (search) form.
      *
@@ -516,7 +539,7 @@ class FilterTagLib {
             }
         }
     }
-
+// </editor-fold>
     private String createFilterControl(def attrs, def body, boolean visible) {
         def stream = ""
         if (attrs.filterBean && attrs.filterProperty) {
@@ -628,7 +651,12 @@ class FilterTagLib {
             attrs.value = d
             attrs.onChange = "selectDefaultOperator('${opId}')"
             String style = attrs.style ? "style=\"${attrs.style}\"" : ''
-            out = "<span id=\"${attrs.id}-container\" ${style}>${this.datePicker(attrs)}</span>"
+			boolean isDayPrecision = attrs.precision == 'day'
+			String strDayPrecision = ""
+			if (!formPropName.endsWith("To")) {
+				strDayPrecision = """<input type="hidden" name="filter.${property.domainClass.name}.${property.name}_isDayPrecision" value="${isDayPrecision ? 'y' : 'n'}" />"""
+			}
+            out = """<span id="${attrs.id}-container" ${style}>${this.datePicker(attrs)}</span>${strDayPrecision}"""
 
         } else if (type == Boolean.class || type == boolean.class) {
             def yes = radio(id:"${formPropName}.yes", name:formPropName, value:'true', checked:params[formPropName] == 'true', onClick:"selectDefaultOperator('${opId}')")
@@ -648,7 +676,7 @@ class FilterTagLib {
         def paramName = "filter.${fullPropName}"
         def opName = "filter.op.${fullPropName}"
         def type = FilterUtils.getOperatorMapKey(property.type)
-        if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
+        //if (log.isDebugEnabled()) log.debug("property ${property} key ${propertyNameKey} fullPropName ${fullPropName} type ${type}");
 
         def filterCtrlAttrs = [name: paramName, value: params[paramName]]
         if (attrs.filterPropertyValues && (attrs.filterPropertyValues[property.name] || attrs.filterPropertyValues[propertyNameKey])) {
@@ -687,7 +715,7 @@ class FilterTagLib {
                 filterCtrlAttrs.values = inList
             }
             else if (property.type.isEnum()) {
-                filterCtrlAttrs.values = property.type.enumConstants as List
+                filterCtrlAttrs.values = property.type.enumConstants
             }
         }
 
@@ -699,7 +727,7 @@ class FilterTagLib {
         // Create the operator dropdown.
         def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
             value: params[opName], valueMessagePrefix:'fp.op',
-            onclick: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
+            onChange: "filterOpChange('${opName}', '${filterCtrlAttrs.id}');")
         if (params[opName] == "IsNull" || params[opName] == "IsNotNull") {
             filterCtrlAttrs.style = 'display:none;'
         }
@@ -716,12 +744,7 @@ class FilterTagLib {
             fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
-        if (log.isDebugEnabled()) {
-            log.debug("fieldNameKey is ${fieldNameKey}")
-            log.debug("fieldNameAltKey is ${fieldNameAltKey}")
-            log.debug("fieldNamei18NTemplateKey is ${fieldNamei18NTemplateKey}")
-            log.debug("fieldName is ${fieldName}")
-        }
+
         def row = """\
     <tr>
       <td>${fieldName}</td>

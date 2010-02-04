@@ -26,6 +26,7 @@ class Book {
 	
     static mapping = {
         author lazy:false
+		sort title:'asc'
     }
 	
     String toString() {
