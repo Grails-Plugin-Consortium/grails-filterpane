@@ -53,7 +53,7 @@ class FilterService {
                             if (filterOp instanceof Map && rawValue instanceof Map) {
 
                                 // Are any of the values non-empty?
-                                if (filterOp.values().find {println it; it.length() > 0} != null) {
+                                if (filterOp.values().find {log.debug it; it.length() > 0} != null) {
 
                                     if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
 
@@ -229,7 +229,13 @@ class FilterService {
     	//println "== addCriterion OUT =="
     }
 
+    /**
+    * Parse the user input value to the domain property type.
+    * @returns The input parsed to the appropriate type if possible, else null.
+    */
     def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
+        if(val instanceof String)
+            val = val.trim()
         if (val) {
             Class cls = domainProperty.referencedPropertyType ?: domainProperty.type
             String clsName = cls.simpleName.toLowerCase()
@@ -239,22 +245,23 @@ class FilterService {
                 val = Enum.valueOf(cls, val.toString())
             } else if ("boolean".equals(clsName)) {
                 val = val.toBoolean()
-            } else if ("int".equals(clsName) || "integer".equals(clsName)) {
-                val = val.toInteger()
+            } else if ( "int".equals(clsName) || "integer".equals(clsName) ) {
+                val = val.isInteger() ? val.toInteger() : null
             } else if ("long".equals(clsName)) {
-                val = val.toLong()
+                val = val.isLong() ? val.toLong() : null
             } else if ("double".equals(clsName)) {
-                val = val.toDouble()
+                val = val.isDouble() ? val.toDouble() : null
             } else if ("float".equals(clsName)) {
-                val = val.toFloat()
+                val = val.isFloat() ? val.toFloat() : null
             } else if ("short".equals(clsName)) {
-                val = val.toShort()
+                try { val = val.toShort() } //no isShort()
+                catch(java.lang.NumberFormatException e) { val = null }
             } else if ("bigdecimal".equals(clsName)) {
-                val = val.toBigDecimal()
+                val = val.isBigDecimal() ? val.toBigDecimal() : null
             } else if ("biginteger".equals(clsName)) {
-                val = val.toBigInteger()
+                val = val.isBigInteger() ? val.toBigInteger() : null
             } else if (java.util.Date.isAssignableFrom(cls)) {
-				def paramName = associatedPropertyParamName ?: domainProperty.name
+                def paramName = associatedPropertyParamName ?: domainProperty.name
                 val = FilterUtils.parseDateFromDatePickerParams(paramName, params)
             }
         }
