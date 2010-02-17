@@ -757,7 +757,13 @@ output += """\
             filterCtrlAttrs.name += 'To'
             filterCtrlAttrs.id += 'To'
             filterCtrlAttrs.value = params[filterCtrlAttrs.name]
-            boolean showToCtrl = params[opName] == "Between" && filterCtrlAttrs?.value?.trim() != ""
+
+            boolean showToCtrl
+            if(filterCtrlAttrs?.value instanceof Date)
+                showToCtrl = params[opName] == "Between" && filterCtrlAttrs?.value != ""
+            else
+                showToCtrl = params[opName] == "Between" && filterCtrlAttrs?.value?.trim() != ""
+
             row += """\
       <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
         &nbsp;${g.message(code:'fp.tag.filterPane.property.betweenValueSeparatorText', default:'and')}&nbsp;
