@@ -110,7 +110,7 @@ class FilterService {
                     }
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
-                            order(params.sort, )
+                            order(params.sort, params.order ?: 'asc' )
                         } else {
                             def parts = params.sort.split("\\.")
                             if (!associationList.contains(parts[0])) {

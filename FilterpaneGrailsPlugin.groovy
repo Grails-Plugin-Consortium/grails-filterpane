@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = '0.6.6-SNAPSHOT'
+    def version = '0.6.6'
     def grailsVersion = "1.1.1 > *"
     def dependsOn = [:]
 
