@@ -325,6 +325,7 @@ class FilterTagLib {
 
         if (bean && props) {
             // def filterPaneId = attrs.id ?: 'filterPane'
+			def controller = attrs.controller
             def action = attrs.action ?: 'filter'
             def propsStr = ""
             int propsSize = props.size() - 1
@@ -346,11 +347,12 @@ class FilterTagLib {
 			def closeFormTag = ''
 			def applyButton = ''
 			if (customForm == false) {
-				openFormTag = """<form id="${formName}" name="${formName}" action="${action}" method="post">"""
+				def actionURL = controller ? g.createLink(controller:controller, action:action) : action
+				openFormTag = """<form id="${formName}" name="${formName}" action="${actionURL}" method="post">"""
 				closeFormTag = '</form>'
 				applyButton = """<span class="button">
-        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
-      </span>"""
+		${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
+	  </span>"""
 			}
 			
 
