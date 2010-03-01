@@ -351,8 +351,8 @@ class FilterTagLib {
 				openFormTag = """<form id="${formName}" name="${formName}" action="${actionURL}" method="post">"""
 				closeFormTag = '</form>'
 				applyButton = """<span class="button">
-        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
-      </span>"""
+		${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
+	  </span>"""
 			}
 			
 
