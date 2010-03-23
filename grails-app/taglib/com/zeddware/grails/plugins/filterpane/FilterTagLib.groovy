@@ -119,19 +119,43 @@ class FilterTagLib {
             def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
             def action = attrs.action ?: 'filter'
 
+            def getProp = { key, filterOp ->
+                if (key.startsWith('filter.op') && filterOp != null && filterOp != '')
+                    return key[10..-1]
+                else
+                    return false
+            }
+
+            def getDomainProp = { prop ->
+                if (prop.contains('.')) { // association.
+                    def parts = prop.split('\\.')
+                    def domainProp = domainBean.getPropertyByName(parts[0])
+                    domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
+                    return domainProp
+                }
+                else
+                    return domainBean.getPropertyByName(prop)
+            }
+
+            // Revert all date picker values to use pre Grails-1.2 struct.
+            // Could possibly be placed in FilterUtils.extractFilterParams()?
+            filterParams.each { key, filterOp ->
+                def prop = getProp(key, filterOp)
+                if(prop) {
+                    if(filterParams["filter.${prop}"] instanceof Date) {
+                        filterParams["filter.${prop}"] = 'struct'
+                        filterParams["filter.${prop}To"] = 'struct'
+                    }
+                }
+            }
+
             out << """<ul id="${id}" ${clazz}${style}${title}>"""
+
             filterParams.each { key, filterOp ->
                 log.debug "key is ${key}, filterOp is ${filterOp}"
-                if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
-                    def prop = key[10..-1]
-                    def domainProp
-                    if (prop.contains('.')) { // association.
-                        def parts = prop.split('\\.')
-                        domainProp = domainBean.getPropertyByName(parts[0])
-                        domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
-                    } else {
-                        domainProp = domainBean.getPropertyByName(prop)
-                    }
+                def prop = getProp(key, filterOp)
+                if(prop) {
+                    def domainProp = getDomainProp(prop)
                     def filterVal = "${filterParams["filter.${prop}"]}"
                     boolean isNumericType = (domainProp.referencedPropertyType
                         ? Number.isAssignableFrom(domainProp.referencedPropertyType)
@@ -149,7 +173,7 @@ class FilterTagLib {
                                 if (dtFmt instanceof Map) {
                                     dateFormat = dtFmt[prop]
                                 }
-                                filterVal = "${g.formatDate(format:dateFormat, date:filterVal)}"
+                                filterVal = g.formatDate(format:dateFormat, date:filterVal)
                             }
                         }
                         def filterValTo = null
@@ -178,8 +202,8 @@ class FilterTagLib {
                         }
                         out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
                     } // end if filterVal != null
-                }
-            }
+                } // if prop
+            } // filterParams.each()
             out << "</ul>"
         }
     }
