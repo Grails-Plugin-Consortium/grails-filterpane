@@ -1,4 +1,4 @@
-<plugin name='filterpane' version='0.6.7' grailsVersion='1.1.1 &gt; *'>
+<plugin name='filterpane' version='0.6.8' grailsVersion='1.1.1 &gt; *'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
