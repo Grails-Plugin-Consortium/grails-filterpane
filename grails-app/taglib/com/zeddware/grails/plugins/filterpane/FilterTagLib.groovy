@@ -5,10 +5,10 @@ class FilterTagLib {
     static namespace = 'filterpane'
 
     /**
-     * This map contains available filter operations by type.  It is used when creating the
-     * individual rows in the filter pane.  The values in the text maps are key suffixes for the
-     * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
-     */
+    * This map contains available filter operations by type.  It is used when creating the
+    * individual rows in the filter pane.  The values in the text maps are key suffixes for the
+    * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
+    */
     def availableOpsByType = [
         text: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
         numeric: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
@@ -20,11 +20,11 @@ class FilterTagLib {
     ]
 
     /**
-     * Creates a link (button) that displays the filter pane when pressed.  The title attribute
-     * may be used to modify the text on the button.  If omitted, the text will be "Filter".
-     * The filterPaneId attribute may be specified if the associated filterPane tag has an id attribute.
-     * Their values must be the same.
-     */
+    * Creates a link (button) that displays the filter pane when pressed.  The title attribute
+    * may be used to modify the text on the button.  If omitted, the text will be "Filter".
+    * The filterPaneId attribute may be specified if the associated filterPane tag has an id attribute.
+    * Their values must be the same.
+    */
     def filterButton = {attrs, body ->
         def textKey = attrs.textKey
         def text
@@ -53,22 +53,22 @@ class FilterTagLib {
     }
 
     /**
-     * This tag generates necessary style and script includes.  Use this tag in the head element
-     * of your pages.  There are no attributes for this tag.
-     *
-     * @deprecated Use the "includes" tag instead, as it is more DRY. 
-     */
+    * This tag generates necessary style and script includes.  Use this tag in the head element
+    * of your pages.  There are no attributes for this tag.
+    *
+    * @deprecated Use the "includes" tag instead, as it is more DRY.
+    */
     def filterPaneIncludes = {
         out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${createLinkTo(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
         out << "<script type=\"text/javascript\" src=\"${createLinkTo(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
     }
 
     /**
-     * This tag generates necessary style and script includes.  Use this tag in the head element
-     * of your pages.  There are no attributes for this tag.
-     *
-     * @since 0.4
-     */
+    * This tag generates necessary style and script includes.  Use this tag in the head element
+    * of your pages.  There are no attributes for this tag.
+    *
+    * @since 0.4
+    */
     def includes = {
         out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
         out << "<script type=\"text/javascript\" src=\"${g.resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
@@ -87,11 +87,11 @@ class FilterTagLib {
     }
 
     /**
-     * Grails pagination tag wrapper for use with the filterpane plugin.
-     *
-     * attribute total - a custom count to be used in pagination
-     * attribute domainBean - the domain bean being filtered.  Ignored if total is specified.
-     */
+    * Grails pagination tag wrapper for use with the filterpane plugin.
+    *
+    * attribute total - a custom count to be used in pagination
+    * attribute domainBean - the domain bean being filtered.  Ignored if total is specified.
+    */
     def paginate = { attrs, body ->
         def filterParams = FilterUtils.extractFilterParams(params)
         def count = 0I
@@ -119,79 +119,103 @@ class FilterTagLib {
             def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
             def action = attrs.action ?: 'filter'
 
+            def getProp = { key, filterOp ->
+                if (key.startsWith('filter.op') && filterOp != null && filterOp != '')
+                    return key[10..-1]
+                else
+                    return false
+            }
+
+            def getDomainProp = { prop ->
+                if (prop.contains('.')) { // association.
+                    def parts = prop.split('\\.')
+                    def domainProp = domainBean.getPropertyByName(parts[0])
+                    domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
+                    return domainProp
+                }
+                else
+                    return domainBean.getPropertyByName(prop)
+            }
+
+            // Revert all date picker values to use pre Grails-1.2 struct.
+            // Could possibly be placed in FilterUtils.extractFilterParams()?
+            filterParams.each { key, filterOp ->
+                def prop = getProp(key, filterOp)
+                if(prop) {
+                    if(filterParams["filter.${prop}"] instanceof Date) {
+                        filterParams["filter.${prop}"] = 'struct'
+                        filterParams["filter.${prop}To"] = 'struct'
+                    }
+                }
+            }
+
             out << """<ul id="${id}" ${clazz}${style}${title}>"""
+
             filterParams.each { key, filterOp ->
                 log.debug "key is ${key}, filterOp is ${filterOp}"
-                if (key.startsWith('filter.op') && filterOp != null && ! ''.equals(filterOp)) {
-                    def prop = key[10..-1]
-					def domainProp
-                    if (prop.contains('.')) { // association.
-                        def parts = prop.split('\\.')
-                        domainProp = domainBean.getPropertyByName(parts[0])
-                        domainProp = domainProp.referencedDomainClass.getPropertyByName(parts[1])
-                    } else {
-                        domainProp = domainBean.getPropertyByName(prop)
-                    }
-					def filterVal = "${filterParams["filter.${prop}"]}"
-					boolean isNumericType = (domainProp.referencedPropertyType
-						? Number.isAssignableFrom(domainProp.referencedPropertyType)
-						: false)
-					boolean isNumericAndBlank = isNumericType && ! "".equals(filterVal.toString().trim())
+                def prop = getProp(key, filterOp)
+                if(prop) {
+                    def domainProp = getDomainProp(prop)
+                    def filterVal = "${filterParams["filter.${prop}"]}"
+                    boolean isNumericType = (domainProp.referencedPropertyType
+                        ? Number.isAssignableFrom(domainProp.referencedPropertyType)
+                        : false)
+                    boolean isNumericAndBlank = isNumericType && ! "".equals(filterVal.toString().trim())
 
                     if (filterVal != null && (!isNumericType || isNumericAndBlank)) {
 
-						if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
-							filterVal = ''
-						} else if (filterVal == 'struct') {
-							filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
-							if (filterVal) {
-								def dateFormat = dtFmt
-								if (dtFmt instanceof Map) {
-									dateFormat = dtFmt[prop]
-								}
-								filterVal = "${g.formatDate(format:dateFormat, date:filterVal)}"
-							}
-						}
-						def filterValTo = null
-						if ('between'.equalsIgnoreCase(filterOp)) {
-							filterValTo = filterParams["filter.${prop}To"]
-							if (filterValTo == 'struct') {
-								filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
-								if (filterValTo) {
-									def dateFormat = dtFmt
-									if (dtFmt instanceof Map) {
-										dateFormat = dtFmt[prop]
-									}
-									filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
-								}
-							}
-						}
-						def newParams = [:]
-						newParams.putAll(filterParams)
-						newParams[key] = '' // <== This is what removes the criteria from the list.
-						def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
-						def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
-						if (filterValTo) {
-							filterValTo = " and \"${filterValTo}\""
-						} else {
-							filterValTo = ''
-						}
-						out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
-					} // end if filterVal != null
-                }
-            }
+                        if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
+                            filterVal = ''
+                        } else if (filterVal == 'struct') {
+                            filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+                            if (filterVal) {
+                                def dateFormat = dtFmt
+                                if (dtFmt instanceof Map) {
+                                    dateFormat = dtFmt[prop]
+                                }
+                                filterVal = g.formatDate(format:dateFormat, date:filterVal)
+                            }
+                        }
+                        def filterValTo = null
+                        if ('between'.equalsIgnoreCase(filterOp)) {
+                            filterValTo = filterParams["filter.${prop}To"]
+                            if (filterValTo == 'struct') {
+                                filterValTo = FilterUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
+                                if (filterValTo) {
+                                    def dateFormat = dtFmt
+                                    if (dtFmt instanceof Map) {
+                                        dateFormat = dtFmt[prop]
+                                    }
+                                    filterValTo = g.formatDate(format:dateFormat, date:filterValTo)
+                                }
+                            }
+                        }
+                        def newParams = [:]
+                        newParams.putAll(filterParams)
+                        newParams[key] = '' // <== This is what removes the criteria from the list.
+                        def removeText = attrs.removeImgDir && attrs.removeImgFile ? "<img src=\"${g.resource(dir:attrs.removeImgDir, file:attrs.removeImgFile)}\" alt=\"(X)\" title=\"Remove\" />" : '(X)'
+                        def removeLink = """<a href="${g.createLink(action:action,params:newParams)}" class="remove">${removeText}</a>"""
+                        if (filterValTo) {
+                            filterValTo = " and \"${filterValTo}\""
+                        } else {
+                            filterValTo = ''
+                        }
+                        out << """<li>${g.message(code:"fp.property.text.${prop}", default:g.message(code:"${domainProp.domainClass}.${domainProp.name}",default:domainProp.naturalName))} ${g.message(code:"fp.op.${filterOp}", default:filterOp)} "${filterVal}"${filterValTo} ${removeLink}</li>"""
+                    } // end if filterVal != null
+                } // if prop
+            } // filterParams.each()
             out << "</ul>"
         }
     }
 
     /**
-     * This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from
-     * the domain class as possible by default.  All attributes from 0.3.1 are still supported,
-     * but are considered deprecated in favor of more sensible alternatives.
-     *
-     * TODO: Document attributes.
-     *
-     */
+    * This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from
+    * the domain class as possible by default.  All attributes from 0.3.1 are still supported,
+    * but are considered deprecated in favor of more sensible alternatives.
+    *
+    * TODO: Document attributes.
+    *
+    */
     def filterPane = {attrs, body ->
 
         // If people want to use the old tag's logic, let them.
@@ -318,14 +342,14 @@ class FilterTagLib {
         def sortedProperties = props.values().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(bean))
 
         /*
-         * Notes: bean.properties contains all properties as DefaultGrailsDomainClassProperty instances, including id, etc.
-         * bean.persistentProperties excludes id and version
-         * bean.constrainedProperties contains the same as persistent, but instances are ConstrainedProperty instances.
-         */
+        * Notes: bean.properties contains all properties as DefaultGrailsDomainClassProperty instances, including id, etc.
+        * bean.persistentProperties excludes id and version
+        * bean.constrainedProperties contains the same as persistent, but instances are ConstrainedProperty instances.
+        */
 
         if (bean && props) {
             // def filterPaneId = attrs.id ?: 'filterPane'
-			def controller = attrs.controller
+            def controller = attrs.controller
             def action = attrs.action ?: 'filter'
             def propsStr = ""
             int propsSize = props.size() - 1
@@ -341,29 +365,29 @@ class FilterTagLib {
                 sortKeys << (props.find { sp == it.value })?.key
             }
 
-			// Added for 0.6.4 as a new attribute to the tag.
-			boolean customForm = "true".equals(attrs.customForm) || attrs.customForm == true
-			def openFormTag = ''
-			def closeFormTag = ''
-			def applyButton = ''
-			if (customForm == false) {
-				def actionURL = controller ? g.createLink(controller:controller, action:action) : action
-				openFormTag = """<form id="${formName}" name="${formName}" action="${actionURL}" method="post">"""
-				closeFormTag = '</form>'
-				applyButton = """<span class="button">
-		${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
-	  </span>"""
-			}
-			
+            // Added for 0.6.4 as a new attribute to the tag.
+            boolean customForm = "true".equals(attrs.customForm) || attrs.customForm == true
+            def openFormTag = ''
+            def closeFormTag = ''
+            def applyButton = ''
+            if (customForm == false) {
+                def actionURL = controller ? g.createLink(controller:controller, action:action) : action
+                openFormTag = """<form id="${formName}" name="${formName}" action="${actionURL}" method="post">"""
+                closeFormTag = '</form>'
+                applyButton = """<span class="button">
+        ${this.actionSubmit(action: action, value: g.message(code:'fp.tag.filterPane.button.apply.text', default:'Apply'))}
+    </span>"""
+            }
+
 
             def output = """\
 <div id="${containerId}"
-     class="filterPane ${containerClass ?: ''}"
-     style="display:none;${containerStyle}">
-  <h2>${title}</h2>
-  ${openFormTag}
-  <input type="hidden" name="filterProperties" value="${propsStr}" />
-  <table cellspacing="0" cellpadding="0" class="filterTable">
+    class="filterPane ${containerClass ?: ''}"
+    style="display:none;${containerStyle}">
+<h2>${title}</h2>
+${openFormTag}
+<input type="hidden" name="filterProperties" value="${propsStr}" />
+<table cellspacing="0" cellpadding="0" class="filterTable">
 """
             sortedProperties.each {
                 def assocName = associationNames[it]
@@ -373,64 +397,64 @@ class FilterTagLib {
                 output += this.buildPropertyRow(bean, it, assocName, attrs, params)
             }
             output += """\
-  </table>
-  <div>
-      ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}"""
+</table>
+<div>
+    ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}"""
 
-	  // Do an if check.  If the messages don't exist, default to the legacy natural name.'
-	  def valueMessagePrefix = attrs.sortValueMessagePrefix ?: 'fp.property.text'
-	  def firstKeyMsg = g.message(code:"${valueMessagePrefix}.${sortKeys[0]}", default:'false')
-	  if (firstKeyMsg.equals('false')) {
-		  output += this.select(name: "sort", from: sortedProperties, keys:sortKeys,
-			optionValue: "naturalName",
-			noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
-			value: params.sort)
-	  } else {
-		  output += this.select(name: "sort", from: sortedProperties, keys: sortKeys,
-			valueMessagePrefix: valueMessagePrefix,
-			noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
-			value: params.sort)
-	  }
+    // Do an if check.  If the messages don't exist, default to the legacy natural name.'
+    def valueMessagePrefix = attrs.sortValueMessagePrefix ?: 'fp.property.text'
+    def firstKeyMsg = g.message(code:"${valueMessagePrefix}.${sortKeys[0]}", default:'false')
+    if (firstKeyMsg.equals('false')) {
+        output += this.select(name: "sort", from: sortedProperties, keys:sortKeys,
+            optionValue: "naturalName",
+            noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
+            value: params.sort)
+    } else {
+        output += this.select(name: "sort", from: sortedProperties, keys: sortKeys,
+            valueMessagePrefix: valueMessagePrefix,
+            noSelection: ['': g.message(code:'fp.tag.filterPane.sort.noSelection.text', default:'Select a Property')],
+            value: params.sort)
+    }
 output += """\
-      &nbsp;
-      ${this.radio(name: "order", value: "asc", checked: params.order == 'asc',)}
-      &nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;
-      ${this.radio(name: "order", value: "desc", checked: params.order == 'desc')}
-      &nbsp;${g.message(code:'fp.tag.filterPane.sort.descending', default:'Descending')}
-  </div>
-  <div class="buttons">
-      <span class="button">
-        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel')}" onclick="return hideElement('${containerId}');" />
-      </span>
-      <span class="button">
-        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear')}" onclick="return clearFilterPane('${formName}');" />
-      </span>
-      ${applyButton}
-  </div>
-  ${closeFormTag}
+    &nbsp;
+    ${this.radio(name: "order", value: "asc", checked: params.order == 'asc',)}
+    &nbsp;${g.message(code:'fp.tag.filterPane.sort.ascending', default:'Ascending')}&nbsp;
+    ${this.radio(name: "order", value: "desc", checked: params.order == 'desc')}
+    &nbsp;${g.message(code:'fp.tag.filterPane.sort.descending', default:'Descending')}
 </div>
-      """
+<div class="buttons">
+    <span class="button">
+        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel')}" onclick="return hideElement('${containerId}');" />
+    </span>
+    <span class="button">
+        <input type="button" value="${g.message(code:'fp.tag.filterPane.button.clear.text', default:'Clear')}" onclick="return clearFilterPane('${formName}');" />
+    </span>
+    ${applyButton}
+</div>
+${closeFormTag}
+</div>
+    """
             out << output
         }
     }
 
 // <editor-fold defaultstate="collapsed">
     /**
-     * Creates a div that can be shown that contains a filter (search) form.
-     *
-     * Parameters
-     * <table>
-     * <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
-     * <tr><td>filterBean</td><td>Yes</td><td>The model class to extract filter properties from.</td></tr>
-     * <tr><td>filterProperties</td><td>Yes</td><td>A list of filterBean's properties to include on the form.</td></tr>
-     * <tr><td>filterPaneId</td><td>The ID attribute for the container div.  Defaults to 'filterPane'</td></tr>
-     * <tr><td>filterPaneStyle</td><td>The style attribute for the container div.</td></tr>
-     * <tr><td>filterPaneClass</td><td>The style class for the container div.</td></tr>
-     * <tr><td>filterPaneTitle</td><td>The H2 (header) text for the form.  Defaults to 'Filter Settings'</td></tr>
-     * <tr><td>filterFormName</td><td>The name attribute for the filter form.  Defaults to 'filterForm'</td></tr>
-     * </table>
-     * @deprecated Consider using the <code>filterPane</code> tag instead.
-     */
+    * Creates a div that can be shown that contains a filter (search) form.
+    *
+    * Parameters
+    * <table>
+    * <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
+    * <tr><td>filterBean</td><td>Yes</td><td>The model class to extract filter properties from.</td></tr>
+    * <tr><td>filterProperties</td><td>Yes</td><td>A list of filterBean's properties to include on the form.</td></tr>
+    * <tr><td>filterPaneId</td><td>The ID attribute for the container div.  Defaults to 'filterPane'</td></tr>
+    * <tr><td>filterPaneStyle</td><td>The style attribute for the container div.</td></tr>
+    * <tr><td>filterPaneClass</td><td>The style class for the container div.</td></tr>
+    * <tr><td>filterPaneTitle</td><td>The H2 (header) text for the form.  Defaults to 'Filter Settings'</td></tr>
+    * <tr><td>filterFormName</td><td>The name attribute for the filter form.  Defaults to 'filterForm'</td></tr>
+    * </table>
+    * @deprecated Consider using the <code>filterPane</code> tag instead.
+    */
     private def filterPaneLegacy (attrs, body) {
         //println "in legacy filterpane.  out is ${out}"
         def markup = new groovy.xml.MarkupBuilder(out)
@@ -601,10 +625,10 @@ output += """\
     private def createFilterControl(def property, def formPropName, def attrs, def params, def opId) {
         def type = property.type
         def out = ""
-        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type) 
+        if (type == String.class || type == char.class || Number.class.isAssignableFrom(type)
                 || type == int.class || type == long.class || type == double.class
                 || type == float.class || type.isEnum()) {
-                
+
             if (attrs.values) {
                 def valueList
 
@@ -639,9 +663,9 @@ output += """\
                 def messageSource = grailsAttributes.getApplicationContext().getBean("messageSource")
                 def locale = org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)
                 if (messageSource.getMessage(valueMessagePrefix, null, null, locale) != null) {
-                 	attrs.valueMessagePrefix = valueMessagePrefix
+                    attrs.valueMessagePrefix = valueMessagePrefix
                 } else if (messageSource.getMessage(valueMessageAltPrefix, null, null, locale) != null) {
-                 	attrs.valueMessagePrefix = valueMessageAltPrefix
+                    attrs.valueMessagePrefix = valueMessageAltPrefix
                 }
                 out = this.select(attrs)
             } else {
@@ -653,11 +677,11 @@ output += """\
             attrs.value = d
             attrs.onChange = "selectDefaultOperator('${opId}')"
             String style = attrs.style ? "style=\"${attrs.style}\"" : ''
-			boolean isDayPrecision = attrs.precision == 'day'
-			String strDayPrecision = ""
-			if (!formPropName.endsWith("To")) {
-				strDayPrecision = """<input type="hidden" name="filter.${property.domainClass.name}.${property.name}_isDayPrecision" value="${isDayPrecision ? 'y' : 'n'}" />"""
-			}
+            boolean isDayPrecision = attrs.precision == 'day'
+            String strDayPrecision = ""
+            if (!formPropName.endsWith("To")) {
+                strDayPrecision = """<input type="hidden" name="filter.${property.domainClass.name}.${property.name}_isDayPrecision" value="${isDayPrecision ? 'y' : 'n'}" />"""
+            }
             out = """<span id="${attrs.id}-container" ${style}>${this.datePicker(attrs)}</span>${strDayPrecision}"""
 
         } else if (type == Boolean.class || type == boolean.class) {
@@ -749,9 +773,9 @@ output += """\
 
         def row = """\
     <tr>
-      <td>${fieldName}</td>
-      <td>${opDropdown}</td>
-      <td>
+    <td>${fieldName}</td>
+    <td>${opDropdown}</td>
+    <td>
         ${this.createFilterControl(property, paramName, filterCtrlAttrs, params, opName)}"""
 
         // For numeric and date types, build the "To" control, in case they select between.
@@ -767,15 +791,15 @@ output += """\
                 showToCtrl = params[opName] == "Between" && filterCtrlAttrs?.value?.trim() != ""
 
             row += """\
-      <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
+    <span style="${showToCtrl ? '' : 'display:none'}" id="between-span-${property.name}">
         &nbsp;${g.message(code:'fp.tag.filterPane.property.betweenValueSeparatorText', default:'and')}&nbsp;
         ${this.createFilterControl(property, filterCtrlAttrs.name, filterCtrlAttrs, params, opName)}
-      </span>
-      """
+    </span>
+    """
         }
 
         row += """\
-      </td>
+    </td>
     </tr>"""
         return row
     }
