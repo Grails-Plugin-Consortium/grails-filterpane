@@ -164,7 +164,7 @@ class FilterService {
                 log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
         }
 
-        if (value) {
+        if(value != null) {
             switch(op) {
                 case 'Equal':
                 criteria.eq(propertyName, value)
