@@ -1,4 +1,5 @@
 package com.zeddware.grails.plugins.filterpane
+import grails.util.GrailsNameUtils
 
 class FilterTagLib {
 
@@ -70,8 +71,8 @@ class FilterTagLib {
     * @since 0.4
     */
     def includes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
-        out << "<script type=\"text/javascript\" src=\"${g.resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: 'css', file: 'fp.css')}\" />\n"
+        out << "<script type=\"text/javascript\" src=\"${g.resource(dir: 'js', file: 'filter.js')}\"></script>"
     }
 
     def isFiltered = { attrs, body ->
@@ -741,7 +742,7 @@ ${closeFormTag}
                 filterCtrlAttrs.values = inList
             }
             else if (property.type.isEnum()) {
-                filterCtrlAttrs.values = property.type.enumConstants
+                filterCtrlAttrs.values = property.type.enumConstants as List
             }
         }
 
@@ -767,7 +768,8 @@ ${closeFormTag}
         if (property.domainClass != bean) { // association.
             fieldNameKey = "fp.property.text.${property.domainClass.propertyName}.${property.name}"
             fieldNamei18NTemplateKey = "${property.domainClass.propertyName}.${property.name}"
-            fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
+			// GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
+			fieldName = "${GrailsNameUtils.getNaturalName(property.domainClass.clazz.simpleName)}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
 
