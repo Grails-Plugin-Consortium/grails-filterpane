@@ -66,7 +66,9 @@
                                    associatedProperties="author.lastName,author.firstName,author.favoriteGenre,coAuthor.lastName,author.birthdate"
                                    excludeProperties="cost"
                                    filterPropertyValues="${[releaseDate:[years:2015..1950,precision:'day'], bookType:[displayProperty:'display'], 'author.favoriteGenre':[displayProperty:'display']]}"
-                                   titleKey="fp.tag.filterPane.titleText"/>
+                                   titleKey="fp.tag.filterPane.titleText"
+								   showSortPanel="no"
+								   fetchModes="${[author:org.hibernate.FetchMode.LAZY]}"/>
         </div>
     </body>
 </html>

@@ -11,12 +11,12 @@ class BookController {
     def list = {
         if(!params.max) params.max = 10
         log.debug("Book is ${Book} or type ${Book.class}")
-        [ bookList: Book.list( params ) ]
+        [ bookList: Book.list( params ), filterParams:[:] ]
     }
 
     def filter = {
         if(!params.max) params.max = 10
-        render( view:'list', model:[ bookList: filterService.filter( params, Book ), bookCount: filterService.count( params, Book ), filterParams: com.zeddware.grails.plugins.filterpane.FilterUtils.extractFilterParams(params), params:params ] )
+        render( view:'list', model:[ bookList: filterService.filter( params, Book ), bookCount: filterService.count( params, Book ), filterParams: com.zeddware.grails.plugins.filterpane.FilterUtils.extractFilterParams(params, true), params:params ] )
     }
         
     def show = {

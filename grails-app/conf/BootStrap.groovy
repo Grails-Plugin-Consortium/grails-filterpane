@@ -30,7 +30,7 @@ class BootStrap {
         new Book(author:hm, title:"Moby Dick", releaseDate:java.sql.Date.valueOf('1851-01-01'), inStock:true, price:9.99, cost:5.25, readPriority:'High', bookType:BookType.Fiction).save()
         new Book(author:ac, title:"The Collected Stories of Arthur C. Clarke", releaseDate:java.sql.Date.valueOf('2002-01-14'), inStock:true, price:13.99, cost:9.99, readPriority:'Normal', bookType:BookType.Fiction).save()
 
-        new Book(author:dm, coAuthor:jl, title:'Beginning iPhone Development', releaseDate:java.sql.Date.valueOf('2008-11-1'), inStock:true, price:39.99, cost:27.99, readPriority:'Normal', bookType:BookType.Reference).save()
+        new Book(author:dm, coAuthor:jl, title:'Beginning iPhone Development', releaseDate:java.sql.Date.valueOf('2008-11-01'), inStock:true, price:39.99, cost:27.99, readPriority:'Normal', bookType:BookType.Reference).save()
     }
 
     def destroy = {
