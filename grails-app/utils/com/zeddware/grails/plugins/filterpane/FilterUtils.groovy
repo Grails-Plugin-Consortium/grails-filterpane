@@ -4,9 +4,11 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.web.converters.ConverterUtil
+import java.text.SimpleDateFormat
 
 class FilterUtils {
     private static Logger log = Logger.getLogger(FilterUtils.class)
+	private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd hh:mm:ss zzz yyyy')
     
     static def makeCamelCasePretty(def string) {
         if (string == null)
@@ -73,6 +75,20 @@ class FilterUtils {
 
     static java.util.Date parseDateFromDatePickerParams(def paramProperty, def params) {
         try {
+			if (params[paramProperty] instanceof Date) {
+
+				return (Date)params[paramProperty]
+
+			} else if (params[paramProperty] instanceof String) {
+
+				try {
+					return df.parse(params[paramProperty])
+				} catch (Exception ex) {
+					/* Do nothing. */
+					log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
+				}
+			}
+
             def year = params["${paramProperty}_year"]
             def month = params["${paramProperty}_month"]
             def day = params["${paramProperty}_day"]
@@ -172,13 +188,25 @@ class FilterUtils {
 
     static def extractFilterParams(params) {
         def ret = [:]
-        params.each {entry ->
+        params.each { entry ->
             if (entry.key.startsWith("filter.") || entry.key.equals("filterProperties") || entry.key.equals("filterBean")) {
                 ret[entry.key] = entry.value
             }
         }
         return ret
     }
+
+	static def extractFilterParams(def params, boolean datesToStruct) {
+		def ret = [:]
+		params.each { entry ->
+			if (entry.key.startsWith("filter.") || entry.key.equals("filterProperties") || entry.key.equals("filterBean")) {
+				def val = entry.value
+				if (datesToStruct && val instanceof Date) val = 'struct'
+                ret[entry.key] = val
+            }
+		}
+		return ret
+	}
 
     static boolean isFilterApplied(params) {
         boolean isApplied = false

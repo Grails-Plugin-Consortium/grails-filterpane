@@ -108,6 +108,18 @@ class FilterService {
                     if (params.max) {
                         maxResults(params.max.toInteger())
                     }
+					if (params.fetchMode) {
+						def fetchModes = null
+						if (params.fetchMode instanceof Map)
+							fetchModes = params.fetchModes
+
+						if (fetchModes) {
+							fetchModes.each { association, mode ->
+								c.fetchMode(association, mode)
+							}
+						}
+					}
+
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
                             order(params.sort, params.order ?: 'asc' )
@@ -248,7 +260,8 @@ class FilterService {
             } else if ( "int".equals(clsName) || "integer".equals(clsName) ) {
                 val = val.isInteger() ? val.toInteger() : null
             } else if ("long".equals(clsName)) {
-                val = val.isLong() ? val.toLong() : null
+                try { val = val.toLong() } //no isShort()
+                catch(java.lang.NumberFormatException e) { val = null }
             } else if ("double".equals(clsName)) {
                 val = val.isDouble() ? val.toDouble() : null
             } else if ("float".equals(clsName)) {

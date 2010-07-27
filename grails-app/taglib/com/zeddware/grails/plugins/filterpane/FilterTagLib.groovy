@@ -1,4 +1,6 @@
 package com.zeddware.grails.plugins.filterpane
+import grails.util.GrailsNameUtils
+import grails.util.GrailsUtil
 
 class FilterTagLib {
 
@@ -70,8 +72,8 @@ class FilterTagLib {
     * @since 0.4
     */
     def includes = {
-        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: pluginContextPath + '/css', file: 'fp.css')}\" />\n"
-        out << "<script type=\"text/javascript\" src=\"${g.resource(dir: pluginContextPath + "/js", file: 'filter.js')}\"></script>"
+        out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: 'css', file: 'fp.css')}\" />\n"
+        out << "<script type=\"text/javascript\" src=\"${g.resource(dir: 'js', file: 'filter.js')}\"></script>"
     }
 
     def isFiltered = { attrs, body ->
@@ -115,7 +117,8 @@ class FilterTagLib {
             def clazz = attrs.class ? "class=\"${attrs.class}\" " : ''
             def style = attrs.style ? "style=\"${attrs.style}\" " : ''
             def dtFmt = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
-            def filterParams = FilterUtils.extractFilterParams(params)
+            def filterParams = FilterUtils.extractFilterParams(params, true)
+			log.info("filterParams is ${filterParams}")
             def domainBean = FilterUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
             def action = attrs.action ?: 'filter'
 
@@ -137,37 +140,30 @@ class FilterTagLib {
                     return domainBean.getPropertyByName(prop)
             }
 
-            // Revert all date picker values to use pre Grails-1.2 struct.
-            // Could possibly be placed in FilterUtils.extractFilterParams()?
-            filterParams.each { key, filterOp ->
-                def prop = getProp(key, filterOp)
-                if(prop) {
-                    if(filterParams["filter.${prop}"] instanceof Date) {
-                        filterParams["filter.${prop}"] = 'struct'
-                        filterParams["filter.${prop}To"] = 'struct'
-                    }
-                }
-            }
-
             out << """<ul id="${id}" ${clazz}${style}${title}>"""
 
             filterParams.each { key, filterOp ->
-                log.debug "key is ${key}, filterOp is ${filterOp}"
+                //log.debug "key is ${key}, filterOp is ${filterOp}"
                 def prop = getProp(key, filterOp)
                 if(prop) {
                     def domainProp = getDomainProp(prop)
-                    def filterVal = "${filterParams["filter.${prop}"]}"
+                    def filterVal = filterParams["filter.${prop}"]
+					log.info("filterVal is type ${filterVal.class.simpleName}")
                     boolean isNumericType = (domainProp.referencedPropertyType
                         ? Number.isAssignableFrom(domainProp.referencedPropertyType)
                         : false)
                     boolean isNumericAndBlank = isNumericType && ! "".equals(filterVal.toString().trim())
+					boolean isDateType = (domainProp.referencedPropertyType
+						? Date.isAssignableFrom(domainProp.referencedPropertyType)
+						: false)
 
                     if (filterVal != null && (!isNumericType || isNumericAndBlank)) {
 
+						log.debug("filterVal for ${key} is ${filterVal} of type ${filterVal.class}")
                         if ('isnull'.equalsIgnoreCase(filterOp) || 'isnotnull'.equalsIgnoreCase(filterOp)) {
                             filterVal = ''
-                        } else if (filterVal == 'struct') {
-                            filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", params)
+                        } else if (isDateType) {
+                            filterVal = FilterUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams)
                             if (filterVal) {
                                 def dateFormat = dtFmt
                                 if (dtFmt instanceof Map) {
@@ -398,6 +394,12 @@ ${openFormTag}
             }
             output += """\
 </table>
+"""
+if (attrs.showSortPanel == null
+	|| ((attrs.showSortPanel instanceof Boolean) && attrs.showSortPanel as boolean == true)
+	|| "true".equalsIgnoreCase(attrs.showSortPanel.toString())) {
+
+		output += """\
 <div>
     ${g.message(code:'fp.tag.filterPane.sort.orderByText', default:'Order by')}"""
 
@@ -422,6 +424,9 @@ output += """\
     ${this.radio(name: "order", value: "desc", checked: params.order == 'desc')}
     &nbsp;${g.message(code:'fp.tag.filterPane.sort.descending', default:'Descending')}
 </div>
+"""
+}
+output += """\
 <div class="buttons">
     <span class="button">
         <input type="button" value="${g.message(code:'fp.tag.filterPane.button.cancel.text', default:'Cancel')}" onclick="return hideElement('${containerId}');" />
@@ -741,7 +746,7 @@ ${closeFormTag}
                 filterCtrlAttrs.values = inList
             }
             else if (property.type.isEnum()) {
-                filterCtrlAttrs.values = property.type.enumConstants
+                filterCtrlAttrs.values = property.type.enumConstants as List
             }
         }
 
@@ -767,7 +772,8 @@ ${closeFormTag}
         if (property.domainClass != bean) { // association.
             fieldNameKey = "fp.property.text.${property.domainClass.propertyName}.${property.name}"
             fieldNamei18NTemplateKey = "${property.domainClass.propertyName}.${property.name}"
-            fieldName = "${property.domainClass.naturalName}'s ${fieldName}"
+			// GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
+			fieldName = "${GrailsNameUtils.getNaturalName(property.domainClass.clazz.simpleName)}'s ${fieldName}"
         }
         fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
 
