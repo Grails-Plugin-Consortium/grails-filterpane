@@ -289,7 +289,11 @@ class FilterPaneService {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 val = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
             } else if ("currency".equals(clsName)) {
-				val = Currency.getInstance(val)
+				try {
+					val = Currency.getInstance(val)
+				} catch (IllegalArgumentException iae) {
+					// Do nothing.  
+				}
 			}
         }
         return val
