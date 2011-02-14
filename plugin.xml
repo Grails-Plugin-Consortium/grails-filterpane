@@ -1,0 +1,19 @@
+<plugin name='filterpane' version='2.0' grailsVersion='1.3.3 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/filterpane</documentation>
+  <resources>
+    <resource>BuildConfig</resource>
+    <resource>Config</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>org.grails.plugin.filterpane.FilterPaneService</resource>
+    <resource>org.grails.plugin.filterpane.FilterPaneTagLib</resource>
+    <resource>org.grails.plugin.filterpane.FilterPaneUtils</resource>
+  </resources>
+  <dependencies />
+  <behavior />
+</plugin>
