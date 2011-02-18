@@ -13,6 +13,66 @@ class FilterPaneService {
     def count(def params, Class filterClass) {
         return filter(params, filterClass, true)
     }
+	
+	private def filterParse(def c, def domainClass, def params, def filterParams, def filterOpParams, def doCount) {
+		// First pull out the op map and store a list of its keys.
+		def keyList = []
+		keyList.addAll(filterOpParams.keySet())
+		keyList = keyList.sort() // Sort them to get nested properties next to each other.
+		
+		if (log.isDebugEnabled()) log.debug("op Keys = ${keyList}")
+		
+		// op = map entry.  op.key = property name.  op.value = operator.
+		// params[op.key] is the value
+		keyList.each() { propName ->
+			if (log.isDebugEnabled()) log.debug("\n=============================================================================.")
+			if (log.isDebugEnabled()) log.debug("== ${propName}")
+		
+			// Skip associated property entries.  (They'll have a dot in them.)  We'll use the map instead later.
+			if (! propName.contains(".")) {
+		
+				def filterOp = filterOpParams[propName]
+				def rawValue = filterParams[propName]
+				def rawValue2 = filterParams["${propName}To"]
+		
+				// If the filterOp is a Map, then the propName is an association (e.g. Book.author)
+				if (filterOp instanceof Map && rawValue instanceof Map) {
+					def nextFilterParams = rawValue
+					def nextFilterOpParams = filterOp
+		
+					// Are any of the values non-empty?
+					if (nextFilterOpParams.values().find {it.size() > 0} != null) {
+		
+						if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
+		
+						c."${propName}"() {
+							
+							def nextDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+							def nextDomainClass = nextDomainProp.referencedDomainClass
+							
+							filterParse(c, nextDomainClass, params, nextFilterParams, nextFilterOpParams, doCount)
+		
+							// If they want to sort by an associated property, need to do it here.
+							if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
+								def parts = params.sort.split("\\.")
+								if (parts.size() == 2) {
+									order(parts[1], params.order ?: 'asc')
+								}
+							}
+						} // end c.propName closure.
+					} // end if any values not empty.
+				} else {
+					//log.debug("propName is ${propName}")
+					def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+					def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
+					def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
+					if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
+					this.addCriterion(c, propName, filterOp, val, val2, filterParams, thisDomainProp)
+				}
+			}
+			if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
+		} // end each op
+	} // end filterParse
 
     private def filter(def params, Class filterClass, boolean doCount) {
         if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
@@ -30,73 +90,7 @@ class FilterPaneService {
             def criteriaClosure = {
                 def mc = filterClass.getMetaClass()
                 and {
-                    // First pull out the op map and store a list of its keys.
-                    def keyList = []
-                    keyList.addAll(filterOpParams.keySet())
-                    keyList = keyList.sort() // Sort them to get nested properties next to each other.
-
-                    if (log.isDebugEnabled()) log.debug("op Keys = ${keyList}")
-
-                    // op = map entry.  op.key = property name.  op.value = operator.
-                    // params[op.key] is the value
-                    keyList.each() { propName ->
-                        if (log.isDebugEnabled()) log.debug("\n=============================================================================.")
-                        if (log.isDebugEnabled()) log.debug("== ${propName}")
-
-                        // Skip associated property entries.  (They'll have a dot in them.)  We'll use the map instead later.
-                        if (! propName.contains(".")) {
-
-                            def filterOp = filterOpParams[propName]
-                            def rawValue = filterParams[propName]
-                            def rawValue2 = filterParams["${propName}To"]
-
-                            // If the filterOp is a Map, then the propName is an association (e.g. Book.author)
-                            if (filterOp instanceof Map && rawValue instanceof Map) {
-
-                                // Are any of the values non-empty?
-                                if (filterOp.values().find {it.length() > 0} != null) {
-
-                                    if (log.isDebugEnabled()) log.debug("== Adding association ${propName}")
-
-                                    c."${propName}"() {
-
-                                        filterOp.each() { opEntry ->
-                                            def associatedDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                                            def associatedDomainClass = associatedDomainProp.referencedDomainClass
-                                            def realPropName = opEntry.key
-                                            def realOp = opEntry.value
-											log.debug("rawValue2 is ${rawValue2}, realPropName is ${realPropName}")
-                                            def realRawValue = rawValue[realPropName]
-                                            def realRawValue2 = rawValue != null ? rawValue["${realPropName}To"] : null
-                                            def parsingName = "${propName}.${realPropName}"
-                                            def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, associatedDomainClass, realPropName)
-//                                            log.debug("real prop name is ${realPropName}")
-                                            def val  = this.parseValue(thisDomainProp, realRawValue, filterParams, parsingName)
-                                            def val2 = this.parseValue(thisDomainProp, realRawValue2, filterParams, parsingName)
-//                                            log.debug("val is ${val} and val2 is ${val2}")
-
-                                            this.addCriterion(c, realPropName, realOp, val, val2, filterParams, thisDomainProp)
-                                        }
-                                        if (!doCount && params.sort && params.sort.startsWith("${propName}.")) {
-                                            def parts = params.sort.split("\\.")
-                                            if (parts.size() == 2) {
-                                                associationList << propName
-                                                order(parts[1], params.order ?: 'asc')
-                                            }
-                                        }
-                                    } // end c.propName closure.
-                                } // end if any values not empty.
-                            } else {
-                                log.debug("propName is ${propName}")
-                                def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                                def val  = this.parseValue(thisDomainProp, rawValue, filterParams, null)
-                                def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
-                                if (log.isDebugEnabled()) log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
-                                this.addCriterion(c, propName, filterOp, val, val2, filterParams, thisDomainProp)
-                            }
-                        }
-                        if (log.isDebugEnabled()) log.debug("==============================================================================='\n")
-                    } // end each op
+                    filterParse(c, domainClass, params, filterParams, filterOpParams, doCount)
                 } // end and
 
                 if (doCount) {
@@ -126,14 +120,16 @@ class FilterPaneService {
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
                             order(params.sort, params.order ?: 'asc' )
-                        } else {
+                        }
+						// sorting by association is now done when adding the association (filterParse)
+						/* else {
                             def parts = params.sort.split("\\.")
                             if (!associationList.contains(parts[0])) {
                                 c."${parts[0]}" {
                                     order(parts[1], params.order ?: 'asc')
                                 }
                             }
-                        }
+                        }*/
                     } else if (defaultSort != null) {
 						if (log.debugEnabled) log.debug('No sort specified and default is specified on domain.  Using it.')
 						order(defaultSort, params.order ?: 'asc')
@@ -150,11 +146,11 @@ class FilterPaneService {
 
             }
             if (doCount && results instanceof List) {
-                //println "Returning count of 0"
                 results = 0I
             }
             return results
         } else {
+			// If no valid filters were submitting, run a count or list.  (Unfiltered data)
             if (doCount) {
                 return filterClass.count()//0I
             }
