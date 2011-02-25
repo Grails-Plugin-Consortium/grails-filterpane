@@ -506,15 +506,23 @@ class FilterPaneTagLib {
 		int index = 1
 		
 		while (association && index < parts.size()) {
-			
+			log.debug("grokking association ${association}")
 			refDomain = association.referencedDomainClass
-			refProperty = refDomain.persistentProperties.find { it.name == parts[index] }
-			association = (refProperty.association == true && refProperty.type.isEnum() == false) ? refProperty : null
+			if ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) {
+				refProperty = refDomain.identifier
+			} else {
+				refProperty = refDomain.persistentProperties.find { it.name == parts[index] }
+			}
+			log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
+			association = (refProperty?.association == true && refProperty?.type.isEnum() == false) ? refProperty : null
 			index += 1
 		}
 		
 		if (refProperty && ! refProperty.association) {
+			log.debug("adding association ${dottedName}")
 			finalProps[refProperty] = dottedName
+		} else {
+			log.debug("not adding association ${dottedName}")
 		}
 	}
 	
