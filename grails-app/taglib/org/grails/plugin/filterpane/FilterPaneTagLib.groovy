@@ -117,6 +117,128 @@ class FilterPaneTagLib {
 		out << g.paginate(attrs, body)
 	}
 	
+	def currentCriteria = { attrs, body ->
+		def renderModel = [:]
+		renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
+		if (renderModel.isFiltered == true) {
+			renderModel.id = attrs.identity ?: 'filterPaneCurrentCriteria'
+			renderModel.title = attrs.title ?: ''
+			renderModel.styleClass = attrs['class'] ?: ''
+			renderModel.style = attrs.style ?: ''
+			renderModel.dateFormat = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
+			renderModel.criteria = []
+			renderModel.removeImgDir = attrs.removeImgDir ?: ''
+			renderModel.removeImgFile = attrs.removeImgFile
+			renderModel.action = attrs.action ?: 'filter'
+			
+			def filterParams = FilterPaneUtils.extractFilterParams(params, true)
+			def domainBean = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
+			
+			def getProp = { key, filterOp ->
+				if (key.startsWith('filter.op') && filterOp != null && filterOp != '')
+					return key[10..-1]
+				else
+					return false
+			}
+			
+			def getDomainProp = { prop ->
+				
+				if (prop.contains('.')) { // association.
+					def parts = prop.split('\\.')
+					def domainProp
+					def domainObj = domainBean
+					int lastPartIndex = parts.size()-1
+					for (int i = 0; i < lastPartIndex; i++) {
+						domainProp = domainObj.getPropertyByName(parts[i])
+						domainObj = domainProp.referencedDomainClass 
+					} 
+					
+					domainProp = domainObj.getPropertyByName(parts[lastPartIndex])
+					return domainProp
+				}
+				else
+					return domainBean.getPropertyByName(prop)
+			}
+			
+			log.debug("=================================================================")
+			log.debug("current criteria filterParams: ${filterParams}")
+			
+			filterParams.each { key, filterOp -> 
+				
+				def criteriaModel = [:]
+				def prop = getProp(key, filterOp)
+				
+				if (prop != false) {
+					log.debug("=================================================================")
+					log.debug("prop ${prop}")
+					def domainProp = getDomainProp(prop)
+					def filterValue = filterParams["filter.${prop}"]
+					def filterValueTo = null
+					boolean isNumericType = (domainProp.referencedPropertyType
+						? Number.isAssignableFrom(domainProp.referencedPropertyType)
+						: false)
+					boolean isNumericAndBlank = isNumericType && ! "".equals(filterValue.toString().trim())
+					boolean isDateType = (domainProp.referencedPropertyType
+						? Date.isAssignableFrom(domainProp.referencedPropertyType)
+						: false)
+					if (filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
+						
+						def lcFilterOp = isDateType ? 'date' : filterOp.toLowerCase()
+						switch(lcFilterOp) {
+							
+							case 'isnull':
+							case 'isnotnull':
+								filterValue = ''
+								break
+							case 'date':
+								filterVaue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams)
+								if (filterValue) {
+									def df = renderModel.dateFormat
+									if (df instanceof Map) {
+										df = renderModel.dateFormat[prop]
+									}
+									filterValue = g.formatDate(format:df, date: filterValue)
+								}
+								break
+							case 'between':
+								filterValueTo = filterParams["filter.${prop}To"]
+								if (filterValueTo == 'struct') {
+									filterValueTo = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
+									if (filterValueTo) {
+										def df = renderModel.dateFormat
+										if (df instanceof Map) {
+											df = renderModel.dateFormat[prop]
+										}
+										filterValueTo = g.formatDate(format:df, date:filterValueTo)
+									}
+								}
+								break
+						} // end switch.
+						
+						criteriaModel.filterOp = filterOp
+						criteriaModel.filterValue = filterValue
+						criteriaModel.filterValueTo = filterValueTo
+						criteriaModel.params = [:]
+						criteriaModel.params.putAll(filterParams)
+						criteriaModel.params.sort = params.sort
+						criteriaModel.params.order = params.order
+						criteriaModel.params[key] = '' // <== This is what removes the criteria from the list.
+						criteriaModel.domainProp = domainProp // <-- TODO: look at this and resolve it how it is done on filterPane tag.
+						criteriaModel.prop = prop
+						criteriaModel.fieldName = resolveFieldName(prop, domainProp, prop.contains('.'))
+						log.debug("=================================================================")
+						log.debug("criteriaModel: ${criteriaModel}")
+						renderModel.criteria << criteriaModel						
+					} // end if fv != null
+				}
+			}
+			log.debug("=================================================================")
+			log.debug("renderModel: ${renderModel}")
+			out << g.render(template:"/filterpane/currentCriteria", plugin:'filterpane', model:renderModel)
+		}
+		
+	}
+	
 	def filterPane = { attrs, body ->
 		
 		if (!attrs.domain) {
@@ -242,7 +364,7 @@ class FilterPaneTagLib {
 			
 			
 			def name = "filter.${propertyKey}"
-			map.ctrlAttrs  = [name:name, value:params[name], opName:opName]//, domainProperty:sp]
+			map.ctrlAttrs  = [name:name, value:params[name], opName:opName, domain:sp.domainClass.name, propertyName: sp.name ]//, domainProperty:sp]
 			addFilterPropertyValues(attrs, map.ctrlAttrs, propertyKey)
 			
 			def opKeys = []
@@ -331,21 +453,10 @@ class FilterPaneTagLib {
 				map.ctrlAttrs.style = 'display:none;'
 			}
 			
-			// Take care of the name (label).  Yuck!
-			def fieldNameKey = "fp.property.text.${propertyKey}" // Default.
-			def fieldNameAltKey = fieldNameKey // default for alt key.
-			def fieldNamei18NTemplateKey = "${sp.domainClass.name}.${sp.name}"
-			def fieldName = sp.naturalName
-	
-			if (sp.domainClass != domain) { // association.
-				fieldNameKey = "fp.property.text.${sp.domainClass.propertyName}.${sp.name}"
-				fieldNamei18NTemplateKey = "${sp.domainClass.propertyName}.${sp.name}"
-				// GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
-				def prefix = grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)
-				fieldName = "${prefix}'s ${fieldName}"
-			}
-			fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
+			def fieldName = resolveFieldName(propertyKey, sp, propertyKey.contains('.'))
+			
 			map.fieldLabel = fieldName
+
 			// Add this new field name as a property of this instance
 			sp.metaClass.getFilterPaneFieldName = {->
 				return fieldName	
@@ -537,5 +648,24 @@ class FilterPaneTagLib {
 	
 	private boolean resolveBoolAttrValue(def attr) {
 		return 'y'.equalsIgnoreCase(attr) || 't'.equalsIgnoreCase(attr) || "yes".equalsIgnoreCase(attr) || "true".equalsIgnoreCase(attr) 
+	}
+	
+	private String resolveFieldName(def propName, def sp, boolean isAssociation) {
+		// Take care of the name (label).  Yuck!
+		def fieldNameKey = "fp.property.text.${propName}" // Default.
+		def fieldNameAltKey = fieldNameKey // default for alt key.
+		def fieldNamei18NTemplateKey = "${sp.domainClass.name}.${sp.name}"
+		def fieldName = sp.naturalName
+
+		if (isAssociation == true) { // association.
+			fieldNameKey = "fp.property.text.${sp.domainClass.propertyName}.${sp.name}"
+			fieldNamei18NTemplateKey = "${sp.domainClass.propertyName}.${sp.name}"
+			// GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
+			def prefix = grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)
+			fieldName = "${prefix}'s ${fieldName}"
+		}
+		fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
+		
+		return fieldName
 	}
 }

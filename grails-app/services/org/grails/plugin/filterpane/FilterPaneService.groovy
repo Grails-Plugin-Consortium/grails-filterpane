@@ -255,12 +255,14 @@ class FilterPaneService {
             log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} val is '${val}', clsName is ${clsName}")
 
             if (domainProperty.isEnum()) {
+				def tempVal = val
 				val = null // default to null.  If it's valid, it'll get replaced with the real value.
 				try {
-					if (val.toString().length() > 0) {
-	                	val = Enum.valueOf(cls, val.toString())
+					if (tempVal.toString().length() > 0) {
+	                	val = Enum.valueOf(cls, tempVal.toString())
 					}
 				} catch(IllegalArgumentException iae) {
+					log.debug("Enum valueOf failed.  val is ${tempVal}")
 					// Ignore this.  val is not a valid enum value (probably an empty string).
 				}
             } else if ("boolean".equals(clsName)) {
