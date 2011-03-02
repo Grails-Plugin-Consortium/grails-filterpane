@@ -119,7 +119,7 @@ class FilterPaneTagLib {
 	
 	def currentCriteria = { attrs, body ->
 		def renderModel = [:]
-		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 't')
+		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
 		renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
 		if (renderModel.isFiltered == true) {
 			renderModel.id = attrs.identity ?: 'filterPaneCurrentCriteria'
@@ -161,8 +161,8 @@ class FilterPaneTagLib {
 					return domainBean.getPropertyByName(prop)
 			}
 			
-			log.debug("=================================================================")
-			log.debug("current criteria filterParams: ${filterParams}")
+			//log.debug("=================================================================")
+			//log.debug("current criteria filterParams: ${filterParams}")
 			
 			filterParams.each { key, filterOp -> 
 				
@@ -170,8 +170,8 @@ class FilterPaneTagLib {
 				def prop = getProp(key, filterOp)
 				
 				if (prop != false) {
-					log.debug("=================================================================")
-					log.debug("prop ${prop}")
+					//log.debug("=================================================================")
+					//log.debug("prop ${prop}")
 					def domainProp = getDomainProp(prop)
 					def filterValue = filterParams["filter.${prop}"]
 					def filterValueTo = null
@@ -227,14 +227,14 @@ class FilterPaneTagLib {
 						criteriaModel.domainProp = domainProp // <-- TODO: look at this and resolve it how it is done on filterPane tag.
 						criteriaModel.prop = prop
 						criteriaModel.fieldName = resolveFieldName(prop, domainProp, prop.contains('.'), useFullAssociationPath)
-						log.debug("=================================================================")
-						log.debug("criteriaModel: ${criteriaModel}")
+						//log.debug("=================================================================")
+						//log.debug("criteriaModel: ${criteriaModel}")
 						renderModel.criteria << criteriaModel						
 					} // end if fv != null
 				}
 			}
-			log.debug("=================================================================")
-			log.debug("renderModel: ${renderModel}")
+			//log.debug("=================================================================")
+			//log.debug("renderModel: ${renderModel}")
 			out << g.render(template:"/filterpane/currentCriteria", plugin:'filterpane', model:renderModel)
 		}
 		
@@ -256,7 +256,7 @@ class FilterPaneTagLib {
 			return
 		}
 		
-		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 't')
+		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
 		
 		// Set up the render model.
 		
