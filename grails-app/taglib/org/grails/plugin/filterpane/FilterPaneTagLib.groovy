@@ -119,6 +119,7 @@ class FilterPaneTagLib {
 	
 	def currentCriteria = { attrs, body ->
 		def renderModel = [:]
+		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 't')
 		renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
 		if (renderModel.isFiltered == true) {
 			renderModel.id = attrs.identity ?: 'filterPaneCurrentCriteria'
@@ -225,7 +226,7 @@ class FilterPaneTagLib {
 						criteriaModel.params[key] = '' // <== This is what removes the criteria from the list.
 						criteriaModel.domainProp = domainProp // <-- TODO: look at this and resolve it how it is done on filterPane tag.
 						criteriaModel.prop = prop
-						criteriaModel.fieldName = resolveFieldName(prop, domainProp, prop.contains('.'))
+						criteriaModel.fieldName = resolveFieldName(prop, domainProp, prop.contains('.'), useFullAssociationPath)
 						log.debug("=================================================================")
 						log.debug("criteriaModel: ${criteriaModel}")
 						renderModel.criteria << criteriaModel						
@@ -254,6 +255,8 @@ class FilterPaneTagLib {
 			log.error("Unable to resolve domain class for ${attrs.domain}")
 			return
 		}
+		
+		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 't')
 		
 		// Set up the render model.
 		
@@ -453,7 +456,8 @@ class FilterPaneTagLib {
 				map.ctrlAttrs.style = 'display:none;'
 			}
 			
-			def fieldName = resolveFieldName(propertyKey, sp, propertyKey.contains('.'))
+			// Note: propertyKey is the dotted name
+			def fieldName = resolveFieldName(propertyKey, sp, propertyKey.contains('.'), useFullAssociationPath)
 			
 			map.fieldLabel = fieldName
 
@@ -615,25 +619,27 @@ class FilterPaneTagLib {
 		def refDomain = null
 		def refProperty = null
 		int index = 1
+		def fieldNamePrefix = ""
 		
 		while (association && index < parts.size()) {
-			log.debug("grokking association ${association}")
 			refDomain = association.referencedDomainClass
+			fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.clazz.simpleName)}'s "
 			if ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) {
 				refProperty = refDomain.identifier
 			} else {
 				refProperty = refDomain.persistentProperties.find { it.name == parts[index] }
 			}
-			log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
+			//log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
 			association = (refProperty?.association == true && refProperty?.type.isEnum() == false) ? refProperty : null
 			index += 1
 		}
 		
 		if (refProperty && ! refProperty.association) {
 			log.debug("adding association ${dottedName}")
+			refProperty.metaClass.getFilterPaneFieldNamePrefix = {-> return fieldNamePrefix }
 			finalProps[refProperty] = dottedName
 		} else {
-			log.debug("not adding association ${dottedName}")
+			//log.debug("not adding association ${dottedName}")
 		}
 	}
 	
@@ -650,7 +656,7 @@ class FilterPaneTagLib {
 		return 'y'.equalsIgnoreCase(attr) || 't'.equalsIgnoreCase(attr) || "yes".equalsIgnoreCase(attr) || "true".equalsIgnoreCase(attr) 
 	}
 	
-	private String resolveFieldName(def propName, def sp, boolean isAssociation) {
+	private String resolveFieldName(def propName, def sp, boolean isAssociation, boolean useFullAssociationPath) {
 		// Take care of the name (label).  Yuck!
 		def fieldNameKey = "fp.property.text.${propName}" // Default.
 		def fieldNameAltKey = fieldNameKey // default for alt key.
@@ -661,8 +667,13 @@ class FilterPaneTagLib {
 			fieldNameKey = "fp.property.text.${sp.domainClass.propertyName}.${sp.name}"
 			fieldNamei18NTemplateKey = "${sp.domainClass.propertyName}.${sp.name}"
 			// GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
-			def prefix = grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)
-			fieldName = "${prefix}'s ${fieldName}"
+			def prefix = ""
+			if (sp.filterPaneFieldNamePrefix && useFullAssociationPath) {
+				prefix = sp.filterPaneFieldNamePrefix
+			} else {
+				prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)}'s "
+			}
+			fieldName = "${prefix}${fieldName}"
 		}
 		fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
 		
