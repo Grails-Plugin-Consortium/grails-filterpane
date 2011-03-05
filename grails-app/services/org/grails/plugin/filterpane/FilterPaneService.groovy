@@ -115,8 +115,12 @@ class FilterPaneService {
 							}
 						}
 					}
-
-					def defaultSort = filterClass?.mapping?.mapping?.sort
+ 					def defaultSort = null
+ 					try {
+ 						defaultSort = filterClass?.mapping?.mapping?.sort
+ 					} catch (Exception ex) {
+ 						log.info("No mapping property found on filterClass ${filterClass}")
+ 					}
                     if (params.sort) {
                         if (params.sort.indexOf('.') < 0) { // if not an association..
                             order(params.sort, params.order ?: 'asc' )
