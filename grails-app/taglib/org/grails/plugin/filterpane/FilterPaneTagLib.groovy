@@ -246,7 +246,7 @@ class FilterPaneTagLib {
 			log.error("domain attribute is required")
 			return
 		}
-		
+
 		def renderModel = [customForm:false]
 		
 		// Validate required info
@@ -350,8 +350,7 @@ class FilterPaneTagLib {
 			addAssociatedProperty(finalProps, dottedName, associatedProps)
 		}
 		
-		debug {"${finalProps.size()} final props: ${finalProps}"
-		}
+		debug {"${finalProps.size()} final props: ${finalProps}"}
 		
 		// sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass 
 		def sortedProps = finalProps.keySet().asList().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain))
@@ -462,9 +461,7 @@ class FilterPaneTagLib {
 			map.fieldLabel = fieldName
 
 			// Add this new field name as a property of this instance
-			sp.metaClass.getFilterPaneFieldName = {->
-				return fieldName	
-			}
+			sp.metaClass.getFilterPaneFieldName = {-> new String(fieldName) }
 			
 			// For numeric and date types, build the "To" control, in case they select between.
 			if (type == "numeric" || type == "date") {
@@ -497,7 +494,7 @@ class FilterPaneTagLib {
 		log.debug("Sorted props: ${sortedProps}")
 		log.debug("Sort keys: ${sortKeys}")
 		
-		renderModel.sortModel = [sortValueMessagePrefix:attrs.sortValueMessagePrefix ?: 'fp.property.text',
+		renderModel.sortModel = [sortValueMessagePrefix:attrs.sortValueMessagePrefix ?: null,
 			sortedProperties: sortedProps, 
 			sortKeys: sortKeys,
 			sortValue: params.sort ?: "",
@@ -675,7 +672,16 @@ class FilterPaneTagLib {
 			}
 			fieldName = "${prefix}${fieldName}"
 		}
+		
+		/*debug {->
+			log.debug("fieldNameKey is ${fieldNameKey}")
+			log.debug("fieldNameAltKey is ${fieldNameAltKey}")
+			log.debug("fieldNamei18NTemplateKey is ${fieldNamei18NTemplateKey}")
+			log.debug("fieldName is ${fieldName}")
+		}*/
+		
 		fieldName = g.message(code:fieldNameKey, default: g.message(code:fieldNameAltKey, default:g.message(code:fieldNamei18NTemplateKey, default:fieldName)))
+		//debug { -> log.debug("final fieldName is ${fieldName}") }
 		
 		return fieldName
 	}
