@@ -122,7 +122,7 @@ class FilterPaneTagLib {
 		boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
 		renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
 		if (renderModel.isFiltered == true) {
-			renderModel.id = attrs.identity ?: 'filterPaneCurrentCriteria'
+			renderModel.id = attrs.id ?: 'filterPaneCurrentCriteria'
 			renderModel.title = attrs.title ?: ''
 			renderModel.styleClass = attrs['class'] ?: ''
 			renderModel.style = attrs.style ?: ''
