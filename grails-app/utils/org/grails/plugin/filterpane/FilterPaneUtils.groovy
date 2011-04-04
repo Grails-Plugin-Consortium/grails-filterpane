@@ -36,6 +36,7 @@ class FilterPaneUtils {
 			def day = params["${paramProperty}_day"]
 			def hour = params["${paramProperty}_hour"]
 			def minute = params["${paramProperty}_minute"]
+			boolean paramExists = (minute || hour || day || month || year)
 
 //            if (log.isDebugEnabled()) {
 //                log.debug("Parsing date from params: ${year} ${month} ${day} ${hour} ${minute}")
@@ -71,7 +72,7 @@ class FilterPaneUtils {
 				value += '59:59.999'
 			}
 
-			if (value == '') { // Don't even bother parsing.  Just return null if blank.
+			if (value == '' || ! paramExists) { // Don't even bother parsing.  Just return null if blank.
 				return null
 			}
 

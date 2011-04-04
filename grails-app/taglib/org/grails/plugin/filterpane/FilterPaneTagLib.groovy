@@ -123,6 +123,7 @@ class FilterPaneTagLib {
 		renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
 		if (renderModel.isFiltered == true) {
 			renderModel.id = attrs.id ?: 'filterPaneCurrentCriteria'
+			renderModel.quoteValues = resolveBoolAttrValue(attrs.quoteValues ?: 'y')
 			renderModel.title = attrs.title ?: ''
 			renderModel.styleClass = attrs['class'] ?: ''
 			renderModel.style = attrs.style ?: ''
@@ -170,8 +171,6 @@ class FilterPaneTagLib {
 				def prop = getProp(key, filterOp)
 				
 				if (prop != false) {
-					//log.debug("=================================================================")
-					//log.debug("prop ${prop}")
 					def domainProp = getDomainProp(prop)
 					def filterValue = filterParams["filter.${prop}"]
 					def filterValueTo = null
@@ -182,24 +181,34 @@ class FilterPaneTagLib {
 					boolean isDateType = (domainProp.referencedPropertyType
 						? Date.isAssignableFrom(domainProp.referencedPropertyType)
 						: false)
+					boolean isEnumType = domainProp?.referencedPropertyType?.isEnum()
 					if (filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
+					  
+					  if (isDateType) {
+					    filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams)
+							if (filterValue) {
+								def df = renderModel.dateFormat
+								if (df instanceof Map) {
+									df = renderModel.dateFormat[prop]
+								}
+								filterValue = g.formatDate(format:df, date: filterValue)
+							}
+					  } else if (isEnumType) {
+					    def tempMap = [:]
+					    addFilterPropertyValues(attrs, tempMap, prop)
+					    def enumValue = Enum.valueOf(domainProp.referencedPropertyType, filterValue)
+  						if (enumValue && tempMap.displayProperty) {
+  						  filterValue = tempMap.displayProperty == 'name' ? enumValue.name() : enumValue[tempMap.displayProperty]
+  					  }
+  					  
+					  }
 						
-						def lcFilterOp = isDateType ? 'date' : filterOp.toLowerCase()
+						def lcFilterOp = filterOp.toLowerCase()
 						switch(lcFilterOp) {
 							
 							case 'isnull':
 							case 'isnotnull':
 								filterValue = ''
-								break
-							case 'date':
-								filterVaue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams)
-								if (filterValue) {
-									def df = renderModel.dateFormat
-									if (df instanceof Map) {
-										df = renderModel.dateFormat[prop]
-									}
-									filterValue = g.formatDate(format:df, date: filterValue)
-								}
 								break
 							case 'between':
 								filterValueTo = filterParams["filter.${prop}To"]
@@ -401,13 +410,12 @@ class FilterPaneTagLib {
 					sp.type.enumConstants.each { 
 						def value = it
 						if (map.ctrlAttrs.valueProperty) {
-							if (map.ctrlAttrs.valueProperty == 'ordinal') {
-								value = it.ordinal()
-							} else {
-								value = it[map.ctrlAttrs.valueProperty]
-							}
+						  value = map.ctrlAttrs.valueProperty == 'ordinal' ? it.ordinal() : it[map.ctrlAttrs.valueProperty]
 						}
-						def display = map.ctrlAttrs.displayProperty == 'name' ? it.name() : it[map.ctrlAttrs.displayProperty]
+						def display = value
+						if (map.ctrlAttrs.displayProperty) {
+						  display = map.ctrlAttrs.displayProperty == 'name' ? it.name() : it[map.ctrlAttrs.displayProperty]
+					  }
 						valueList << [id:value, name:display]
 					}
 					map.ctrlAttrs.values = valueList
