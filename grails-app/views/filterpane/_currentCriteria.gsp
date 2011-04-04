@@ -4,9 +4,19 @@
 			<li>
 				${c.fieldName} 
 				<g:message code="fp.op.${c.filterOp}" default="${c.filterOp}" />
-				"${c.filterValue}"
-				<g:if test="${c.filterOp == 'between'}">
-					and "${c.filterValueTo}""
+				<g:if test="${quoteValues == true}">
+					"${c.filterValue}"
+				</g:if>
+				<g:else>
+					${c.filterValue}
+				</g:else>
+				<g:if test="${'between'.equalsIgnoreCase(c.filterOp)}">
+					<g:if test="${quoteValues == true}">
+						and "${c.filterValueTo}"
+					</g:if>
+					<g:else>
+						and ${c.filterValueTo}
+					</g:else>
 				</g:if>
 				<a href="${g.createLink(action:action,params:c.params)}" class="remove">
 					<g:if test="${removeImgFile != null}">
