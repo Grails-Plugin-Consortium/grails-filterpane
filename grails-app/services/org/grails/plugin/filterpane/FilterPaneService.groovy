@@ -7,11 +7,11 @@ class FilterPaneService {
     def grailsApplication
 
     def filter(def params, Class filterClass) {
-        return filter(params, filterClass, false)
+        return doFilter(params, filterClass, false)
     }
 
     def count(def params, Class filterClass) {
-        return filter(params, filterClass, true)
+        return doFilter(params, filterClass, true)
     }
 	
 	private def filterParse(def c, def domainClass, def params, def filterParams, def filterOpParams, def doCount) {
@@ -74,7 +74,7 @@ class FilterPaneService {
 		} // end each op
 	} // end filterParse
 
-    private def filter(def params, Class filterClass, boolean doCount) {
+    private def doFilter(def params, Class filterClass, boolean doCount) {
         if (log.isDebugEnabled()) log.debug("filtering... params = ${params.toMapString()}")
         //def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
