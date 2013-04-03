@@ -436,7 +436,7 @@ class FilterPaneTagLib {
 				map.ctrlAttrs.remove('values') // transferred to "from" property
 				map.ctrlAttrs.noSelection = ['':'']
 				
-				def valueMessagePrefix = "fp.property.text.${sp.name}"
+				def valueMessagePrefix = map.ctrlAttrs.valueMessagePrefix ?: "fp.property.text.${sp.name}"
 				def valueMessageAltPrefix = "${sp.domainClass.propertyName}.${sp.name}"
 				def messageSource = grailsAttributes.getApplicationContext().getBean("messageSource")
 				def locale = org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)
