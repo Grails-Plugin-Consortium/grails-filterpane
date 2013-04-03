@@ -22,5 +22,5 @@
 	<g:radio name="order" value="asc" checked="${orderAsc}" />
 	&nbsp;<g:message code="fp.tag.filterPane.sort.ascending" default="Ascending" />
 	<g:radio name="order" value="desc" checked="${orderDesc}" />
-	&nbsp;<g:message code="fp.tag.filterpane.sort.descending" default="Descending" />
+	&nbsp;<g:message code="fp.tag.filterPane.sort.descending" default="Descending" />
 </div>
