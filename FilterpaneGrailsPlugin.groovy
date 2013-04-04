@@ -1,11 +1,8 @@
 class FilterpaneGrailsPlugin {
-    def version = "2.0.1.2"
+    def version = "2.1"
     def grailsVersion = "2.2.1 > *"
 
     def dependsOn = [:]
-    def pluginExcludes = [
-            "grails-app/views/error.gsp"
-    ]
 
 	def author = "Steve Krenek"
     def authorEmail = "zeddmaxim@gmail.com"
@@ -14,6 +11,24 @@ class FilterpaneGrailsPlugin {
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/filterpane"
+
+
+    def developers = [
+            [name: "Christian Oestreich", email: "acetrike@gmail.com"],
+            [name: "stenix71", email: "@stenix71"]]
+
+    def license = 'APACHE'
+
+    def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPFILTERPANE']
+    def scm = [url: "https://github.com/skrenek/grails-filterpane"]
+
+    def pluginExcludes = [
+            'grails-app/conf/spring/resources.groovy',
+            'grails-app/conf/codenarc.groovy',
+            'grails-app/conf/codenarc.ruleset.all.groovy.txt',
+            'grails-app/domain/**',
+            'codenarc.properties'
+    ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
