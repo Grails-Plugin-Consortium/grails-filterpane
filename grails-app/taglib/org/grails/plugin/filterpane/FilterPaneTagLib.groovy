@@ -565,6 +565,87 @@ class FilterPaneTagLib {
 		if (ret)
 			out << ret
 	}
+    
+    /**
+    * Creates a quick filter html link that links to the specificed filter action,
+    * listing items filtered upon the specified values.
+    * Example usage:<br/>
+    * In the show view this tag can be used to link to a list of related child objects.
+    * The effect is that when clicking on the link that the tag creates,
+    * the child object's list view is displayed, filtered upon the parent id:<br/>
+    * <br/>
+    * <pre>
+    * {@code
+    * ...
+    *<filterpane:filterLink values="${['author.id' : authorInstance.id]}" controller="book">
+    *  <g:message code="author.books.label" default="Books by this author" />
+    *</filterpane:filterLink>
+    * ...
+    * }
+    *</pre>
+    * @param values
+    *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
+    *          Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may
+    *          optionally also contain the key "to" if the op operator is "Between".
+    * @param controller
+    *          The controler that contains the action to use. Optional, default is current controller.
+    * @param action
+    *          The action to use for filtering. Optional, default is <i>filter</i>.
+    * @param *
+    *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.         
+    * @body The body of this tag should contain the text to display within the link.
+    * @see #quickFilterFieldValue
+    */
+   def filterLink = { attrs, body ->
+       def filterParams = attrs.filterParams;
+       def values = attrs.values;
+       def label = body();
+       def controller = attrs.controller;
+       def action = attrs.action;
+       def cssClass = attrs.class;
+
+       def linkParams = [:];
+       if(filterParams)
+           linkParams.putAll( filterParams );
+       if(!values)
+           throw new IllegalArgumentException("Mandatory argument 'values' is missing.")
+       if(!values instanceof Map)
+           throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")
+       linkParams.sort = params.sort
+       linkParams.order = params.order
+       for(String field: values.keySet()){
+           def value = values[field]
+           if(value==null || value == 'null' ){
+               linkParams['filter.op.' + field] = 'IsNull';
+               linkParams['filter.' + field] = '0';
+           }
+           else if(value instanceof Map){
+               if(value.op == 'IsNull' || value.op == 'IsNotNull')
+                   value.value = '0'
+               linkParams['filter.op.' + field] = value.op ?: 'Equal';
+               linkParams['filter.' + field] = value.value;
+               if(value.to)
+                   linkParams["filter.${field}To"] = value.to;
+                   
+           }
+           else{
+               linkParams['filter.op.' + field] = 'Equal';
+               // Find the value also for referenced child objects
+               linkParams['filter.' + field] = value;
+           }
+       }
+       Map attrsMap = [:]
+       attrsMap.putAll(attrs)
+       attrsMap.remove('values')
+       attrsMap.remove('filterParams')
+       
+       def linkAttrs = [action:"filter"]
+       linkAttrs.putAll(attrs)
+       linkAttrs.remove('values')
+       linkAttrs.params = linkParams
+       
+       out << g.link(linkAttrs){ label };
+   } 
 	
 	/**
 	 * Resolve the value given the list of possible sources.  Order is as follows:<br/>

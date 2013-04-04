@@ -1,14 +1,20 @@
 package com.zeddware.grails.plugins.filterpane
 
 import grails.test.*
+import grails.test.mixin.TestFor
 
-class FilterUtilsTests extends GrailsUnitTestCase {
+import org.grails.plugin.filterpane.FilterPaneUtils
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+
+class FilterUtilsTests  {
 
 	def params
 	Date testDate
 
-    protected void setUp() {
-        super.setUp()
+    @Before
+    public void setUp() {
 		testDate = java.sql.Timestamp.valueOf('2010-07-26 20:38:15.000')
 
 		params = [testDate:testDate,
@@ -21,22 +27,25 @@ class FilterUtilsTests extends GrailsUnitTestCase {
 		]
     }
 
-    protected void tearDown() {
-        super.tearDown()
+    @After
+    public void tearDown() {
     }
 
     // parseDateFromDatePickerParams tests
+    @Test
 	void testParseFromDate() {
-		assertNotNull('value was null', FilterUtils.parseDateFromDatePickerParams('testDate', params))
+		assert FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
 	}
 
+    @Test
 	void testParseFromToString() {
 		params.testDate = params.testDate.toString()
-		assertNotNull('value was null', FilterUtils.parseDateFromDatePickerParams('testDate', params))
+		assert FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
 	}
 
+    @Test
 	void testParseFromStruct() {
 		params.testDate = 'struct'
-		assertNotNull('value was null', FilterUtils.parseDateFromDatePickerParams('testDate', params))
+		assert FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
 	}
 }
