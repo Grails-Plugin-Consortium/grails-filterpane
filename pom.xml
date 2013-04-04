@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.grails.plugins</groupId>
-    <artifactId>filterpane</artifactId>
-    <version>2.1</version>
+    <artifactId>FilterPanePlugin</artifactId>
+    <version>2.0.1.2</version>
     <packaging>grails-plugin</packaging>
 
 
-    <name>filterpane</name>
+    <name>FilterPanePlugin</name>
     <description>FilterPanePlugin</description>
 
     <properties>
