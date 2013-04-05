@@ -138,30 +138,24 @@ class FilterPaneTagLib {
             def domainBean = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
 
             def getProp = { key, filterOp ->
-                if(key.startsWith('filter.op') && filterOp != null && filterOp != '')
-                    return key[10..-1]
-                else
-                    return false
+                if(key.startsWith('filter.op') && filterOp != null && filterOp != '') {return key[10..-1]}
+                false
             }
 
             def getDomainProp = { prop ->
-
                 if(prop.contains('.')) { // association.
                     def parts = prop.toString().split('\\.')
                     def domainProp
                     def domainObj = domainBean
                     int lastPartIndex = parts.size() - 1
                     for(int i = 0; i < lastPartIndex; i++) {
-                        domainProp = domainObj.getPropertyByName(parts[i])
-                        domainObj = domainProp.referencedDomainClass
+                        domainObj = domainObj.getPropertyByName(parts[i]).referencedDomainClass
                     }
 
-                    domainProp = domainObj.getPropertyByName(parts[lastPartIndex])
-                    return domainProp
+                    return domainObj.getPropertyByName(parts[lastPartIndex])
                 }
-                else {
-                    return domainBean.getPropertyByName(prop)
-                }
+
+                domainBean.getPropertyByName(prop)
             }
 
             //log.debug("=================================================================")
