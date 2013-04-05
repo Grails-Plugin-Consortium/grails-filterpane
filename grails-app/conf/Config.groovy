@@ -1,5 +1,5 @@
 // configuration for plugin testing - will not be included in the plugin zip
- 
+
 log4j = {
     // Example of changing the log pattern for the default console
     // appender:
@@ -22,7 +22,3 @@ log4j = {
 
     warn   'org.mortbay.log'
 }
-
-// The following properties have been added by the Upgrade process...
-grails.views.default.codec="none" // none, html, base64
-grails.views.gsp.encoding="UTF-8"

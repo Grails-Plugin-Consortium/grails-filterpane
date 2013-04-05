@@ -9,6 +9,7 @@ grails.project.dependency.resolution = {
         // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    legacyResolve true
     repositories {
         grailsPlugins()
         grailsHome()
@@ -16,7 +17,7 @@ grails.project.dependency.resolution = {
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        mavenLocal()
+//        mavenLocal()
         mavenCentral()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
@@ -26,25 +27,28 @@ grails.project.dependency.resolution = {
 
     }
     dependencies {
-
-        test("org.spockframework:spock-grails-support:0.7-groovy-2.0") {
-            export = false
-        }
-
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
+
+//        build (':release:2.2.1', ':rest-client-builder:1.0.3') {
+//            export = false
+//        }
 
         runtime(":hibernate:${grailsVersion}",
                 ":tomcat:${grailsVersion}") {
             export = false
         }
 
-        test(":spock:0.7",
-             ":code-coverage:1.2.6",
-             ":codenarc:0.18.1") {
-            export = false
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
         }
+
+//        test(":spock:0.7"){
+//            exclude "spock-grails-support"
+//            export = false
+//        }
     }
 }
 

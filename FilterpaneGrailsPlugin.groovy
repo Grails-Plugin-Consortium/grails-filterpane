@@ -1,6 +1,6 @@
 class FilterpaneGrailsPlugin {
     def version = "2.1"
-    def grailsVersion = "2.2.1 > *"
+    def grailsVersion = "2.2 > *"
 
     def dependsOn = [:]
 
@@ -11,7 +11,6 @@ class FilterpaneGrailsPlugin {
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/filterpane"
-
 
     def developers = [
             [name: "Christian Oestreich", email: "acetrike@gmail.com"],

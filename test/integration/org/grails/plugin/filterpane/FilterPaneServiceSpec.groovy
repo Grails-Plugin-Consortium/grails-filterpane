@@ -1,10 +1,12 @@
-package com.zeddware.grails.plugins.filterpane
+package org.grails.plugin.filterpane
 
+import com.zeddware.grails.plugins.filterpane.Book
 import grails.plugin.spock.IntegrationSpec
+import com.zeddware.grails.plugins.filterpane.Author
 
 /**
  */
-class FilterServiceSpec extends IntegrationSpec {
+class FilterPaneServiceSpec extends IntegrationSpec {
 
     def filterPaneService
 
@@ -29,7 +31,7 @@ class FilterServiceSpec extends IntegrationSpec {
         def params = ['filter': [op: [id: 'Equal'], id: book.id]]
 
         when:
-        List<Book> books = (List<Book>)filterPaneService.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == 1
@@ -59,7 +61,7 @@ class FilterServiceSpec extends IntegrationSpec {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
 
         when:
-        List<Book> books = (List<Book>)filterPaneService.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == 1
@@ -76,7 +78,7 @@ class FilterServiceSpec extends IntegrationSpec {
         }
 
         when:
-        List<Book> books = (List<Book>)filterPaneService.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == 5
