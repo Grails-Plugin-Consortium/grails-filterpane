@@ -27,28 +27,31 @@ grails.project.dependency.resolution = {
 
     }
     dependencies {
-        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
+        test ("org.spockframework:spock-grails-support:0.7-groovy-2.0" ){
+            export = false
+        }
     }
 
     plugins {
 
-//        build (':release:2.2.1', ':rest-client-builder:1.0.3') {
-//            export = false
-//        }
+        build (':release:2.2.1', ':rest-client-builder:1.0.3') {
+            export = false
+        }
 
         runtime(":hibernate:${grailsVersion}",
                 ":tomcat:${grailsVersion}") {
             export = false
         }
 
-        test(":spock:0.7") {
-            exclude "spock-grails-support"
+        test(":code-coverage:1.2.6",
+             ":codenarc:0.18.1"){
+            export = false
         }
 
-//        test(":spock:0.7"){
-//            exclude "spock-grails-support"
-//            export = false
-//        }
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
+            export = false
+        }
     }
 }
 
