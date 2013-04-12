@@ -15,24 +15,24 @@ Version 2.0 is a complete rewrite / refactoring of the plugin to make better use
 
 ### Release Notes - Grails Plugins - Version Grails-FilterPane 2.0 ###
 #### Bug ####
-    * [GRAILSPLUGINS-1256|http://jira.codehaus.org/browse/GRAILSPLUGINS-1256] - plugin overrides default order of domain objects
-    * [GRAILSPLUGINS-1717|http://jira.codehaus.org/browse/GRAILSPLUGINS-1717] - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties
-    * [GRAILSPLUGINS-2446|http://jira.codehaus.org/browse/GRAILSPLUGINS-2446] - i18n missing for sortable criteria combobox
-    * [GRAILSPLUGINS-2447|http://jira.codehaus.org/browse/GRAILSPLUGINS-2447] - Missing input field for associated properties if between criteria is selected
-    * [GRAILSPLUGINS-2483|http://jira.codehaus.org/browse/GRAILSPLUGINS-2483] - Missing input field for type Currency
-    * [GRAILSPLUGINS-2807|http://jira.codehaus.org/browse/GRAILSPLUGINS-2807] - GSP-tag filterpane:includes generates wrong path for java-script files.
-    * [GRAILSPLUGINS-2808|http://jira.codehaus.org/browse/GRAILSPLUGINS-2808] - Associated properties not displayed correctly in currentCriteria tag
-    * [GRAILSPLUGINS-2813|http://jira.codehaus.org/browse/GRAILSPLUGINS-2813] - The currentCriteria tag looses the sort and order params when using remove link
+    * [GRAILSPLUGINS-1256](http://jira.codehaus.org/browse/GRAILSPLUGINS-1256) - plugin overrides default order of domain objects
+    * [GRAILSPLUGINS-1717](http://jira.codehaus.org/browse/GRAILSPLUGINS-1717) - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties
+    * [GRAILSPLUGINS-2446](http://jira.codehaus.org/browse/GRAILSPLUGINS-2446) - i18n missing for sortable criteria combobox
+    * [GRAILSPLUGINS-2447](http://jira.codehaus.org/browse/GRAILSPLUGINS-2447) - Missing input field for associated properties if between criteria is selected
+    * [GRAILSPLUGINS-2483](http://jira.codehaus.org/browse/GRAILSPLUGINS-2483) - Missing input field for type Currency
+    * [GRAILSPLUGINS-2807](http://jira.codehaus.org/browse/GRAILSPLUGINS-2807) - GSP-tag filterpane:includes generates wrong path for java-script files.
+    * [GRAILSPLUGINS-2808](http://jira.codehaus.org/browse/GRAILSPLUGINS-2808) - Associated properties not displayed correctly in currentCriteria tag
+    * [GRAILSPLUGINS-2813](http://jira.codehaus.org/browse/GRAILSPLUGINS-2813) - The currentCriteria tag looses the sort and order params when using remove link
 
 #### Improvement ####
-    * [GRAILSPLUGINS-1476|http://jira.codehaus.org/browse/GRAILSPLUGINS-1476] - Support filtering of collections
-    * [GRAILSPLUGINS-1979|http://jira.codehaus.org/browse/GRAILSPLUGINS-1979] - Specify fetchMode In FilterPane
-    * [GRAILSPLUGINS-2448|http://jira.codehaus.org/browse/GRAILSPLUGINS-2448] - German properties
-    * [GRAILSPLUGINS-2802|http://jira.codehaus.org/browse/GRAILSPLUGINS-2802] - Swedish messages
-    * [GRAILSPLUGINS-2809|http://jira.codehaus.org/browse/GRAILSPLUGINS-2809] - Make it possible to filter on "id" property
+    * [GRAILSPLUGINS-1476](http://jira.codehaus.org/browse/GRAILSPLUGINS-1476) - Support filtering of collections
+    * [GRAILSPLUGINS-1979](http://jira.codehaus.org/browse/GRAILSPLUGINS-1979) - Specify fetchMode In FilterPane
+    * [GRAILSPLUGINS-2448](http://jira.codehaus.org/browse/GRAILSPLUGINS-2448) - German properties
+    * [GRAILSPLUGINS-2802](http://jira.codehaus.org/browse/GRAILSPLUGINS-2802) - Swedish messages
+    * [GRAILSPLUGINS-2809](http://jira.codehaus.org/browse/GRAILSPLUGINS-2809) - Make it possible to filter on "id" property
 
 #### New Feature ####
-    * [GRAILSPLUGINS-1909|http://jira.codehaus.org/browse/GRAILSPLUGINS-1909] - Support for deeper assocations
+    * [GRAILSPLUGINS-1909](http://jira.codehaus.org/browse/GRAILSPLUGINS-1909) - Support for deeper assocations
 
 There are several breaking changes when migrating to 2.0.  Please take note!
 * Package names for all classes have changed to a more standard one: org.grails.plugin.filterpane
@@ -55,32 +55,6 @@ This plugin adds filtering capabilities to any Grails application. The primary g
 * Honors domain constraints: nullable, blank, inList ( _Since 0.4_ )
 Please note that you may experience duplicate rows if you use eager fetching.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS-2063] for more information.
 The new demo application can be downloaded here: [https://github.com/Grails-Plugin-Consortium/grails-filterpane-test]
-
-## Index ##
-* [#Usage]
-	* [#list.gsp]
-	* [#Pagination]
-	* [#List Sorting]
-	* [#Controller]
-* [#Examples]
-* [#Plugin Version History]
-* [#Roadmap]
-* [#Support]
-* [#Reference]
-	* [#Data Types and their Available Filter Operators]
-		* [#Text]
-		* [#Numeric]
-		* [#Date]
-		* [#Boolean]
-		* [#Enum]
-	* [#Tags]
-		* [#currentCriteria]
-		* [#filterButton]
-		* [#filterPane]
-		* [#isFiltered]
-		* [#isNotFiltered]
-		* [#paginate]
-* [#Internationalization (i18n)]
 
 ##  Usage ##
 The plugin is typically used in an application's list pages.  To use the filters, make the following changes to your list.gsp pages.  For a full list of tags and attributes, see the Reference section later in this document.
@@ -163,19 +137,19 @@ Keep in mind that you don't have to name the action "filter".  You can name it a
 ## Plugin Version History ##
 <table>
 <tr><td>*Date* </td><td> *Version* </td><td> *Notes* </td><td> *Known Compatible Grails Versions*</td></tr>
-<tr><td>2011-03-19 </td><td> 2.0 </td><td> Complete rewrite of the plugin  See JIRA notes for changes.</td></tr>
-<tr><td>2011-03-19 </td><td> 2.0 </td><td> Complete rewrite of the plugin  See JIRA notes for changes.</td></tr>
+<tr><td>2013-04-12 </td><td> 2.1 </td><td> Addressing several JIRAs.  Templates now copied to project allowing for overridding.  Get working with Grails 2.2.x.</td><td>2.0</td></tr>
+<tr><td>2011-03-19 </td><td> 2.0 </td><td> Complete rewrite of the plugin  See JIRA notes for changes.</td><td></td></tr>
 <tr><td>2010-07-26 </td><td> 0.7 </td><td> Bug fixes. </td><td> 1.1.1 +</td></tr>
 <tr><td>2010-03-24 </td><td> 0.6.8 </td><td> Bug fix for boolean 'false' value not working </td><td> 1.1.1 +</td></tr>
 <tr><td>2010-03-23 </td><td> 0.6.7 </td><td> Some bug fixes and improvements to Grails-1.2.1 compatibility </td><td> 1.1.1 +</td></tr>
 <tr><td>2010-02-17 </td><td> 0.6.6 </td><td> Should now work with Grails-1.2.1 and 1.1.1 </td><td> 1.1.1 +</td></tr>
-<tr><td>2010-02-03 </td><td> 0.6.5 </td><td> Fixed several issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016] </td><td> 1.1.1 +</td></tr>
+<tr><td>2010-02-03 </td><td> 0.6.5 </td><td> Fixed several issues.  See (http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016) </td><td> 1.1.1 +</td></tr>
 <tr><td>2009-11-17 </td><td> 0.6.4 </td><td> Added customForm attribute to filterPane tag.  See docs for details in the reference section below. </td><td> 1.1.1</td></tr>
-<tr><td>2009-10-27 </td><td> 0.6.3 </td><td> Fixed [http://jira.codehaus.org/browse/GRAILSPLUGINS-1629] </td><td> 1.1.1</td></tr>
+<tr><td>2009-10-27 </td><td> 0.6.3 </td><td> Fixed (http://jira.codehaus.org/browse/GRAILSPLUGINS-1629) </td><td> 1.1.1</td></tr>
 <tr><td>2009-09-13 </td><td> 0.6.2 </td><td> Child collection filtering fixed (GRAILSPLUGINS-1503).  Filter service reworked to use Grails API instead of Groovy meta classes.  Several integration tests added. </td><td> 1.1.1</td></tr>
 <tr><td>2009-07-28 </td><td> 0.6.1 </td><td> Fixed a minor issue when rendering dropdowns for enums in associated properties. </td><td> 1.1.1</td></tr>
-<tr><td>2009-07-27 </td><td> 0.6  </td><td> Completed several JIRA issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149] for details. </td><td> 1.1</td></tr>
-<tr><td>2009-04-07 </td><td> 0.5  </td><td> Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114] </td><td> 1.1</td></tr>
+<tr><td>2009-07-27 </td><td> 0.6  </td><td> Completed several JIRA issues.  See (http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149) for details. </td><td> 1.1</td></tr>
+<tr><td>2009-04-07 </td><td> 0.5  </td><td> Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at (http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114) </td><td> 1.1</td></tr>
 <tr><td>2009-03-22 </td><td> 0.4.3  </td><td> JIRA GRAILSPLUGINS-985 fixed. </td><td> 1.1</td></tr>
 <tr><td>2009-03-22 </td><td> 0.4.2  </td><td> Now compatible with Grails 1.1.  See JIRA GRAILSPLUGINS-999 </td><td> 1.0.4, 1.1</td></tr>
 <tr><td>2009-03-22 </td><td> 0.4.1  </td><td> Completed JIRAs GRAILSPLUGINS-822 and GRAILSPLUGINS-903 </td><td> 1.0.4</td></tr>
@@ -193,7 +167,7 @@ Keep in mind that you don't have to name the action "filter".  You can name it a
 
 ## Support ##
 * For support questions, please use the Grails user mailing list (user@grails.codehaus.org), and include the word "filterpane" somewhere in your message.
-* JIRA issues may be found [here|http://jira.grails.org/browse/GPFILTERPANE].
+* JIRA issues may be found [here](http://jira.grails.org/browse/GPFILTERPANE).
 
 ## Reference ##
 The reference section is only applicable to versions 0.4 and above.  Version 0.4 addressed some redundancy in the tag and attribute names provided by the plugin.  While all previous attribute names are still supported, it is recommended to use those documented below instead.  The deprecated tag and attribute names may be removed in the future.
@@ -233,11 +207,11 @@ _(Integer, Long, Short, Float, Double, BigDecimal, BigInteger)_
 <table>
 <tr><td>*Operator* </td><td> *Select Option Display Text*</td></tr>
 <tr><td>"=" </td><td> Equal To</td></tr>
-<tr><td><> </td><td> Not Equal To</td></tr>
-<tr><td>< </td><td> Less Than</td></tr>
-<tr><td><= </td><td> Less Than or Equal To</td></tr>
-<tr><td>> </td><td> Greater Than</td></tr>
-<tr><td>>= </td><td> Greater Than or Equal To</td></tr>
+<tr><td>&lt;&gt; </td><td> Not Equal To</td></tr>
+<tr><td>&lt; </td><td> Less Than</td></tr>
+<tr><td>&lt;= </td><td> Less Than or Equal To</td></tr>
+<tr><td>&gt; </td><td> Greater Than</td></tr>
+<tr><td>&gt;= </td><td> Greater Than or Equal To</td></tr>
 <tr><td>Between </td><td> Between</td></tr>
 <tr><td>Is Null </td><td> Is Null</td></tr>
 <tr><td>Is Not Null </td><td> Is Not Null</td></tr>
@@ -247,7 +221,7 @@ _(Integer, Long, Short, Float, Double, BigDecimal, BigInteger)_
 <table>
 <tr><td>*Operator* </td><td> *Select Option Display Text*</td></tr>
 <tr><td>"=" </td><td> Equal To</td></tr>
-<tr><td><> </td><td> Not Equal To</td></tr>
+<tr><td>&lt;&gt; </td><td> Not Equal To</td></tr>
 <tr><td>Is Null </td><td> Is Null</td></tr>
 <tr><td>Is Not Null </td><td> Is Not Null</td></tr>
 </table>
@@ -257,7 +231,7 @@ _(since 0.6)_
 <table>
 <tr><td>*Operator* </td><td> *Select Option Display Text*</td></tr>
 <tr><td>"=" </td><td> Equal To</td></tr>
-<tr><td><> </td><td> Not Equal To</td></tr>
+<tr><td>&lt;&gt; </td><td> Not Equal To</td></tr>
 </table>
 
 #### Domain Constraint Modifications ####
