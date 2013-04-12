@@ -1,8 +1,4 @@
 <g:if test="${isFiltered == true}">
-  <g:if test="${pageProperty(name: 'page.filterpane.currentcriteria')}">
-    <g:pageProperty name="page.filterpane.currentcriteria"/>
-  </g:if>
-  <g:else>
     <ul id="${id}" class="${styleClass}" style="${style}" title="${title}">
       <g:each in="${criteria}" var="c">
         <li>
@@ -33,5 +29,4 @@
         </li>
       </g:each>
     </ul>
-  </g:else>
 </g:if>

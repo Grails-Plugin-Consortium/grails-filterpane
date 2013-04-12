@@ -91,7 +91,7 @@ class FilterPaneTagLib {
         } else {
             renderModel.text = resolveAttribute(attrs.textKey, "fp.tag.filterButton.text", attrs.text, "Filter")
         }
-        out << g.render(template: "/filterpane/filterButton", plugin: 'filterpane', model: renderModel)
+        out << g.render(template: "/filterpane/filterButton", model: renderModel)
     }
 
     /**
@@ -238,7 +238,7 @@ class FilterPaneTagLib {
             }
             //log.debug("=================================================================")
             //log.debug("renderModel: ${renderModel}")
-            out << g.render(template: "/filterpane/currentCriteria", plugin: 'filterpane', model: renderModel)
+            out << g.render(template: "/filterpane/currentCriteria", model: renderModel)
         }
 
     }
@@ -370,7 +370,7 @@ class FilterPaneTagLib {
 
         assignRenderModels(attrs, sortedProps, sortKeys, renderModel)
 
-        out << g.render(template: "/filterpane/filterpane", plugin: 'filterpane', model: [fp: renderModel])
+        out << g.render(template: "/filterpane/filterpane", model: [fp: renderModel])
     }
 
     private void assignRenderModels(Map attrs, List sortedProps, ArrayList sortKeys, LinkedHashMap<String, Boolean> renderModel) {
@@ -528,12 +528,12 @@ class FilterPaneTagLib {
         model.value = d
         model.onChange = "grailsFilterPane.selectDefaultOperator('${attrs.opName}')"
         model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
-        def ret = g.render(template: "/filterpane/dateControl", plugin: 'filterpane', model: [ctrlAttrs: model])
+        def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
         out << ret
     }
 
     def bool = { attrs, body ->
-        def ret = g.render(template: "/filterpane/boolean", plugin: 'filterpane', model: attrs)
+        def ret = g.render(template: "/filterpane/boolean", model: attrs)
         out << ret
     }
 
