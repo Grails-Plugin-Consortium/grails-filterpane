@@ -15,21 +15,21 @@ Version 2.0 is a complete rewrite / refactoring of the plugin to make better use
 
 ### Release Notes - Grails Plugins - Version Grails-FilterPane 2.0 ###
 #### Bug ####
-    * [GRAILSPLUGINS-1256](http://jira.codehaus.org/browse/GRAILSPLUGINS-1256) - plugin overrides default order of domain objects
-    * [GRAILSPLUGINS-1717](http://jira.codehaus.org/browse/GRAILSPLUGINS-1717) - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties
-    * [GRAILSPLUGINS-2446](http://jira.codehaus.org/browse/GRAILSPLUGINS-2446) - i18n missing for sortable criteria combobox
-    * [GRAILSPLUGINS-2447](http://jira.codehaus.org/browse/GRAILSPLUGINS-2447) - Missing input field for associated properties if between criteria is selected
-    * [GRAILSPLUGINS-2483](http://jira.codehaus.org/browse/GRAILSPLUGINS-2483) - Missing input field for type Currency
-    * [GRAILSPLUGINS-2807](http://jira.codehaus.org/browse/GRAILSPLUGINS-2807) - GSP-tag filterpane:includes generates wrong path for java-script files.
-    * [GRAILSPLUGINS-2808](http://jira.codehaus.org/browse/GRAILSPLUGINS-2808) - Associated properties not displayed correctly in currentCriteria tag
-    * [GRAILSPLUGINS-2813](http://jira.codehaus.org/browse/GRAILSPLUGINS-2813) - The currentCriteria tag looses the sort and order params when using remove link
+* [GRAILSPLUGINS-1256](http://jira.codehaus.org/browse/GRAILSPLUGINS-1256) - plugin overrides default order of domain objects
+* [GRAILSPLUGINS-1717](http://jira.codehaus.org/browse/GRAILSPLUGINS-1717) - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties
+* [GRAILSPLUGINS-2446](http://jira.codehaus.org/browse/GRAILSPLUGINS-2446) - i18n missing for sortable criteria combobox
+* [GRAILSPLUGINS-2447](http://jira.codehaus.org/browse/GRAILSPLUGINS-2447) - Missing input field for associated properties if between criteria is selected
+* [GRAILSPLUGINS-2483](http://jira.codehaus.org/browse/GRAILSPLUGINS-2483) - Missing input field for type Currency
+* [GRAILSPLUGINS-2807](http://jira.codehaus.org/browse/GRAILSPLUGINS-2807) - GSP-tag filterpane:includes generates wrong path for java-script files.
+* [GRAILSPLUGINS-2808](http://jira.codehaus.org/browse/GRAILSPLUGINS-2808) - Associated properties not displayed correctly in currentCriteria tag
+* [GRAILSPLUGINS-2813](http://jira.codehaus.org/browse/GRAILSPLUGINS-2813) - The currentCriteria tag looses the sort and order params when using remove link
 
 #### Improvement ####
-    * [GRAILSPLUGINS-1476](http://jira.codehaus.org/browse/GRAILSPLUGINS-1476) - Support filtering of collections
-    * [GRAILSPLUGINS-1979](http://jira.codehaus.org/browse/GRAILSPLUGINS-1979) - Specify fetchMode In FilterPane
-    * [GRAILSPLUGINS-2448](http://jira.codehaus.org/browse/GRAILSPLUGINS-2448) - German properties
-    * [GRAILSPLUGINS-2802](http://jira.codehaus.org/browse/GRAILSPLUGINS-2802) - Swedish messages
-    * [GRAILSPLUGINS-2809](http://jira.codehaus.org/browse/GRAILSPLUGINS-2809) - Make it possible to filter on "id" property
+* [GRAILSPLUGINS-1476](http://jira.codehaus.org/browse/GRAILSPLUGINS-1476) - Support filtering of collections
+* [GRAILSPLUGINS-1979](http://jira.codehaus.org/browse/GRAILSPLUGINS-1979) - Specify fetchMode In FilterPane
+* [GRAILSPLUGINS-2448](http://jira.codehaus.org/browse/GRAILSPLUGINS-2448) - German properties
+* [GRAILSPLUGINS-2802](http://jira.codehaus.org/browse/GRAILSPLUGINS-2802) - Swedish messages
+* [GRAILSPLUGINS-2809](http://jira.codehaus.org/browse/GRAILSPLUGINS-2809) - Make it possible to filter on "id" property
 
 #### New Feature ####
     * [GRAILSPLUGINS-1909](http://jira.codehaus.org/browse/GRAILSPLUGINS-1909) - Support for deeper assocations
@@ -183,7 +183,7 @@ _(String, char)_
 <tr><td>Like </td><td> Contains (Case Sensitive)</td></tr>
 <tr><td>Not Like </td><td> Does Not Contain (Case Sensitive)</td></tr>
 <tr><td>"=" </td><td> Equal To</td></tr>
-<tr><td><> </td><td> Not Equal To</td></tr>
+<tr><td>&lt;&gt; </td><td> Not Equal To</td></tr>
 <tr><td>Is Null </td><td> Is Null</td></tr>
 <tr><td>Is Not Null </td><td> Is Not Null</td></tr>
 </table>
@@ -193,9 +193,9 @@ _(Integer, Long, Short, Float, Double, BigDecimal, BigInteger)_
 <table>
 *Operator* </td><td> *Select Option Display Text*
 <tr><td>"=" </td><td> Equal To</td></tr>
-<tr><td><> </td><td> Not Equal To</td></tr>
-<tr><td>< </td><td> Less Than</td></tr>
-<tr><td><= </td><td> Less Than or Equal To</td></tr>
+<tr><td>&lt;&gt; </td><td> Not Equal To</td></tr>
+<tr><td>&lt; </td><td> Less Than</td></tr>
+<tr><td>&lt;= </td><td> Less Than or Equal To</td></tr>
 <tr><td>> </td><td> Greater Than</td></tr>
 <tr><td>>= </td><td> Greater Than or Equal To</td></tr>
 <tr><td>Between </td><td> Between</td></tr>
