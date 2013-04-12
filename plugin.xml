@@ -1,4 +1,4 @@
-<plugin name='filterpane' version='2.0.1.2' grailsVersion='2.2.1 &gt; *'>
+<plugin name='filterpane' version='2.1' grailsVersion='2.2 &gt; *'>
   <author>Steve Krenek</author>
   <authorEmail>zeddmaxim@gmail.com</authorEmail>
   <title>Dynamically filter / search domain objects.</title>
@@ -6,14 +6,22 @@
   <documentation>http://grails.org/plugin/filterpane</documentation>
   <type>FilterpaneGrailsPlugin</type>
   <resources>
+    <resource>codenarc</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Author</resource>
+    <resource>com.zeddware.grails.plugins.filterpane.Book</resource>
     <resource>org.grails.plugin.filterpane.FilterPaneService</resource>
     <resource>org.grails.plugin.filterpane.FilterPaneTagLib</resource>
     <resource>org.grails.plugin.filterpane.FilterPaneUtils</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
-  <dependencies />
+  <dependencies>
+    <test>
+      <dependency group='org.spockframework' name='spock-grails-support' version='0.7-groovy-2.0' />
+    </test>
+  </dependencies>
   <plugins />
   <runtimePluginRequirements />
   <behavior />

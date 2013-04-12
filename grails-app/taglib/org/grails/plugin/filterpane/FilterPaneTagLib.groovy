@@ -121,18 +121,16 @@ class FilterPaneTagLib {
         boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
         renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
         if(renderModel.isFiltered == true) {
-            renderModel.with {
-                id = attrs.id ?: 'filterPaneCurrentCriteria'
-                quoteValues = resolveBoolAttrValue(attrs.quoteValues ?: 'y')
-                title = attrs.title ?: ''
-                styleClass = attrs['class'] ?: ''
-                style = attrs.style ?: ''
-                dateFormat = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
-                criteria = []
-                removeImgDir = attrs.removeImgDir ?: ''
-                removeImgFile = attrs.removeImgFile
-                action = attrs.action ?: 'filter'
-            }
+			renderModel.id = attrs.id ?: 'filterPaneCurrentCriteria'
+			renderModel.quoteValues = resolveBoolAttrValue(attrs.quoteValues ?: 'y')
+			renderModel.title = attrs.title ?: ''
+			renderModel.styleClass = attrs['class'] ?: ''
+			renderModel.style = attrs.style ?: ''
+			renderModel.dateFormat = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
+			renderModel.criteria = []
+			renderModel.removeImgDir = attrs.removeImgDir ?: ''
+			renderModel.removeImgFile = attrs.removeImgFile
+            renderModel.action = attrs.action ?: 'filter'
 
             def filterParams = FilterPaneUtils.extractFilterParams(params, true)
             def domainBean = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
@@ -264,24 +262,23 @@ class FilterPaneTagLib {
         boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
 
         // Set up the render model.
-        renderModel.with {
-            title = resolveAttribute(attrs.titleKey, 'fp.tag.filterPane.titleText', attrs.title, 'Filter')
-            containerId = attrs.id ?: DefaultFilterPaneId
-            containerIsDialog = resolveBoolAttrValue(attrs.dialog) ? " fp-dialog" : ""
-            containerVisibleStyle = resolveBoolAttrValue(attrs.visible) ? "" : "display:none;"
-            containerClass = attrs['class'] ?: (attrs.styleClass ?: '')
-            containerStyle = attrs.style ?: ''
-            formName = attrs.formName ?: 'filterPaneForm'
-            controller = attrs.controller
-            action = attrs.action ?: 'filter'
-            customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
-            formAction = controller ?
-                         g.createLink(controller: controller, action: action) :
-                         action;
-            showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
-            showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
-            showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
-        }
+
+		renderModel.title = resolveAttribute(attrs.titleKey, 'fp.tag.filterPane.titleText', attrs.title, 'Filter')
+		renderModel.containerId = attrs.id ?: DefaultFilterPaneId
+		renderModel.containerIsDialog = resolveBoolAttrValue(attrs.dialog) ? " fp-dialog" : ""
+		renderModel.containerVisibleStyle = resolveBoolAttrValue(attrs.visible) ? "" : "display:none;"
+		renderModel.containerClass = attrs['class'] ?: (attrs.styleClass ?: '')
+		renderModel.containerStyle = attrs.style ?: ''
+		renderModel.formName = attrs.formName ?: 'filterPaneForm'
+		renderModel.controller = attrs.controller
+		renderModel.action = attrs.action ?: 'filter'
+		renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
+		renderModel.formAction = renderModel.controller ?
+			g.createLink(controller:renderModel.controller,	action: renderModel.action) :
+			renderModel.action;
+		renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
+		renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
+		renderModel.showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
 
         /*
            * Need properties to filter,
@@ -360,7 +357,7 @@ class FilterPaneTagLib {
 
         renderModel.properties = []
 
-        mapSortedProps(sortedProps, finalProps, attrs, useFullAssociationPath)
+        mapSortedProps(sortedProps, finalProps, attrs, useFullAssociationPath, renderModel)
 
         def sortKeys = []
         sortedProps.each { sp ->
@@ -394,7 +391,7 @@ class FilterPaneTagLib {
                 formName: renderModel.formName]
     }
 
-    private void mapSortedProps(List sortedProps, finalProps, attrs, boolean useFullAssociationPath) {
+    private void mapSortedProps(List sortedProps, finalProps, attrs, boolean useFullAssociationPath, renderModel) {
         sortedProps.each { sp ->
             def map = [domainProperty: sp]
             def propertyKey = finalProps[sp]
