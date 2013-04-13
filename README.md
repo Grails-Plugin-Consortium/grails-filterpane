@@ -15,6 +15,11 @@ Help Grails be an active, open community!  If you use this plugin and haven't ra
 * [GPFILTERPANE-92](http://jira.grails.org/browse/GPFILTERPANE-92) - Invalid message code in filterpaneSort
 * [GPFILTERPANE-35](http://jira.grails.org/browse/GPFILTERPANE-35) - Quick filter link tags
 
+#### Enhancements ####
+* Code refactoring to clean up code
+* Added `_Install.groovy` script that copies filterpane views locally on install so user can modify them.
+* Updated taglib and views to remove plugin namespace so locally installed templates will be used instead.
+
 [Previous Release Notes](#previous)
 
 ## Upgrading to 2.x+ From Versions Less than 2.x ##
