@@ -8,7 +8,7 @@
   <g:if test="${renderForm}">
     <form name="${fp.formName}" id="${fp.formName}" method="post" action="${createLink(action: fp.formAction)}">
   </g:if>
-<!-- Do we still need this hidden prop? -->
+<%-- Do we still need this hidden prop? --%>
   <input type="hidden" name="filterProperties" value="${fp.filterProperties}"/>
 
 

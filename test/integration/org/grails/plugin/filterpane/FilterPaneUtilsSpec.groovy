@@ -1,5 +1,7 @@
 package org.grails.plugin.filterpane
 
+import java.sql.Timestamp
+
 import grails.plugin.spock.IntegrationSpec
 
 /**
@@ -8,7 +10,7 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
 
     def "parse date from datepicker from date"() {
         given:
-        def testDate = java.sql.Timestamp.valueOf('2010-07-26 20:38:15.000')
+        def testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
 
         def params = [testDate: testDate,
                 testDate_year: '2010',
@@ -28,7 +30,7 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
 
     def "parse date from datepicker from string"() {
         given:
-        def testDate = java.sql.Timestamp.valueOf('2010-07-26 20:38:15.000')
+        def testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
 
         def params = [testDate: testDate.toString(),
                 testDate_year: '2010',

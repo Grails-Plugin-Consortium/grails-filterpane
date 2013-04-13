@@ -5,3 +5,4 @@
 target/
 .settings/
 plugin.xml
+web-app/WEB-INF

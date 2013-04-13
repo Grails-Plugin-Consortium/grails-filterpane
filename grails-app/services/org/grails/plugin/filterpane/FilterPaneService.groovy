@@ -1,20 +1,20 @@
 package org.grails.plugin.filterpane
 
-
 class FilterPaneService {
 
-    boolean transactional = true
+    static transactional = false
+
     def grailsApplication
 
-    def filter(def params, Class filterClass) {
+    def filter(params, Class filterClass) {
         doFilter(params, filterClass, false)
     }
 
-    def count(def params, Class filterClass) {
+    def count(params, Class filterClass) {
         doFilter(params, filterClass, true)
     }
 
-    private def filterParse(def c, def domainClass, def params, def filterParams, def filterOpParams, def doCount) {
+    private filterParse(c, domainClass, params, filterParams, filterOpParams, doCount) {
         // First pull out the op map and store a list of its keys.
         def keyList = []
         keyList.addAll(filterOpParams.keySet())
@@ -74,7 +74,7 @@ class FilterPaneService {
         } // end each op
     } // end filterParse
 
-    private def doFilter(def params, Class filterClass, boolean doCount) {
+    private doFilter(params, Class filterClass, boolean doCount) {
         log.debug("filtering... params = ${params.toMapString()}")
         //def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
@@ -160,7 +160,7 @@ class FilterPaneService {
         }
     }
 
-    private def addCriterion(def criteria, def propertyName, def op, def value, def value2, def filterParams, def domainProperty) {
+    private addCriterion(criteria, propertyName, op, value, value2, filterParams, domainProperty) {
         log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
 //        boolean added = true
 
@@ -231,7 +231,7 @@ class FilterPaneService {
      * Parse the user input value to the domain property type.
      * @returns The input parsed to the appropriate type if possible, else null.
      */
-    def parseValue(def domainProperty, def val, def params, def associatedPropertyParamName) {
+    def parseValue(domainProperty, val, params, associatedPropertyParamName) {
         if(val instanceof String) {
             val = val.trim()
         }
