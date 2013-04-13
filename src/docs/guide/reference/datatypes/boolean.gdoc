@@ -1,0 +1,8 @@
+h4. Boolean
+{table}
+*Operator* | *Select Option Display Text*
+"=" | Equal To
+<> | Not Equal To
+Is Null | Is Null
+Is Not Null | Is Not Null
+{table}

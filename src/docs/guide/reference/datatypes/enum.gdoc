@@ -1,0 +1,7 @@
+h4. Enum
+_(since 0.6)_
+{table}
+*Operator* | *Select Option Display Text*
+"=" | Equal To
+<> | Not Equal To
+{table}

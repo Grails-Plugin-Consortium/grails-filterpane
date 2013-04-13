@@ -1,0 +1,6 @@
+h4. isNotFiltered
+This is a logical tag that will render its body if no filters are applied.
+{table}
+*Attribute Name* | *Requred* | *Default Value* | *Description*
+(None) | | |
+{table}

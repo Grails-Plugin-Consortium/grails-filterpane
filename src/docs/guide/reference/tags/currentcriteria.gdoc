@@ -1,0 +1,22 @@
+h4. currentCriteria
+This tag renders an unordered list of the currently applied filter criteria, along with links to remove individual filter criteria.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+domain | Yes | None | The domain bean being filtered.  May be a String (e.g. "Book") or a class instance (e.g. ${Book})
+id | No | filterPaneCurrentCriteria | The id of the unordered list.
+title | No | None | The title attribute for the unordered list.
+class | No | None | The CSS class to apply to the list.
+style | No | None | The style attribute for the list.
+dateFormat | No | yyyy-MM-dd HH:mm:ss | The format to apply when displaying date criteria.
+action | No | filter | The controller action to submit to when removing criteria.  Set this to the same as your filterPane tag's action attribute.
+removeImgDir | No | None | The directory the remove image file is located in.
+removeImgFile | No | None | The image filename to be used for the remove link.  Note that if either removeImgDir or removeImgFile are missing, the text "(X)" will be used for the remove link.
+quoteValues | No | True | (Since 2.0.1) If true, values will be quoted when displayed.
+filterPropertyValues | No | None | (Since 2.0.1) Identical syntax to the filterpane tag's property of the same name.  Use this to set a display property of enum properties. See example below.
+{table}
+
+h5. filterPropertyValues
+
+{code}
+filterPropertyValues="${[bookType:[displayProperty:'display']]}"
+{code}

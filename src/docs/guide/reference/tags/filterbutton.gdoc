@@ -1,0 +1,10 @@
+h4. filterButton
+This tag renders an HTML link that shows the filter pane when clicked.  When one or more filters are applied, this button will have the @filter-applied@ css class.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+text| No | "Filter" | The text that is displayed on the button.
+appliedText | No | "Change Filter" | The text displayed on the button when one or more filters are applied.
+id | No | "filterpane" | The id of the html element.
+textKey | No | "fp.tag.filterButton.text" | The message bundle key that contains the text of this button. (i18n)
+appliedTextKey | No | "fp.tag.filterButton.appliedText" | The message bundle key that contains the applied text of this button. (i18n)
+{table}

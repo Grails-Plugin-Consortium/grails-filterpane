@@ -1,0 +1,4 @@
+h3. Data Types and their Available Filter Operators
+
+h4. Domain Constraint Modifications
+If a property is not nullable (constraint nullable="false"), the *Is Null* and *Is Not Null* operators will not be available for that property.

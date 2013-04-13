@@ -1,0 +1,13 @@
+h4. Text
+_(String, char)_
+{table}
+*Operator* | *Select Option Display Text*
+ILike | Contains
+Not ILike | Does Not Contain
+Like | Contains (Case Sensitive)
+Not Like | Does Not Contain (Case Sensitive)
+"=" | Equal To
+<> | Not Equal To
+Is Null | Is Null
+Is Not Null | Is Not Null
+{table}

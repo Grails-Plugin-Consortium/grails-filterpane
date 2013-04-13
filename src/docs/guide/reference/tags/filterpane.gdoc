@@ -1,0 +1,45 @@
+h4. filterPane
+This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from the domain class as possible by default.  All attributes from 0.3.1 are still supported, but are considered deprecated in favor of more sensible alternatives.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+domain | Yes | None | The name of the Grails domain class to be filtered.  This can either be a string (e.g. "Book"), or an actual class instance (e.g. "${Book}")
+dialog | Yes | False | Set to true to cause the rendered filterpane to be displayed as a popup dialog instead of rendered inline in the page.
+title | No | "Filter" | The title text that is displayed at the top of the filter pane.
+titleKey | No | None | A message bundle key for looking up title text. (i18n)
+id | No | "filterpane" | The id of the container div that holds the filter pane.
+class | No | None | The class attribute to add to the container div that holds the filter pane.
+style | No | None | The style attribute to add to the container div that holds the filter pane.
+formName | No | "filterForm" | The name of the filter form element.  Useful if you will use custom javascript on the form.
+filterProperties | No | None | If specified then no default properties are included, only those specified.
+associatedProperties | No | None | Use this if you wish to filter any properties of associated domain objects (e.g. author.lastName).  The value may either be a comma-delimited string, or a List of strings.
+additionalProperties | No | None | By default, identifier, version, and lastUpdated properties are not available to filter by.  Use this attribute to allow them to be filtered.  The value may either be a comma-delimited string, or a List of strings.  Valid values are "id", "identifier", "version", and "lastUpdated"
+excludeProperties | No | None | By default all persistent properties of the domain object are filterable.  If you wish to exclude any properties from filtering, specify them in this attribute.  The value may either be a comma-delimited string, or a List of strings.
+action | No | "filter" | The controller action to call when the filter is applied.
+filterPropertyValues | No | None | A map of property values to pass through to each property's value form control.  For example, since Date properties render a date picker control, you could pass the following to limit the years in the date picker: See he example below:
+customForm | No | false | If true or "true", the tag will not render the surrounding form or the "Apply" button on it.  This is left to the developer.  This attribute is useful if you want to embed the filterpane form in an existing form. (since 0.6.4)  See the example below:
+{table}
+
+h5. filterPropertyValues
+{code}
+filterPropertyValues="${[someDateProperty:[years:2015..1999]]}"
+{code}
+
+or get the values from the database:
+
+{code}
+filterPropertyValues="${['author.lastName':
+    [values:Author.executeQuery('select t.lastName from Author t')],
+    'readPriority.name':[values:ReadPriority.list()]]}"
+{code}
+
+
+h5. customForm
+{code}
+<form id="author-form" name="author-form" method="post">
+	 <filterpane:filterPane id="author-filter-pane" domainBean="com.zeddware.grails.plugins.filterpane.Author"
+            associatedProperties="books.title, books.bookType"
+            titleKey="fp.tag.filterPane.titleText" customForm="true"
+	    formName="author-form"/>
+	<g:actionSubmit value="Apply Filter From Outside Filter Pane" action="filterCustomForm" />
+</form>
+{code}

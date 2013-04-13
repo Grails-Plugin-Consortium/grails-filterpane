@@ -1,0 +1,14 @@
+h4. Numeric
+_(Integer, Long, Short, Float, Double, BigDecimal, BigInteger)_
+{table}
+*Operator* | *Select Option Display Text*
+"=" | Equal To
+<> | Not Equal To
+< | Less Than
+<= | Less Than or Equal To
+> | Greater Than
+>= | Greater Than or Equal To
+Between | Between
+Is Null | Is Null
+Is Not Null | Is Not Null
+{table}

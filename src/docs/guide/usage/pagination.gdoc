@@ -1,0 +1,20 @@
+h4. Pagination
+If you want to support pagination use something similar to the following:
+{code}
+<g:paginate total="${bookCount == null ? Book.count(): bookCount}" params="${filterParams}" />
+{code}
+In the example above, _bookCount_ is any variable you pass into the controller's render model that contains the total number of records returned in your filtered data.  Its value can be obtained from the filter service's _count_ method.  _(See the controller section later in this document for more info.)_
+{warning}
+Note that you should not use Groovy's Elvis operator to test for bookCount's existence, as an empty set (count of 0) will return false, thus causing Book.count() to be used.  See "Groovy Truth":http://groovy.codehaus.org/Groovy+Truth for more info.
+{warning}
+
+Also in the example above, filterParams is set in the model map of the render call in the controller.  The value is a sub-map of the request params, and can be obtained by calling the "extractFilterParams" method on the included FilterUtils class.  See the example below from the books example app.
+{code}
+render( view:'list',
+    model:[ bookList: filterPaneService.filter( params, Book ),
+        bookCount: filterPaneService.count( params, Book ),
+        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        params:params ] )
+{code}
+
+Starting with version 0.6 of the plugin, you can use the new paginate tag.  The paginate tag wraps the Grails paginate tag and encapsulates the steps listed above.  See the [#paginate] tag for more info.

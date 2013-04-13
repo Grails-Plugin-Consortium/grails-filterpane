@@ -4,15 +4,16 @@ class FilterpaneGrailsPlugin {
 
     def dependsOn = [:]
 
-	def author = "Steve Krenek"
-    def authorEmail = "zeddmaxim@gmail.com"
+	def author = "Grails Plugin Consortium"
+    def authorEmail = ""
     def title = "Dynamically filter / search domain objects."
     def description = "This plugin adds automatic filtering capabilities to any Grails application's list views."
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/filterpane"
+    def documentation = "http://grails-plugin-consortium.github.io/grails-filterpane/"
 
     def developers = [
+            [name: "Steve Krenek", email: "zeddmaxim@gmail.com"],
             [name: "Christian Oestreich", email: "acetrike@gmail.com"],
             [name: "stenix71", email: "@stenix71"]]
 

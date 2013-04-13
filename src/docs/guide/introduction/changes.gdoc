@@ -1,3 +1,76 @@
-introduction:
-  title: Introduction
-  changes: Change Log
+h2. Change Log
+
+{table}
+*Date* | *Version* | *Notes* | *Known Compatible Grails Versions*
+2011-03-19 | _2.1 | Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization. | 2.1.x
+2011-03-19 | _2.0 | Complete rewrite of the plugin  See JIRA notes for changes. | 2.0
+2010-07-26 | _0.7 | Bug fixes. | 1.1.1 +
+2010-03-24 | _0.6.8 | Bug fix for boolean 'false' value not working | 1.1.1 +
+2010-03-23 | _0.6.7 | Some bug fixes and improvements to Grails-1.2.1 compatibility | 1.1.1 +
+2010-02-17 | _0.6.6 | Should now work with Grails-1.2.1 and 1.1.1 | 1.1.1 +
+2010-02-03 | _0.6.5 | Fixed several issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016] | 1.1.1 +
+2009-11-17 | _0.6.4 | Added customForm attribute to filterPane tag.  See docs for details in the reference section below. | 1.1.1
+2009-10-27 | _0.6.3 | Fixed [http://jira.codehaus.org/browse/GRAILSPLUGINS-1629] | 1.1.1
+2009-09-13 | _0.6.2 | Child collection filtering fixed (GRAILSPLUGINS-1503).  Filter service reworked to use Grails API instead of Groovy meta classes.  Several integration tests added. | 1.1.1
+2009-07-28 | _0.6.1 | Fixed a minor issue when rendering dropdowns for enums in associated properties. | 1.1.1
+2009-07-27 | _0.6  | Completed several JIRA issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149] for details. | 1.1
+2009-04-07 |  _0.5  | Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114] | 1.1
+2009-03-22 |  _0.4.3  | JIRA GRAILSPLUGINS-985 fixed. | 1.1
+2009-03-22 |  _0.4.2  | Now compatible with Grails 1.1.  See JIRA GRAILSPLUGINS-999 | 1.0.4, 1.1
+2009-03-22 |  _0.4.1  | Completed JIRAs GRAILSPLUGINS-822 and GRAILSPLUGINS-903 | 1.0.4
+2009-01-27 |  _0.3.1  | Moved debug output to log.debug statements. | 1.0.4
+2009-01-26 |  _0.3  | Fixed packaging glitches.  Updated example app. | 1.0.4
+2009-01-25 |  _0.2  | No major changes.  Mainly code cleanup.  Classes are now in packages, as per plugin specs. | 1.0.4
+2009-01-16 |  _0.1  | First release. | 1.0.4
+{table}
+
+h3. Upgrading to 2.0.
+Version 2.0 is a complete rewrite / refactoring of the plugin to make better use of modern Grails practices (and a better working knowledge of Grails).  All tags are now rendered via templates instead of string builders in code.  This should make the plugin more extensible in the future.  Many bugs and feature enhancements were also completed for the release.
+
+h3. Release Notes - Grails Plugins - Version Grails-FilterPane 2.0
+
+h4. Bug
+    * [GRAILSPLUGINS-1256|http://jira.codehaus.org/browse/GRAILSPLUGINS-1256] - plugin overrides default order of domain objects
+    * [GRAILSPLUGINS-1717|http://jira.codehaus.org/browse/GRAILSPLUGINS-1717] - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties
+    * [GRAILSPLUGINS-2446|http://jira.codehaus.org/browse/GRAILSPLUGINS-2446] - i18n missing for sortable criteria combobox
+    * [GRAILSPLUGINS-2447|http://jira.codehaus.org/browse/GRAILSPLUGINS-2447] - Missing input field for associated properties if between criteria is selected
+    * [GRAILSPLUGINS-2483|http://jira.codehaus.org/browse/GRAILSPLUGINS-2483] - Missing input field for type Currency
+    * [GRAILSPLUGINS-2807|http://jira.codehaus.org/browse/GRAILSPLUGINS-2807] - GSP-tag filterpane:includes generates wrong path for java-script files.
+    * [GRAILSPLUGINS-2808|http://jira.codehaus.org/browse/GRAILSPLUGINS-2808] - Associated properties not displayed correctly in currentCriteria tag
+    * [GRAILSPLUGINS-2813|http://jira.codehaus.org/browse/GRAILSPLUGINS-2813] - The currentCriteria tag looses the sort and order params when using remove link
+
+h4. Improvement
+    * [GRAILSPLUGINS-1476|http://jira.codehaus.org/browse/GRAILSPLUGINS-1476] - Support filtering of collections
+    * [GRAILSPLUGINS-1979|http://jira.codehaus.org/browse/GRAILSPLUGINS-1979] - Specify fetchMode In FilterPane
+    * [GRAILSPLUGINS-2448|http://jira.codehaus.org/browse/GRAILSPLUGINS-2448] - German properties
+    * [GRAILSPLUGINS-2802|http://jira.codehaus.org/browse/GRAILSPLUGINS-2802] - Swedish messages
+    * [GRAILSPLUGINS-2809|http://jira.codehaus.org/browse/GRAILSPLUGINS-2809] - Make it possible to filter on "id" property
+
+h4. New Feature
+    * [GRAILSPLUGINS-1909|http://jira.codehaus.org/browse/GRAILSPLUGINS-1909] - Support for deeper assocations
+
+There are several breaking changes when migrating to 2.0.  Please take note!
+* Package names for all classes have changed to a more standard one: org.grails.plugin.filterpane
+* Class Renames
+*# FilterService has been renamed to FilterPaneService to match the plugin name and to remove ambiguity with other plugins / services
+*# FilterUtils has been renamed to FilterPaneUtils for the same reasons as above.
+* Tag Library Changes
+*# filePaneIncludes tag has been removed.  It has been deprecated for some time.  Use includes tag instead.
+## filterButton no longer uses an ID attribute, as it was unclear what it was for.  It has been renamed to filterPaneId, to denote the id of the filterpane you wish to display.
+## filterPane tag domainBean attribute is now just "domain"
+## A couple years of practical use has shown that most users are NOT using the filter form as a dialog.  As such, a new required attribute to the filterPane tag has been added: dialog.  It defaults to false, so if you want to maintain the use of the form as a popup dialog, you must add this attribute and set it to true.
+{note}
+
+This plugin adds filtering capabilities to any Grails application. The primary goals of this plugin include:
+* Easy integration with Grails list pages via custom tags
+* Smart operator display. Only practical filter operations are available for a property's data type. (e.g. no "like" operators for numeric properties)
+* Support for major operators including =, <>, >, <, >=, <=, like, ilike, between, is null, and is not null.
+* Smart filter value entry. Date properties display a date picker, boolean's display radio buttons, etc.
+* Support for a custom list of values, such as a filtering a text property with a constrained list of values.
+* Works with Grails list sorting out of the box with only minor modification to your list gsp.
+* Works with Grails pagination out of the box with only minor modification to your list gsp.
+* Honors domain constraints: nullable, blank, inList ( _Since 0.4_ )
+
+{note}
+Please note that you may experience duplicate rows if you use eager fetching.  See [GRAILSPLUGINS-2063|http://jira.codehaus.org/browse/GRAILSPLUGINS-2063] for more information.
+{note}

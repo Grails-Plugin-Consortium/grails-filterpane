@@ -1,0 +1,43 @@
+h2. Internationalization (i18n)
+The following keys are supported in message bundles for internationalizing the text in the plugin.
+
+h3.  Filter Operators
+* fp.op.ILike
+* fp.op.NotILike
+* fp.op.Like
+* fp.op.NotLike
+* fp.op.Equal
+* fp.op.NotEqual
+* fp.op.IsNull
+* fp.op.IsNotNull
+* fp.op.GreaterThan
+* fp.op.GreaterThanEquals
+* fp.op.LessThan
+* fp.op.LessThanEquals
+* fp.op.Between
+
+h3. Property Name Display
+By default, each property's natural name is displayed .  To override this, use keys of the form: @fp.property.text.propertyName@ , where @propertyname@ is the domain property name.  For associated properties, use keys of the form: @fp.property.text.associatedBean.propertyName@ .
+
+h3. Filter Button Tag
+If no textKey or appliedTextKey attributes are given, the default keys are checked.
+* fp.tag.filterButton.text
+* fp.tag.filterButton.appliedText
+
+h3.  Filter Pane Tag
+The filterPane tag's keys are listed below, along with their default values for clarity.
+* fp.tag.filterPane.titleText=Filter
+* fp.tag.filterPane.property.boolean.true=Yes
+* fp.tag.filterPane.property.boolean.false=No
+* fp.tag.filterPane.property.betweenValueSeparatorText=and
+* fp.tag.filterPane.sort.orderByText=Order by
+* fp.tag.filterPane.sort.noSelection.text=Select a Property
+* fp.tag.filterPane.sort.ascending=Ascending
+* fp.tag.filterPane.sort.descending=Descending
+* fp.tag.filterPane.button.cancel.text=Cancel
+* fp.tag.filterPane.button.clear.text=Clear
+* fp.tag.filterPane.button.apply.text=Apply
+
+{note}The full default message bundle can be found in the installed plugin's folder in the messages-filterpane.properties file.{note}
+
+The plugin supports the [i18n Templates|http://www.grails.org/plugin/i18n-templates] plugin's domain property format: {code}<domainClass>.<property> <-- for each property{code}

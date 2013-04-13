@@ -1,0 +1,7 @@
+h4. paginate
+This is a convenience tag that may be used in place of the grails paginate tag.  It encapsulates adding the appropriate parameters to the grails paginate tag for the developer.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+total | Yes | None | A numeric total to be used when calculating pages.  This is the same total that is passed to the Grails paginate tag.
+domainBean | Yes, if total's value is null | None | If total's value is null, this tag is used to perform a count for the user and pass that to the Grails paginate tag.  If not specified and total's value is null, 0 will be used as the total count.
+{table}

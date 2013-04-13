@@ -1,0 +1,29 @@
+h4. Controller
+1.  Inject the filter service into your controller.
+
+{code}
+def filterPaneService
+{code}
+
+2.  Create the filter action in your controller.
+
+{code}
+def filter = {
+    if(!params.max) params.max = 10
+    render( view:'list',
+        model:[ domainClassList: filterPaneService.filter( params, DomainClass ),
+        domainClassCount: filterPaneService.count( params, DomainClass ),
+        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        params:params ] )
+}
+{code}
+
+Where...
+* domainClassList is the name of the return list model the list action uses
+* DomainClass is the name of the domain class you are filtering
+* domainClassCount is the name of a variable that contains the total number of filtered results.  This parameter is optional, but is useful if you want to use Grails pagination (which most of the time you will).
+* filterParams is a sub-map of the request parameters obtained via the FilterUtils.extractFilterParams method.
+
+{note}
+Keep in mind that you don't have to name the action "filter".  You can name it anything you want, just remember to assign the same name to the filterPane tag's @action@ attribute so your action gets called when applying the filter.
+{note}

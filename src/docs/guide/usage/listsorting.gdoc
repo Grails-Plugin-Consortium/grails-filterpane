@@ -1,0 +1,5 @@
+h4. List Sorting
+If you want to support Grails's list sorting, you must add a the filter parameters to each Grails sortableColumn tag, as shown in the example below.  It is not recommended to put the entire "params" map in here.  Instead, it is recommended that you only include the FilterPane parameters, which is the same sub-map as is described in the Pagination section above.
+{code}
+<g:sortableColumn property="id" title="Id" params="${filterParams}" />
+{code}

@@ -1,0 +1,7 @@
+h4. includes
+The includes tag should be used in the head section of your pages.  It includes the necessary stylesheet and javascript file for the plugin.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+css | No | true | Set to false to exclude the <link> tag for the stylesheet.
+js | No | true | Set to false to exclude the <script> tag that supports the filterPane plugin.
+{table}

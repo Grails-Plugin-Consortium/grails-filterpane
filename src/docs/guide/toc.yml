@@ -1,3 +1,35 @@
 introduction:
   title: Introduction
+  current: Current Version Changes
   changes: Change Log
+example:
+  title: Example Project
+usage:
+  title: Usage
+  list: List.gsp
+  pagination: Pagination
+  listsorting: List Sorting
+  controller: Controller
+reference:
+  title: Reference
+  datatypes:
+    title: Data Types
+    text: Text
+    numeric: Numeric
+    date: Date
+    boolean: Boolean
+    enum: Enum
+  tags:
+    title: Tags
+    includes: includes
+    currentcriteria: currentCriteria
+    filterbutton: filterButton
+    filterpane: filterPane
+    isfiltered: isFiltered
+    isnotfiltered: isNotFiltered
+    paginate: paginate
+internationalization: Internationalization i18n
+roadmap:
+  title: Roadmap
+support:
+  title: Support
