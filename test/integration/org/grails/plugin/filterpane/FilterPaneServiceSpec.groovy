@@ -1,8 +1,9 @@
 package org.grails.plugin.filterpane
 
-import com.zeddware.grails.plugins.filterpane.Book
 import grails.plugin.spock.IntegrationSpec
+
 import com.zeddware.grails.plugins.filterpane.Author
+import com.zeddware.grails.plugins.filterpane.Book
 
 /**
  */

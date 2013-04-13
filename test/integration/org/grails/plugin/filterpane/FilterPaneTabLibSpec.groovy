@@ -1,16 +1,13 @@
 package org.grails.plugin.filterpane
 
 import grails.plugin.spock.IntegrationSpec
-import grails.test.mixin.TestFor
-import spock.lang.Shared
-import grails.test.mixin.web.GroovyPageUnitTestMixin
 import grails.test.GroovyPagesTestCase
-import org.springframework.web.context.request.RequestContextHolder
-import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
+import grails.test.mixin.TestMixin
 
-/**
- */
-@grails.test.mixin.TestMixin(GroovyPagesTestCase)
+import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
+import org.springframework.web.context.request.RequestContextHolder
+
+@TestMixin(GroovyPagesTestCase)
 class FilterPaneTabLibSpec extends IntegrationSpec {
 
     def "test includes with no params"() {

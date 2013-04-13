@@ -1,21 +1,21 @@
 package org.grails.plugin.filterpane
 
 import groovy.util.logging.Commons
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.web.converters.ConverterUtil
 
 import java.text.SimpleDateFormat
 
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.web.converters.ConverterUtil
+
 /**
  * @author skrenek
- *
  */
 @Commons
 class FilterPaneUtils {
 
     private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd hh:mm:ss zzz yyyy')
 
-    static java.util.Date parseDateFromDatePickerParams(def paramProperty, def params) {
+    static Date parseDateFromDatePickerParams(paramProperty, params) {
         try {
             if(params[paramProperty] instanceof Date) {
 
@@ -81,7 +81,7 @@ class FilterPaneUtils {
         }
     }
 
-    static Date getBeginningOfDay(def aDate) {
+    static Date getBeginningOfDay(aDate) {
         Date beginningOfDay = null
         if(aDate && Date.isAssignableFrom(aDate.class)) {
             Date date = (Date) aDate;
@@ -98,7 +98,7 @@ class FilterPaneUtils {
         beginningOfDay
     }
 
-    static Date getEndOfDay(def aDate) {
+    static Date getEndOfDay(aDate) {
         Date endOfDay = null
         if(aDate && Date.isAssignableFrom(aDate.class)) {
             Date date = (Date) aDate
@@ -115,7 +115,7 @@ class FilterPaneUtils {
         endOfDay
     }
 
-    private static def zeroPad(def val) {
+    private static zeroPad(val) {
         try {
             if(val != null) {
                 int i = val as int
@@ -127,7 +127,7 @@ class FilterPaneUtils {
         }
     }
 
-    static def extractFilterParams(params) {
+    static extractFilterParams(params) {
         def ret = [:]
         params.each { entry ->
             if(entry?.key?.startsWith("filter.") || entry?.key?.equals("filterProperties") || entry?.key?.equals("filterBean")) {
@@ -137,7 +137,7 @@ class FilterPaneUtils {
         ret
     }
 
-    static def extractFilterParams(def params, boolean datesToStruct) {
+    static extractFilterParams(params, boolean datesToStruct) {
         def ret = [:]
         params.each { entry ->
             if(entry.key.startsWith("filter.") || entry.key.equals("filterProperties") || entry.key.equals("filterBean")) {
@@ -160,7 +160,7 @@ class FilterPaneUtils {
         isApplied
     }
 
-    static def resolveDomainClass(def grailsApplication, def bean) {
+    static resolveDomainClass(grailsApplication, bean) {
         log.debug("resolveDomainClass: bean is ${bean?.class}")
         if(bean instanceof GrailsDomainClass) {
             return bean
@@ -181,7 +181,7 @@ class FilterPaneUtils {
         null
     }
 
-    static def resolveDomainProperty(def grailsApplication, def domainClass, def property) {
+    static resolveDomainProperty(grailsApplication, domainClass, property) {
 
         if("id".equals(property) || "identifier".equals(property)) {
             return domainClass.identifier
@@ -194,7 +194,7 @@ class FilterPaneUtils {
         thisDomainProp
     }
 
-    static def getOperatorMapKey(def opType) {
+    static getOperatorMapKey(opType) {
         def type = 'text'
         if(opType.getSimpleName().equalsIgnoreCase("boolean")) {
             type = 'boolean'
