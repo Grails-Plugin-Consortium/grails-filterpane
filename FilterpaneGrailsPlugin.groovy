@@ -15,7 +15,7 @@ class FilterpaneGrailsPlugin {
     def developers = [
             [name: "Steve Krenek", email: "zeddmaxim@gmail.com"],
             [name: "Christian Oestreich", email: "acetrike@gmail.com"],
-            [name: "stenix71", email: "@stenix71"]]
+            [name: "stenix71", email: "unknown@stenix71"]]
 
     def license = 'APACHE'
 
