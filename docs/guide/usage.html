@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Usage 2.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/example.html"><strong>2</strong><span>Example Project</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/reference.html"><strong>4</strong><span>Reference</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/support.html"><strong>7</strong><span>Support</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This plugin adds automatic filtering capabilities to any Grails application's list views.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/example.html">&lt;&lt; <strong>2</strong><span>Example Project</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/reference.html"><strong>4</strong><span>Reference</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Usage - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Grails Plugin Consortium</p>
+
+                    <p><strong>Version:</strong> 2.1</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#list"><strong>3.1</strong><span>List.gsp</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#pagination"><strong>3.2</strong><span>Pagination</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#listsorting"><strong>3.3</strong><span>List Sorting</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#controller"><strong>3.4</strong><span>Controller</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="usage">3 Usage</h1>
+<h2> Usage</h2>
+The plugin is typically used in an application's list pages.  To use the filters, make the following changes to your list.gsp pages.  For a full list of tags and attributes, see the Reference section later in this document.
+
+
+<h2 id="list">3.1 List.gsp</h2>
+<h3>List.gsp</h3>
+<ol>
+<li> Add the javascript and stylesheet includes to the head section of your page.</li>
+</ol><p class="paragraph"/><div class="code"><pre>&#60;filterpane:includes /&#62;</pre></div><p class="paragraph"/>2.  Somewhere in your page (typically near the bottom of the body tag), add the filter pane.  This has the result of rendering a container div in your page. The domain is the fully qualified domain class name (domainClass.fullName)<p class="paragraph"/><div class="code"><pre>&#60;filterpane:filterPane domain=<span class="java&#45;quote">"MyDomainClass"</span> /&#62;</pre></div><p class="paragraph"/>3.  Add a button to invoke the filter pane somewhere on your list page. (Inside the pagination div works well on applications built from scaffolding.)
+A custom tag is provided to help create this button. The title attribute is optional. If omitted, the value of the button will be "Filter".<p class="paragraph"/><div class="code"><pre>&#60;filterpane:filterButton text=<span class="java&#45;quote">"Whatever You Wish"</span> /&#62;</pre></div><p class="paragraph"/><blockquote class="note">
+If your application uses scriptaculous and you use the filterButton tag, the filter pane will fade in and out. Otherwise the filter pane simply appears and disappears.
+</blockquote>
+
+
+<h2 id="pagination">3.2 Pagination</h2>
+<h4>Pagination</h4>
+If you want to support pagination use something similar to the following:
+<div class="code"><pre>&#60;g:paginate total=<span class="java&#45;quote">"$&#123;bookCount == <span class="java&#45;keyword">null</span> ? Book.count(): bookCount&#125;"</span> params=<span class="java&#45;quote">"$&#123;filterParams&#125;"</span> /&#62;</pre></div>
+In the example above,  <em class="italic">bookCount</em>  is any variable you pass into the controller's render model that contains the total number of records returned in your filtered data.  Its value can be obtained from the filter service's  <em class="italic">count</em>  method.   <em class="italic">(See the controller section later in this document for more info.)</em> 
+<blockquote class="warning">
+Note that you should not use Groovy's Elvis operator to test for bookCount's existence, as an empty set (count of 0) will return false, thus causing Book.count() to be used.  See <a href="http://groovy.codehaus.org/Groovy+Truth" target="blank">Groovy Truth</a> for more info.
+</blockquote><p class="paragraph"/>Also in the example above, filterParams is set in the model map of the render call in the controller.  The value is a sub-map of the request params, and can be obtained by calling the "extractFilterParams" method on the included FilterUtils class.  See the example below from the books example app.
+<div class="code"><pre>render( view:'list',
+    model:&#91; bookList: filterPaneService.filter( params, Book ),
+        bookCount: filterPaneService.count( params, Book ),
+        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        params:params &#93; )</pre></div><p class="paragraph"/>Starting with version 0.6 of the plugin, you can use the new paginate tag.  The paginate tag wraps the Grails paginate tag and encapsulates the steps listed above.  See the  tag for more info.
+
+
+
+<h2 id="listsorting">3.3 List Sorting</h2>
+<h4>List Sorting</h4>
+If you want to support Grails's list sorting, you must add a the filter parameters to each Grails sortableColumn tag, as shown in the example below.  It is not recommended to put the entire "params" map in here.  Instead, it is recommended that you only include the FilterPane parameters, which is the same sub-map as is described in the Pagination section above.
+<div class="code"><pre>&#60;g:sortableColumn property=<span class="java&#45;quote">"id"</span> title=<span class="java&#45;quote">"Id"</span> params=<span class="java&#45;quote">"$&#123;filterParams&#125;"</span> /&#62;</pre></div>
+
+
+<h2 id="controller">3.4 Controller</h2>
+<h4>Controller</h4>
+<ol>
+<li> Inject the filter service into your controller.</li>
+</ol><p class="paragraph"/><div class="code"><pre>def filterPaneService</pre></div><p class="paragraph"/>2.  Create the filter action in your controller.<p class="paragraph"/><div class="code"><pre>def filter = &#123;
+    <span class="java&#45;keyword">if</span>(!params.max) params.max = 10
+    render( view:'list',
+        model:&#91; domainClassList: filterPaneService.filter( params, DomainClass ),
+        domainClassCount: filterPaneService.count( params, DomainClass ),
+        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        params:params &#93; )
+&#125;</pre></div><p class="paragraph"/>Where&#8230;
+<ul class="star">
+<li>domainClassList is the name of the return list model the list action uses</li>
+<li>DomainClass is the name of the domain class you are filtering</li>
+<li>domainClassCount is the name of a variable that contains the total number of filtered results.  This parameter is optional, but is useful if you want to use Grails pagination (which most of the time you will).</li>
+<li>filterParams is a sub-map of the request parameters obtained via the FilterUtils.extractFilterParams method.</li>
+</ul><p class="paragraph"/><blockquote class="note">
+Keep in mind that you don't have to name the action "filter".  You can name it anything you want, just remember to assign the same name to the filterPane tag's <code>action</code> attribute so your action gets called when applying the filter.
+</blockquote>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/example.html">&lt;&lt; <strong>2</strong><span>Example Project</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/reference.html"><strong>4</strong><span>Reference</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

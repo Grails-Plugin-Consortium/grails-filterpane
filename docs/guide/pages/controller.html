@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3.4 Controller 2.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/example.html"><strong>2</strong><span>Example Project</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>7</strong><span>Support</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This plugin adds automatic filtering capabilities to any Grails application's list views.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/example.html">&lt;&lt; <strong>2</strong><span>Example Project</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3.4 Controller - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Grails Plugin Consortium</p>
+
+                    <p><strong>Version:</strong> 2.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="controller">3.4 Controller</h2>
+<h4>Controller</h4>
+<ol>
+<li> Inject the filter service into your controller.</li>
+</ol><p class="paragraph"/><div class="code"><pre>def filterPaneService</pre></div><p class="paragraph"/>2.  Create the filter action in your controller.<p class="paragraph"/><div class="code"><pre>def filter = &#123;
+    <span class="java&#45;keyword">if</span>(!params.max) params.max = 10
+    render( view:'list',
+        model:&#91; domainClassList: filterPaneService.filter( params, DomainClass ),
+        domainClassCount: filterPaneService.count( params, DomainClass ),
+        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        params:params &#93; )
+&#125;</pre></div><p class="paragraph"/>Where&#8230;
+<ul class="star">
+<li>domainClassList is the name of the return list model the list action uses</li>
+<li>DomainClass is the name of the domain class you are filtering</li>
+<li>domainClassCount is the name of a variable that contains the total number of filtered results.  This parameter is optional, but is useful if you want to use Grails pagination (which most of the time you will).</li>
+<li>filterParams is a sub-map of the request parameters obtained via the FilterUtils.extractFilterParams method.</li>
+</ul><p class="paragraph"/><blockquote class="note">
+Keep in mind that you don't have to name the action "filter".  You can name it anything you want, just remember to assign the same name to the filterPane tag's <code>action</code> attribute so your action gets called when applying the filter.
+</blockquote>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/example.html">&lt;&lt; <strong>2</strong><span>Example Project</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

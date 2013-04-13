@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4.2.4 filterPane 2.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/example.html"><strong>2</strong><span>Example Project</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>7</strong><span>Support</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This plugin adds automatic filtering capabilities to any Grails application's list views.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4.2.4 filterPane - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Grails Plugin Consortium</p>
+
+                    <p><strong>Version:</strong> 2.1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="filterpane">4.2.4 filterPane</h2>
+<h4>filterPane</h4>
+This tag generates the filter pane itself.  As of release 0.4, this tag pulls as much filtering information from the domain class as possible by default.  All attributes from 0.3.1 are still supported, but are considered deprecated in favor of more sensible alternatives.
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>domain</td><td>Yes</td><td>None</td><td>The name of the Grails domain class to be filtered.  This can either be a string (e.g. "Book"), or an actual class instance (e.g. "${Book}")</td></tr><tr class="table-even"><td>dialog</td><td>Yes</td><td>False</td><td>Set to true to cause the rendered filterpane to be displayed as a popup dialog instead of rendered inline in the page.</td></tr><tr class="table-odd"><td>title</td><td>No</td><td>"Filter"</td><td>The title text that is displayed at the top of the filter pane.</td></tr><tr class="table-even"><td>titleKey</td><td>No</td><td>None</td><td>A message bundle key for looking up title text. (i18n)</td></tr><tr class="table-odd"><td>id</td><td>No</td><td>"filterpane"</td><td>The id of the container div that holds the filter pane.</td></tr><tr class="table-even"><td>class</td><td>No</td><td>None</td><td>The class attribute to add to the container div that holds the filter pane.</td></tr><tr class="table-odd"><td>style</td><td>No</td><td>None</td><td>The style attribute to add to the container div that holds the filter pane.</td></tr><tr class="table-even"><td>formName</td><td>No</td><td>"filterForm"</td><td>The name of the filter form element.  Useful if you will use custom javascript on the form.</td></tr><tr class="table-odd"><td>filterProperties</td><td>No</td><td>None</td><td>If specified then no default properties are included, only those specified.</td></tr><tr class="table-even"><td>associatedProperties</td><td>No</td><td>None</td><td>Use this if you wish to filter any properties of associated domain objects (e.g. author.lastName).  The value may either be a comma-delimited string, or a List of strings.</td></tr><tr class="table-odd"><td>additionalProperties</td><td>No</td><td>None</td><td>By default, identifier, version, and lastUpdated properties are not available to filter by.  Use this attribute to allow them to be filtered.  The value may either be a comma-delimited string, or a List of strings.  Valid values are "id", "identifier", "version", and "lastUpdated"</td></tr><tr class="table-even"><td>excludeProperties</td><td>No</td><td>None</td><td>By default all persistent properties of the domain object are filterable.  If you wish to exclude any properties from filtering, specify them in this attribute.  The value may either be a comma-delimited string, or a List of strings.</td></tr><tr class="table-odd"><td>action</td><td>No</td><td>"filter"</td><td>The controller action to call when the filter is applied.</td></tr><tr class="table-even"><td>filterPropertyValues</td><td>No</td><td>None</td><td>A map of property values to pass through to each property's value form control.  For example, since Date properties render a date picker control, you could pass the following to limit the years in the date picker: See he example below:</td></tr><tr class="table-odd"><td>customForm</td><td>No</td><td>false</td><td>If true or "true", the tag will not render the surrounding form or the "Apply" button on it.  This is left to the developer.  This attribute is useful if you want to embed the filterpane form in an existing form. (since 0.6.4)  See the example below:</td></tr></table><p class="paragraph"/><h5>filterPropertyValues</h5>
+<div class="code"><pre>filterPropertyValues=<span class="java&#45;quote">"$&#123;&#91;someDateProperty:&#91;years:2015..1999&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>or get the values from the database:<p class="paragraph"/><div class="code"><pre>filterPropertyValues=<span class="java&#45;quote">"$&#123;&#91;'author.lastName':
+    &#91;values:Author.executeQuery('select t.lastName from Author t')&#93;,
+    'readPriority.name':&#91;values:ReadPriority.list()&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>
+<h5>customForm</h5>
+<div class="code"><pre>&#60;form id=<span class="java&#45;quote">"author&#45;form"</span> name=<span class="java&#45;quote">"author&#45;form"</span> method=<span class="java&#45;quote">"post"</span>&#62;
+	 &#60;filterpane:filterPane id=<span class="java&#45;quote">"author&#45;filter&#45;pane"</span> domainBean=<span class="java&#45;quote">"com.zeddware.grails.plugins.filterpane.Author"</span>
+            associatedProperties=<span class="java&#45;quote">"books.title, books.bookType"</span>
+            titleKey=<span class="java&#45;quote">"fp.tag.filterPane.titleText"</span> customForm=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>
+	    formName=<span class="java&#45;quote">"author&#45;form"</span>/&#62;
+	&#60;g:actionSubmit value=<span class="java&#45;quote">"Apply Filter From Outside Filter Pane"</span> action=<span class="java&#45;quote">"filterCustomForm"</span> /&#62;
+&#60;/form&#62;</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

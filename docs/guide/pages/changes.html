@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1.1 Change Log 2.1</title>
+    <title>1.2 Change Log 2.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -25,6 +25,24 @@ function addJsClass() {
                 <div id="nav-summary-childs" style="display:none;">
                     
                     <div class="toc-item" style="margin-left:0"><a href="../../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/example.html"><strong>2</strong><span>Example Project</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>7</strong><span>Support</span></a>
                     </div>
                     
                 </div>
@@ -54,12 +72,14 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
+                    <div class="toc-item next-right"><a href="../../guide/example.html"><strong>2</strong><span>Example Project</span> >></a></div>
+                
 
 
                 <div class="project">
-                    <h1>1.1 Change Log - Reference Documentation</h1>
+                    <h1>1.2 Change Log - Reference Documentation</h1>
 
-                    <p><strong>Authors:</strong> Steve Krenek</p>
+                    <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
                     <p><strong>Version:</strong> 2.1</p>
 
@@ -70,13 +90,64 @@ function addJsClass() {
 
                 
 
-<h2 id="changes">1.1 Change Log</h2>
-introduction:
-  title: Introduction
-  changes: Change Log
+<h2 id="changes">1.2 Change Log</h2>
+<h2>Change Log</h2><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Date</strong></th><th><strong class="bold">Version</strong></th><th><strong class="bold">Notes</strong></th><th><strong class="bold">Known Compatible Grails Versions</strong></th></tr><tr class="table-odd"><td>2011-03-19</td><td>_2.1</td><td>Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization.</td><td>2.1.x</td></tr><tr class="table-even"><td>2011-03-19</td><td>_2.0</td><td>Complete rewrite of the plugin  See JIRA notes for changes.</td><td>2.0</td></tr><tr class="table-odd"><td>2010-07-26</td><td>_0.7</td><td>Bug fixes.</td><td>1.1.1 +</td></tr><tr class="table-even"><td>2010-03-24</td><td>_0.6.8</td><td>Bug fix for boolean 'false' value not working</td><td>1.1.1 +</td></tr><tr class="table-odd"><td>2010-03-23</td><td>_0.6.7</td><td>Some bug fixes and improvements to Grails-1.2.1 compatibility</td><td>1.1.1 +</td></tr><tr class="table-even"><td>2010-02-17</td><td>_0.6.6</td><td>Should now work with Grails-1.2.1 and 1.1.1</td><td>1.1.1 +</td></tr><tr class="table-odd"><td>2010-02-03</td><td>_0.6.5</td><td>Fixed several issues.  See <a href="http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016" target="blank"></a></td><td>1.1.1 +</td></tr><tr class="table-even"><td>2009-11-17</td><td>_0.6.4</td><td>Added customForm attribute to filterPane tag.  See docs for details in the reference section below.</td><td>1.1.1</td></tr><tr class="table-odd"><td>2009-10-27</td><td>_0.6.3</td><td>Fixed <a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1629" target="blank"></a></td><td>1.1.1</td></tr><tr class="table-even"><td>2009-09-13</td><td>_0.6.2</td><td>Child collection filtering fixed (GRAILSPLUGINS-1503).  Filter service reworked to use Grails API instead of Groovy meta classes.  Several integration tests added.</td><td>1.1.1</td></tr><tr class="table-odd"><td>2009-07-28</td><td>_0.6.1</td><td>Fixed a minor issue when rendering dropdowns for enums in associated properties.</td><td>1.1.1</td></tr><tr class="table-even"><td>2009-07-27</td><td>_0.6</td><td>Completed several JIRA issues.  See <a href="http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149" target="blank"></a> for details.</td><td>1.1</td></tr><tr class="table-odd"><td>2009-04-07</td><td>_0.5</td><td>Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at <a href="http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114" target="blank"></a></td><td>1.1</td></tr><tr class="table-even"><td>2009-03-22</td><td>_0.4.3</td><td>JIRA GRAILSPLUGINS-985 fixed.</td><td>1.1</td></tr><tr class="table-odd"><td>2009-03-22</td><td>_0.4.2</td><td>Now compatible with Grails 1.1.  See JIRA GRAILSPLUGINS-999</td><td>1.0.4, 1.1</td></tr><tr class="table-even"><td>2009-03-22</td><td>_0.4.1</td><td>Completed JIRAs GRAILSPLUGINS-822 and GRAILSPLUGINS-903</td><td>1.0.4</td></tr><tr class="table-odd"><td>2009-01-27</td><td>_0.3.1</td><td>Moved debug output to log.debug statements.</td><td>1.0.4</td></tr><tr class="table-even"><td>2009-01-26</td><td>_0.3</td><td>Fixed packaging glitches.  Updated example app.</td><td>1.0.4</td></tr><tr class="table-odd"><td>2009-01-25</td><td>_0.2</td><td>No major changes.  Mainly code cleanup.  Classes are now in packages, as per plugin specs.</td><td>1.0.4</td></tr><tr class="table-even"><td>2009-01-16</td><td>_0.1</td><td>First release.</td><td>1.0.4</td></tr></table><p class="paragraph"/><h3>Upgrading to 2.0.</h3>
+Version 2.0 is a complete rewrite / refactoring of the plugin to make better use of modern Grails practices (and a better working knowledge of Grails).  All tags are now rendered via templates instead of string builders in code.  This should make the plugin more extensible in the future.  Many bugs and feature enhancements were also completed for the release.<p class="paragraph"/><h3>Release Notes - Grails Plugins - Version Grails-FilterPane 2.0</h3><p class="paragraph"/><h4>Bug</h4>
+<ul class="star">
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1256" target="blank">GRAILSPLUGINS-1256</a> - plugin overrides default order of domain objects</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1717" target="blank">GRAILSPLUGINS-1717</a> - Filterpane "java.lang.ClassCastException: java.lang.String" with Long and Integer properties</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2446" target="blank">GRAILSPLUGINS-2446</a> - i18n missing for sortable criteria combobox</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2447" target="blank">GRAILSPLUGINS-2447</a> - Missing input field for associated properties if between criteria is selected</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2483" target="blank">GRAILSPLUGINS-2483</a> - Missing input field for type Currency</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2807" target="blank">GRAILSPLUGINS-2807</a> - GSP-tag filterpane:includes generates wrong path for java-script files.</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2808" target="blank">GRAILSPLUGINS-2808</a> - Associated properties not displayed correctly in currentCriteria tag</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2813" target="blank">GRAILSPLUGINS-2813</a> - The currentCriteria tag looses the sort and order params when using remove link</li>
+</ul><p class="paragraph"/><h4>Improvement</h4>
+<ul class="star">
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1476" target="blank">GRAILSPLUGINS-1476</a> - Support filtering of collections</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1979" target="blank">GRAILSPLUGINS-1979</a> - Specify fetchMode In FilterPane</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2448" target="blank">GRAILSPLUGINS-2448</a> - German properties</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2802" target="blank">GRAILSPLUGINS-2802</a> - Swedish messages</li>
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2809" target="blank">GRAILSPLUGINS-2809</a> - Make it possible to filter on "id" property</li>
+</ul><p class="paragraph"/><h4>New Feature</h4>
+<ul class="star">
+<li><a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-1909" target="blank">GRAILSPLUGINS-1909</a> - Support for deeper assocations</li>
+</ul><p class="paragraph"/>There are several breaking changes when migrating to 2.0.  Please take note!
+<ul class="star">
+<li>Package names for all classes have changed to a more standard one: org.grails.plugin.filterpane</li>
+<li>Class Renames</li>
+<ol>
+<li>FilterService has been renamed to FilterPaneService to match the plugin name and to remove ambiguity with other plugins / services</li>
+<li>FilterUtils has been renamed to FilterPaneUtils for the same reasons as above.</li>
+</ol>
+<li>Tag Library Changes</li>
+<ol>
+<li>filePaneIncludes tag has been removed.  It has been deprecated for some time.  Use includes tag instead.</li>
+</ul>
+</ol>
+<ol>
+<ol>
+<li>filterButton no longer uses an ID attribute, as it was unclear what it was for.  It has been renamed to filterPaneId, to denote the id of the filterpane you wish to display.</li>
+<li>filterPane tag domainBean attribute is now just "domain"</li>
+<li>A couple years of practical use has shown that most users are NOT using the filter form as a dialog.  As such, a new required attribute to the filterPane tag has been added: dialog.  It defaults to false, so if you want to maintain the use of the form as a popup dialog, you must add this attribute and set it to true.</li>
+</ol></ol><p class="paragraph"/><blockquote class="note"><p class="paragraph"/>This plugin adds filtering capabilities to any Grails application. The primary goals of this plugin include:
+<ul class="star">
+<li>Easy integration with Grails list pages via custom tags</li>
+<li>Smart operator display. Only practical filter operations are available for a property's data type. (e.g. no "like" operators for numeric properties)</li>
+<li>Support for major operators including =, &#60;&#62;, &#62;, &#60;, &#62;=, &#60;=, like, ilike, between, is null, and is not null.</li>
+<li>Smart filter value entry. Date properties display a date picker, boolean's display radio buttons, etc.</li>
+<li>Support for a custom list of values, such as a filtering a text property with a constrained list of values.</li>
+<li>Works with Grails list sorting out of the box with only minor modification to your list gsp.</li>
+<li>Works with Grails pagination out of the box with only minor modification to your list gsp.</li>
+<li>Honors domain constraints: nullable, blank, inList (  <em class="italic">Since 0.4</em>  )</li>
+</ul><p class="paragraph"/></blockquote>
+Please note that you may experience duplicate rows if you use eager fetching.  See <a href="http://jira.codehaus.org/browse/GRAILSPLUGINS-2063" target="blank">GRAILSPLUGINS-2063</a> for more information.
+<blockquote class="note">null</blockquote>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/example.html"><strong>2</strong><span>Example Project</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
