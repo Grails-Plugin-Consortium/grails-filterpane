@@ -26,6 +26,7 @@ class FilterpaneGrailsPlugin {
             'grails-app/conf/codenarc.groovy',
             'grails-app/conf/codenarc.ruleset.all.groovy.txt',
             'grails-app/domain/**',
+            'src/docs/**',
             'codenarc.properties'
     ]
 

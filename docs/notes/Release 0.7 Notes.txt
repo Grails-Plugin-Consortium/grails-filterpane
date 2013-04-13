@@ -1,5 +1,0 @@
-TODO:
-* Rewrite FilterService using GrailsDomainProperty and GrailsDomainClass rather than Groovy MetaClass.  This should simplify things greatly and reduce errors.
-* Rework FilterService to allow filtering collections.
-* Split up wiki page into multiple pages using http://www.grails.org/create/My+new+page.
-* 
