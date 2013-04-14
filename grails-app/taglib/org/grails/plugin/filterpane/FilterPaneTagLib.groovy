@@ -121,15 +121,15 @@ class FilterPaneTagLib {
         boolean useFullAssociationPath = resolveBoolAttrValue(attrs.fullAssociationPathFieldNames ?: 'y')
         renderModel.isFiltered = FilterPaneUtils.isFilterApplied(params)
         if(renderModel.isFiltered == true) {
-			renderModel.id = attrs.id ?: 'filterPaneCurrentCriteria'
-			renderModel.quoteValues = resolveBoolAttrValue(attrs.quoteValues ?: 'y')
-			renderModel.title = attrs.title ?: ''
-			renderModel.styleClass = attrs['class'] ?: ''
-			renderModel.style = attrs.style ?: ''
-			renderModel.dateFormat = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
-			renderModel.criteria = []
-			renderModel.removeImgDir = attrs.removeImgDir ?: ''
-			renderModel.removeImgFile = attrs.removeImgFile
+            renderModel.id = attrs.id ?: 'filterPaneCurrentCriteria'
+            renderModel.quoteValues = resolveBoolAttrValue(attrs.quoteValues ?: 'y')
+            renderModel.title = attrs.title ?: ''
+            renderModel.styleClass = attrs['class'] ?: ''
+            renderModel.style = attrs.style ?: ''
+            renderModel.dateFormat = attrs.dateFormat ?: 'yyyy-MM-dd HH:mm:ss'
+            renderModel.criteria = []
+            renderModel.removeImgDir = attrs.removeImgDir ?: ''
+            renderModel.removeImgFile = attrs.removeImgFile
             renderModel.action = attrs.action ?: 'filter'
 
             def filterParams = FilterPaneUtils.extractFilterParams(params, true)
@@ -263,22 +263,22 @@ class FilterPaneTagLib {
 
         // Set up the render model.
 
-		renderModel.title = resolveAttribute(attrs.titleKey, 'fp.tag.filterPane.titleText', attrs.title, 'Filter')
-		renderModel.containerId = attrs.id ?: DefaultFilterPaneId
-		renderModel.containerIsDialog = resolveBoolAttrValue(attrs.dialog) ? " fp-dialog" : ""
-		renderModel.containerVisibleStyle = resolveBoolAttrValue(attrs.visible) ? "" : "display:none;"
-		renderModel.containerClass = attrs['class'] ?: (attrs.styleClass ?: '')
-		renderModel.containerStyle = attrs.style ?: ''
-		renderModel.formName = attrs.formName ?: 'filterPaneForm'
-		renderModel.controller = attrs.controller
-		renderModel.action = attrs.action ?: 'filter'
-		renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
-		renderModel.formAction = renderModel.controller ?
-			g.createLink(controller:renderModel.controller,	action: renderModel.action) :
-			renderModel.action;
-		renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
-		renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
-		renderModel.showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
+        renderModel.title = resolveAttribute(attrs.titleKey, 'fp.tag.filterPane.titleText', attrs.title, 'Filter')
+        renderModel.containerId = attrs.id ?: DefaultFilterPaneId
+        renderModel.containerIsDialog = resolveBoolAttrValue(attrs.dialog) ? " fp-dialog" : ""
+        renderModel.containerVisibleStyle = resolveBoolAttrValue(attrs.visible) ? "" : "display:none;"
+        renderModel.containerClass = attrs['class'] ?: (attrs.styleClass ?: '')
+        renderModel.containerStyle = attrs.style ?: ''
+        renderModel.formName = attrs.formName ?: 'filterPaneForm'
+        renderModel.controller = attrs.controller
+        renderModel.action = attrs.action ?: 'filter'
+        renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
+        renderModel.formAction = renderModel.controller ?
+                                 g.createLink(controller: renderModel.controller, action: renderModel.action) :
+                                 renderModel.action;
+        renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
+        renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
+        renderModel.showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
 
         /*
            * Need properties to filter,
@@ -717,7 +717,7 @@ class FilterPaneTagLib {
     }
 
     private Boolean resolveBoolAttrValue(String attr) {
-        ['y', 't', 'yes', 'true'].contains(attr.toLowerCase())
+        ['y', 't', 'yes', 'true'].contains(attr?.toLowerCase())
     }
 
     private String resolveFieldName(def propName, def sp, boolean isAssociation, boolean useFullAssociationPath) {
