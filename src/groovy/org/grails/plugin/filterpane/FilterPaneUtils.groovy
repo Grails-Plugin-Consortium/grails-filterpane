@@ -1,19 +1,19 @@
 package org.grails.plugin.filterpane
 
-import groovy.util.logging.Commons
-
-import java.text.SimpleDateFormat
-
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.web.converters.ConverterUtil
+
+import java.text.SimpleDateFormat
 
 /**
  * @author skrenek
  */
-@Commons
 class FilterPaneUtils {
 
     private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd hh:mm:ss zzz yyyy')
+    private static final Log log = LogFactory.getLog(this)
 
     static Date parseDateFromDatePickerParams(paramProperty, params) {
         try {
