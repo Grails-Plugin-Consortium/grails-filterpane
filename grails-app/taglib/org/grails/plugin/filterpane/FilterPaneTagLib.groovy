@@ -539,30 +539,30 @@ class FilterPaneTagLib {
 
     def input = { attrs, body ->
 
-        def ret = null
+        def ret
 
-        switch(attrs.ctrlType) {
-
-            case 'date':
-                ret = date(attrs.ctrlAttrs)
-                break
-            case 'bool':
-            case 'boolean':
-                ret = bool(attrs.ctrlAttrs)
-                break
-            case 'select':
-                ret = g.select(attrs.ctrlAttrs)
-                break
-            case 'text':
-                ret = g.textField(attrs.ctrlAttrs)
-                break
-            default:
-                ret = "<-- Unknown control type: ${attrs.ctrlType} -->"
-                break
+        if(attrs?.ctrlType) {
+            switch(attrs.ctrlType) {
+                case 'date':
+                    ret = date(attrs.ctrlAttrs)
+                    break
+                case 'bool':
+                case 'boolean':
+                    ret = bool(attrs.ctrlAttrs)
+                    break
+                case 'select':
+                    ret = g.select(attrs.ctrlAttrs)
+                    break
+                case 'text':
+                    ret = g.textField(attrs.ctrlAttrs)
+                    break
+                default:
+                    ret = "<-- Unknown control type: ${attrs?.ctrlType} -->"
+                    break
+            }
         }
 
-        if(ret)
-            out << ret
+        out << ret ?: ''
     }
 
     /**
