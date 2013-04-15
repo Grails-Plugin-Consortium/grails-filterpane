@@ -11,11 +11,12 @@
             ${c.filterValue}
           </g:else>
           <g:if test="${'between'.equalsIgnoreCase(c.filterOp)}">
+            <g:message code="fp.tag.filterPane.property.betweenValueSeparatorText" default="and"/>
             <g:if test="${quoteValues == true}">
-              and "${c.filterValueTo}"
+              "${c.filterValueTo}"
             </g:if>
             <g:else>
-              and ${c.filterValueTo}
+              ${c.filterValueTo}
             </g:else>
           </g:if>
           <a href="${g.createLink(action: action, params: c.params)}" class="remove">
