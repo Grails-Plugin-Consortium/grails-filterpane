@@ -1,0 +1,35 @@
+h4. filterLink
+This tag generates a html link that links to a filter action listing items filtered upon the specified values.
+{table}
+*Attribute Name* | *Required* | *Default Value* | *Description*
+values | Yes | None | A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. See examples below.Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may optionally also contain the key "to" if the op operator is "Between". See examples below.
+controller | No | Current controller | The name of the controller to use in the link; if not specified the current controller will be linked.
+action | No | filter | The name of the filter-action to use in the link; if not specified the default action of the controller will be linked
+filterParams | No | None | Previously used filterParams can be forwarded to the link by using this attribute. Will for instance preserve sort and order if it has been currently set.
+class | No | None | The class attribute to use for the html link. 
+{table}
+Additionally you may use all the optional attributes that you can use to the grails tag g:link.
+
+h5. values
+The simplest version filtering all items by property firstName equals Adam.
+{code}
+values="${[firstName:'Adam']}"
+{code}
+
+Filtering all items by property firstName contains Ada.
+{code}
+values="${[firstName:[op:'ILike', value:'Ada']]}"
+{code}
+
+Filtering all items by property age between 17 and 42.
+{code}
+values="${[age:[op:'Between', from:17, to:42]]}"
+{code}
+
+h5. examples
+Creating a link that links to a filtered list of books where the author is the same as the current authorInstance:
+{code}
+<filterpane:filterLink values="${['author.id' : authorInstance.id]}" controller="book" action="filter">
+  "Books by this author"
+</filterpane:filterLink>
+{code}
