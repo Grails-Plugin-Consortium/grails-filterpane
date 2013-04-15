@@ -569,18 +569,16 @@ class FilterPaneTagLib {
      * Creates a quick filter html link that links to the specificed filter action,
      * listing items filtered upon the specified values.
      * Example usage:<br/>
-     * In the show view this tag can be used to link to a list of related child objects.
+     * In the <tt>show</tt> view this tag can be used to link to a list of related child objects.
      * The effect is that when clicking on the link that the tag creates,
      * the child object's list view is displayed, filtered upon the parent id:<br/>
      * <br/>
      * <pre>
-     * {@code
      * ...
      * <filterpane:filterLink values="${['author.id' : authorInstance.id]}" controller="book">
      *  <g:message code="author.books.label" default="Books by this author" />
      * </filterpane:filterLink>
      * ...
-     *}
      * </pre>
      * @param values
      *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
@@ -599,11 +597,10 @@ class FilterPaneTagLib {
         def values = attrs.values;
         def label = body();
         def controller = attrs.controller;
-        def action = attrs.action;
-        def cssClass = attrs.class;
+        def action = attrs.action ?: 'filter';
 
         def linkParams = [:];
-        if(filterParams) {linkParams.putAll(filterParams);}
+        if(filterParams){linkParams.putAll(filterParams);}
         if(!values) {throw new IllegalArgumentException("Mandatory argument 'values' is missing.")}
         if(!values instanceof Map) {throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")}
         linkParams.sort = params.sort
@@ -617,7 +614,7 @@ class FilterPaneTagLib {
             else if(value instanceof Map) {
                 if(value.op == 'IsNull' || value.op == 'IsNotNull') {value.value = '0'}
                 linkParams['filter.op.' + field] = value.op ?: 'Equal';
-                linkParams['filter.' + field] = value.value;
+                linkParams['filter.' + field] = value.value ?: value.from;
                 if(value.to) {linkParams["filter.${field}To"] = value.to;}
 
             }
@@ -627,14 +624,11 @@ class FilterPaneTagLib {
                 linkParams['filter.' + field] = value;
             }
         }
-        Map attrsMap = [:]
-        attrsMap.putAll(attrs)
-        attrsMap.remove('values')
-        attrsMap.remove('filterParams')
 
-        def linkAttrs = [action: "filter"]
+        def linkAttrs = [action: action]
         linkAttrs.putAll(attrs)
         linkAttrs.remove('values')
+        linkAttrs.remove('filterParams')
         linkAttrs.params = linkParams
 
         out << g.link(linkAttrs) { label };
