@@ -161,24 +161,31 @@ class FilterPaneUtils {
     }
 
     static resolveDomainClass(grailsApplication, bean) {
+        String beanName = null
+        def result = null
+
         log.debug("resolveDomainClass: bean is ${bean?.class}")
         if(bean instanceof GrailsDomainClass) {
             return bean
         }
-        String beanName = null
+
         if(bean instanceof Class) {
             beanName = bean.name
         } else if(bean instanceof String) {
             beanName = bean
         }
+
         if(beanName) {
-            def result = grailsApplication.getDomainClass(beanName)
-            if(result == null) {
-                result = ConverterUtil.getDomainClass(beanName)
+            result = grailsApplication.getDomainClass(beanName)
+            if(!result) {
+                if(!beanName.contains('.')) {
+                    result = grailsApplication.domainClasses.find { it.clazz.simpleName == beanName }
+                } else {
+                    result = ConverterUtil.getDomainClass(beanName)
+                }
             }
-            return result
         }
-        null
+        result
     }
 
     static resolveDomainProperty(grailsApplication, domainClass, property) {

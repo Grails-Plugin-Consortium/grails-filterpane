@@ -279,6 +279,8 @@ class FilterPaneTagLib {
         renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
         renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
         renderModel.showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
+        renderModel.listDistinct = attrs.listDistinct ? resolveBoolAttrValue(attrs.listDistinct) : false
+        renderModel.uniqueCountColumn = attrs.uniqueCountColumn ?: ''
 
         /*
            * Need properties to filter,
@@ -649,15 +651,13 @@ class FilterPaneTagLib {
      * @param defaultValue
      * @return
      */
-    private def resolveAttribute(String customKey, String localizationKey, def attrValue, String defaultValue) {
+    private def resolveAttribute(String customKey, String localizationKey, attrValue, String defaultValue) {
         def result
 
         if(customKey) {
             result = g.message(code: customKey, default: defaultValue)
-        } else if(attrValue) {
-            result = attrValue
         } else {
-            result = g.message(code: localizationKey, default: defaultValue)
+            result = attrValue ?: g.message(code: localizationKey, default: defaultValue)
         }
 
         result ?: defaultValue

@@ -17,6 +17,8 @@ excludeProperties | No | None | By default all persistent properties of the doma
 action | No | "filter" | The controller action to call when the filter is applied.
 filterPropertyValues | No | None | A map of property values to pass through to each property's value form control.  For example, since Date properties render a date picker control, you could pass the following to limit the years in the date picker: See he example below:
 customForm | No | false | If true or "true", the tag will not render the surrounding form or the "Apply" button on it.  This is left to the developer.  This attribute is useful if you want to embed the filterpane form in an existing form. (since 0.6.4)  See the example below:
+listDistinct | No | false | If true or "true" this will cause any one<->many or many<->many relationship where search criteria on a child matches to only return distinct parents instead of duplicating parents by the number of child matches. See [nesting]
+distinctColumnName  | No | "" | When using `listDistinct=true` above, this will tell the criteria which column to group by.  Typically using 'id' is a pretty safe bet.
 {table}
 
 h5. filterPropertyValues
