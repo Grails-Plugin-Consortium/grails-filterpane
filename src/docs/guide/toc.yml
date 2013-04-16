@@ -10,7 +10,7 @@ usage:
   pagination: Pagination
   listsorting: List Sorting
   controller: Controller
-nesting:
+nestedqueries:
   title: Nested Queries
 reference:
   title: Reference
