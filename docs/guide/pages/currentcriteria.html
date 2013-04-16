@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4.2.2 currentCriteria 2.1</title>
+    <title>5.2.2 currentCriteria 2.1.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -33,16 +33,19 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>4</strong><span>Reference</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>5</strong><span>Reference</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>7</strong><span>Support</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>7</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>8</strong><span>Support</span></a>
                     </div>
                     
                 </div>
@@ -58,7 +61,7 @@ function addJsClass() {
         
         
     </div>
-    <p>This plugin adds automatic filtering capabilities to any Grails application's list views.</p>
+    <p>This plugin adds automatic and customizable filtering capabilities to any Grails application's list views.</p>
 </div>
 
 
@@ -68,22 +71,22 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/nestedqueries.html">&lt;&lt; <strong>4</strong><span>Nested Queries</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>4.2.2 currentCriteria - Reference Documentation</h1>
+                    <h1>5.2.2 currentCriteria - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.1</p>
+                    <p><strong>Version:</strong> 2.1.4</p>
 
                     
                 </div>
@@ -92,7 +95,7 @@ function addJsClass() {
 
                 
 
-<h2 id="currentcriteria">4.2.2 currentCriteria</h2>
+<h2 id="currentcriteria">5.2.2 currentCriteria</h2>
 <h4>currentCriteria</h4>
 This tag renders an unordered list of the currently applied filter criteria, along with links to remove individual filter criteria.
 <table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>domain</td><td>Yes</td><td>None</td><td>The domain bean being filtered.  May be a String (e.g. "Book") or a class instance (e.g. ${Book})</td></tr><tr class="table-even"><td>id</td><td>No</td><td>filterPaneCurrentCriteria</td><td>The id of the unordered list.</td></tr><tr class="table-odd"><td>title</td><td>No</td><td>None</td><td>The title attribute for the unordered list.</td></tr><tr class="table-even"><td>class</td><td>No</td><td>None</td><td>The CSS class to apply to the list.</td></tr><tr class="table-odd"><td>style</td><td>No</td><td>None</td><td>The style attribute for the list.</td></tr><tr class="table-even"><td>dateFormat</td><td>No</td><td>yyyy-MM-dd HH:mm:ss</td><td>The format to apply when displaying date criteria.</td></tr><tr class="table-odd"><td>action</td><td>No</td><td>filter</td><td>The controller action to submit to when removing criteria.  Set this to the same as your filterPane tag's action attribute.</td></tr><tr class="table-even"><td>removeImgDir</td><td>No</td><td>None</td><td>The directory the remove image file is located in.</td></tr><tr class="table-odd"><td>removeImgFile</td><td>No</td><td>None</td><td>The image filename to be used for the remove link.  Note that if either removeImgDir or removeImgFile are missing, the text "(X)" will be used for the remove link.</td></tr><tr class="table-even"><td>quoteValues</td><td>No</td><td>True</td><td>(Since 2.0.1) If true, values will be quoted when displayed.</td></tr><tr class="table-odd"><td>filterPropertyValues</td><td>No</td><td>None</td><td>(Since 2.0.1) Identical syntax to the filterpane tag's property of the same name.  Use this to set a display property of enum properties. See example below.</td></tr></table><p class="paragraph"/><h5>filterPropertyValues</h5><p class="paragraph"/><div class="code"><pre>filterPropertyValues=<span class="java&#45;quote">"$&#123;&#91;bookType:&#91;displayProperty:'display'&#93;&#93;&#125;"</span></pre></div>
@@ -100,9 +103,9 @@ This tag renders an unordered list of the currently applied filter criteria, alo
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
+                    <div class="toc-item prev-left"><a href="../../guide/nestedqueries.html">&lt;&lt; <strong>4</strong><span>Nested Queries</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

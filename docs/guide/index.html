@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title>Dynamically filter / search domain objects. 2.1</title>
+        <title>Dynamically filter / search domain objects. 2.1.4</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
         <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
@@ -29,13 +29,15 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="../guide/reference.html"><strong>4</strong><span>Reference</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="../guide/reference.html"><strong>5</strong><span>Reference</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0"><a href="../guide/support.html"><strong>7</strong><span>Support</span></a></div>
+                            <div class="toc-item" style="margin-left:0"><a href="../guide/roadmap.html"><strong>7</strong><span>Roadmap</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="../guide/support.html"><strong>8</strong><span>Support</span></a></div>
                             
                         </div>
                     </div>
@@ -50,7 +52,7 @@ function addJsClass(el) {
                 
                 
             </div>
-            <p>This plugin adds automatic filtering capabilities to any Grails application's list views.</p>
+            <p>This plugin adds automatic and customizable filtering capabilities to any Grails application's list views.</p>
         </div>
 
 
@@ -64,7 +66,7 @@ function addJsClass(el) {
                         <div class="project">
                             <h1>Dynamically filter / search domain objects. - Reference Documentation</h1>
                             <p><strong>Authors:</strong> Grails Plugin Consortium</p>
-                            <p><strong>Version:</strong> 2.1</p>
+                            <p><strong>Version:</strong> 2.1.4</p>
                             
                         </div>
 
@@ -90,41 +92,45 @@ function addJsClass(el) {
                             
                             <div class="toc-item" style="margin-left:10px"><a href="../guide/usage.html#controller"><strong>3.4</strong><span>Controller</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="../guide/reference.html"><strong>4</strong><span>Reference</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="../guide/reference.html#datatypes"><strong>4.1</strong><span>Data Types</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="../guide/reference.html"><strong>5</strong><span>Reference</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#text"><strong>4.1.1</strong><span>Text</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="../guide/reference.html#datatypes"><strong>5.1</strong><span>Data Types</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#numeric"><strong>4.1.2</strong><span>Numeric</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#text"><strong>5.1.1</strong><span>Text</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#date"><strong>4.1.3</strong><span>Date</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#numeric"><strong>5.1.2</strong><span>Numeric</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#boolean"><strong>4.1.4</strong><span>Boolean</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#date"><strong>5.1.3</strong><span>Date</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#enum"><strong>4.1.5</strong><span>Enum</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#boolean"><strong>5.1.4</strong><span>Boolean</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:10px"><a href="../guide/reference.html#tags"><strong>4.2</strong><span>Tags</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#enum"><strong>5.1.5</strong><span>Enum</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#includes"><strong>4.2.1</strong><span>includes</span></a></div>
+                            <div class="toc-item" style="margin-left:10px"><a href="../guide/reference.html#tags"><strong>5.2</strong><span>Tags</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#currentcriteria"><strong>4.2.2</strong><span>currentCriteria</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#includes"><strong>5.2.1</strong><span>includes</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#filterbutton"><strong>4.2.3</strong><span>filterButton</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#currentcriteria"><strong>5.2.2</strong><span>currentCriteria</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#filterpane"><strong>4.2.4</strong><span>filterPane</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#filterbutton"><strong>5.2.3</strong><span>filterButton</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#isfiltered"><strong>4.2.5</strong><span>isFiltered</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#filterpane"><strong>5.2.4</strong><span>filterPane</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#isnotfiltered"><strong>4.2.6</strong><span>isNotFiltered</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#filterlink"><strong>5.2.5</strong><span>filterLink</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#paginate"><strong>4.2.7</strong><span>paginate</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#isfiltered"><strong>5.2.6</strong><span>isFiltered</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="../guide/internationalization.html"><strong>5</strong><span>Internationalization i18n</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#isnotfiltered"><strong>5.2.7</strong><span>isNotFiltered</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="../guide/roadmap.html"><strong>6</strong><span>Roadmap</span></a></div>
+                            <div class="toc-item" style="margin-left:20px"><a href="../guide/reference.html#paginate"><strong>5.2.8</strong><span>paginate</span></a></div>
                             
-                            <div class="toc-item" style="margin-left:0px"><a href="../guide/support.html"><strong>7</strong><span>Support</span></a></div>
+                            <div class="toc-item" style="margin-left:0px"><a href="../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="../guide/roadmap.html"><strong>7</strong><span>Roadmap</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="../guide/support.html"><strong>8</strong><span>Support</span></a></div>
                             
                             <div style="clear:both" ></div>
                         </div>

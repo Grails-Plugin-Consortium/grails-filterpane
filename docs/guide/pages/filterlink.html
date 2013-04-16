@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1 Data Types 2.1.4</title>
+    <title>5.2.5 filterLink 2.1.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -82,7 +82,7 @@ function addJsClass() {
 
 
                 <div class="project">
-                    <h1>5.1 Data Types - Reference Documentation</h1>
+                    <h1>5.2.5 filterLink - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
@@ -92,61 +92,22 @@ function addJsClass() {
                 </div>
 
                 
-                <div id="table-of-content">
-                    <h2>Table of Contents</h2>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#text"><strong>5.1</strong><span>Text</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#numeric"><strong>5.2</strong><span>Numeric</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#date"><strong>5.3</strong><span>Date</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#boolean"><strong>5.4</strong><span>Boolean</span></a>
-                    </div>
-                    
-                    <div class="toc-item" style="margin-left:0px"><a href="#enum"><strong>5.5</strong><span>Enum</span></a>
-                    </div>
-                    
-                </div>
-                
 
                 
 
-<h2 id="datatypes">5.1 Data Types</h2>
-<h3>Data Types and their Available Filter Operators</h3><p class="paragraph"/><h4>Domain Constraint Modifications</h4>
-If a property is not nullable (constraint nullable="false"), the <strong class="bold">Is Null</strong> and <strong class="bold">Is Not Null</strong> operators will not be available for that property.
-
-
-
-<h2 id="text">5.1.1 Text</h2>
-<h4>Text</h4>
- <em class="italic">(String, char)</em> 
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>ILike</td><td>Contains</td></tr><tr class="table-even"><td>Not ILike</td><td>Does Not Contain</td></tr><tr class="table-odd"><td>Like</td><td>Contains (Case Sensitive)</td></tr><tr class="table-even"><td>Not Like</td><td>Does Not Contain (Case Sensitive)</td></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>Is Null</td><td>Is Null</td></tr><tr class="table-even"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
-
-
-<h2 id="numeric">5.1.2 Numeric</h2>
-<h4>Numeric</h4>
- <em class="italic">(Integer, Long, Short, Float, Double, BigDecimal, BigInteger)</em> 
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>&#60;</td><td>Less Than</td></tr><tr class="table-even"><td>&#60;=</td><td>Less Than or Equal To</td></tr><tr class="table-odd"><td>&#62;</td><td>Greater Than</td></tr><tr class="table-even"><td>&#62;=</td><td>Greater Than or Equal To</td></tr><tr class="table-odd"><td>Between</td><td>Between</td></tr><tr class="table-even"><td>Is Null</td><td>Is Null</td></tr><tr class="table-odd"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
-
-
-<h2 id="date">5.1.3 Date</h2>
-<h4> Date</h4>
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>&#60;</td><td>Less Than</td></tr><tr class="table-even"><td>&#60;=</td><td>Less Than or Equal To</td></tr><tr class="table-odd"><td>&#62;</td><td>Greater Than</td></tr><tr class="table-even"><td>&#62;=</td><td>Greater Than or Equal To</td></tr><tr class="table-odd"><td>Between</td><td>Between</td></tr><tr class="table-even"><td>Is Null</td><td>Is Null</td></tr><tr class="table-odd"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
-
-
-<h2 id="boolean">5.1.4 Boolean</h2>
-<h4>Boolean</h4>
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>Is Null</td><td>Is Null</td></tr><tr class="table-even"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
-
-
-<h2 id="enum">5.1.5 Enum</h2>
-<h4>Enum</h4>
- <em class="italic">(since 0.6)</em> 
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr></table>
+<h2 id="filterlink">5.2.5 filterLink</h2>
+<h4>filterLink</h4>
+This tag generates a html link that links to a filter action listing items filtered upon the specified values.
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>values</td><td>Yes</td><td>None</td><td>A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. See examples below.Optionally, instead of the field value, you can supply a map like this op:<The filter operator>, value:<the filter value>. This map may optionally also contain the key "to" if the op operator is "Between". See examples below.</td></tr><tr class="table-even"><td>controller</td><td>No</td><td>Current controller</td><td>The name of the controller to use in the link; if not specified the current controller will be linked.</td></tr><tr class="table-odd"><td>action</td><td>No</td><td>filter</td><td>The name of the filter-action to use in the link; if not specified the default action of the controller will be linked</td></tr><tr class="table-even"><td>filterParams</td><td>No</td><td>None</td><td>Previously used filterParams can be forwarded to the link by using this attribute. Will for instance preserve sort and order if it has been currently set.</td></tr><tr class="table-odd"><td>class</td><td>No</td><td>None</td><td>The class attribute to use for the html link.</td></tr></table>
+Additionally you may use all the optional attributes that you can use to the grails tag g:link.<p class="paragraph"/><h5>values</h5>
+The simplest version filtering all items by property firstName equals Adam.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:'Adam'&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName contains Ada.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'ILike', value:'Ada'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property age between 17 and 42.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;age:&#91;op:'Between', from:17, to:42&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/><h5>examples</h5>
+Creating a link that links to a filtered list of books where the author is the same as the current authorInstance:
+<div class="code"><pre>&#60;filterpane:filterLink values=<span class="java&#45;quote">"$&#123;&#91;'author.id' : authorInstance.id&#93;&#125;"</span> controller=<span class="java&#45;quote">"book"</span> action=<span class="java&#45;quote">"filter"</span>&#62;
+  <span class="java&#45;quote">"Books by <span class="java&#45;keyword">this</span> author"</span>
+&#60;/filterpane:filterLink&#62;</pre></div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>

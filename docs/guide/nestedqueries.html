@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Example Project 2.1.4</title>
+    <title>4 Nested Queries 2.1.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -71,18 +71,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/reference.html"><strong>5</strong><span>Reference</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>2 Example Project - Reference Documentation</h1>
+                    <h1>4 Nested Queries - Reference Documentation</h1>
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
@@ -95,16 +95,51 @@ function addJsClass() {
 
                 
 
-<h1 id="example">2 Example Project</h1>
-<h2>Example Project</h2>
-An example Grails application can be downloaded from <a href="../ref/Httpsgithubcom Grails Plugin Consortiumgrailsfilterpanetest/GitHub.html" class="https://github.com/Grails-Plugin-Consortium/grails-filterpane-test">GitHub</a>.<p class="paragraph"/>
+<h1 id="nestedqueries">4 Nested Queries</h1>
+<h2>Nested Queries</h2><p class="paragraph"/>Nested queries are supported for children objects and collections.  To include these in the filterpane tag lib simply use something
+similar to the following given that a Robot 1-<strong class="bold"> Part 1-</strong> Function or <div class="code"><pre>robot&#42;.parts&#42;.functions</pre></div><p class="paragraph"/><div class="code"><pre>&#60;filterpane:filterPane domain=<span class="java&#45;quote">"org.grails.example.nested.Robot"</span>
+                         additionalProperties=<span class="java&#45;quote">"identifier"</span>
+                         associatedProperties=<span class="java&#45;quote">"parts.functions.name, parts.name"</span>
+                         titleKey=<span class="java&#45;quote">"fp.tag.filterPane.titleText"</span>
+                         dialog=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>
+                         visible=<span class="java&#45;quote">"n"</span>
+                         showSortPanel=<span class="java&#45;quote">"n"</span>
+                         showTitle=<span class="java&#45;quote">"n"</span>
+                         listDistinct=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>
+                         distinctColumnName=<span class="java&#45;quote">"id"</span>
+                         fullAssociationPathFieldNames=<span class="java&#45;quote">"<span class="java&#45;keyword">false</span>"</span>/&#62;</pre></div><p class="paragraph"/>There were two new columns added to the filterPane taglib to help resolve the createCriteria issue where querying on child objects that match multiple parents.  Without using the listUnique() criteria method and providing a projection column name you would return duplicated resultsets.<p class="paragraph"/>Take for example the following test:<p class="paragraph"/><div class="code"><pre>def <span class="java&#45;quote">"test nested criteria call without distinct"</span>() &#123;
+    given:
+    Book.findOrSaveWhere(title: 'i like turtles', coAuthor: Author.findOrSaveWhere(firstName: 'Co', lastName: 'Author'))
+            .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
+            .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+    Book.findOrSaveWhere(title: 'think about it')<p class="paragraph"/>    def c = Book.createCriteria()<p class="paragraph"/>    when:
+    def books = c.list &#123;
+        and &#123;
+            'authors' &#123;
+                eq('lastName', 'Dude')
+                order('lastName', 'asc')
+            &#125;
+        &#125;
+    &#125;<p class="paragraph"/>    then: 'Incorrect size due to multiple matched children'
+    Book.list().size() == 2
+    books.size() == 2
+&#125;</pre></div><p class="paragraph"/>What happens is that multiple children match the nested query and the parent is added once for each matching child.  To correct this you would need to use the `listDistinct` of the criteria.  We achieve this
+by adding two additional parameters to the filterpane tag.
+<ul class="star">
+<li>`listDistinct` A boolean to tell the query to use listDistinct</li>
+<li>`distinctColumnName` - A string with the column name to group by in the count query (of parent class)</li>
+</ul><p class="paragraph"/> <div class="code"><pre>&#60;filterpane:filterPane domain=<span class="java&#45;quote">"org.grails.example.nested.Robot"</span>
+    &#8230;
+    listDistinct=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>
+    distinctColumnName=<span class="java&#45;quote">"id"</span>
+    "/&#62;</pre></div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/usage.html">&lt;&lt; <strong>3</strong><span>Usage</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>3</strong><span>Usage</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/reference.html"><strong>5</strong><span>Reference</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
