@@ -16,4 +16,11 @@
 		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>.link_to_grails_plugins</name>
+			<type>2</type>
+			<location>/home/stejon0/workspace/ext/grails-filterpane/target/plugins</location>
+		</link>
+	</linkedResources>
 </projectDescription>
