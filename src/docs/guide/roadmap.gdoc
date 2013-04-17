@@ -1,5 +1,4 @@
 h2. Roadmap
-*  Minor versions of 0.6 will address issues that arise with 0.6 and any critical bugs that are found.
-*  Revised documentation that is more user friendly and improved examples of each feature.
-*  Release 0.7 will focus on adding more unit and functional tests and simplifying the code base.
-*  Future releases will be kept smaller than 0.5 and 0.6 in an attempt to deliver changes faster.
+
+* Code cleanup
+* Additional bug fixes

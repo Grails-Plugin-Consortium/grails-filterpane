@@ -1,5 +1,7 @@
 package org.grails.plugin.filterpane
 
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder
+
 class FilterPaneService {
 
     static transactional = false
@@ -14,7 +16,7 @@ class FilterPaneService {
         doFilter(params, filterClass, true)
     }
 
-    private filterParse(c, domainClass, params, filterParams, filterOpParams, doCount) {
+    private filterParse(criteria, domainClass, params, filterParams, filterOpParams, doCount) {
         // First pull out the op map and store a list of its keys.
         def keyList = []
         keyList.addAll(filterOpParams.keySet())
@@ -30,51 +32,58 @@ class FilterPaneService {
 
             // Skip associated property entries.  (They'll have a dot in them.)  We'll use the map instead later.
             if(!propName.contains(".")) {
-
                 def filterOp = filterOpParams[propName]
                 def rawValue = filterParams[propName]
                 def rawValue2 = filterParams["${propName}To"]
 
                 // If the filterOp is a Map, then the propName is an association (e.g. Book.author)
-                if(filterOp instanceof Map && rawValue instanceof Map) {
+                if((filterOp instanceof Map && rawValue instanceof Map)) {
                     def nextFilterParams = rawValue
                     def nextFilterOpParams = filterOp
 
-                    // Are any of the values non-empty?
-                    if(nextFilterOpParams.values().find {it.size() > 0} != null) {
-
-                        log.debug("== Adding association ${propName}")
-
-                        c."${propName}"() {
-
+                    if(!areAllValuesEmptyRecursively(nextFilterParams)) {
+                        criteria."${propName}" {
+                            // Are any of the values non-empty?
+                            log.debug("== Adding association ${propName}")
                             def nextDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
                             def nextDomainClass = nextDomainProp.referencedDomainClass
-
-                            filterParse(c, nextDomainClass, params, nextFilterParams, nextFilterOpParams, doCount)
-
                             // If they want to sort by an associated property, need to do it here.
-                            if(!doCount && params.sort && params.sort.startsWith("${propName}.")) {
-                                def parts = params.sort.toString().split('\\.')
-                                if(parts.size() == 2) {
-                                    order(parts[1], params.order ?: 'asc')
-                                }
+                            List sort = params.sort.toString().split('\\.')
+                            //todo: while this appears to output correct criteria, the sort of child objects doesn't seem to work as intended
+                            if(!doCount && params.sort && sort.size() > 1 && sort.get(sort.size() - 2) == propName) {
+                                order(sort.get(sort.size() - 1), params.order ?: 'asc')
                             }
-                        } // end c.propName closure.
-                    } // end if any values not empty.
+                            filterParse(criteria, nextDomainClass, params, nextFilterParams, nextFilterOpParams, doCount)
+                        }
+                    }
                 } else {
-                    //log.debug("propName is ${propName}")
                     def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
                     def val = this.parseValue(thisDomainProp, rawValue, filterParams, null)
                     def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                     log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
-                    this.addCriterion(c, propName, filterOp, val, val2, filterParams, thisDomainProp)
+                    this.addCriterion(criteria, propName, filterOp, val, val2, filterParams, thisDomainProp)
                 }
+            } else {
+                log.debug "value used ${propName} is a dot notation should switch to a nested map like [filter: [op: ['authors': ['lastName': 'Equal']], 'authors': ['lastName': 'Dude']]]"
             }
             log.debug("==============================================================================='\n")
-        } // end each op
-    } // end filterParse
+        }
+    }
 
-    private doFilter(params, Class filterClass, boolean doCount) {
+    private Boolean areAllValuesEmptyRecursively(Map map){
+        def result = true
+        map.each { k,v ->
+            if(v instanceof Map){
+                result &= areAllValuesEmptyRecursively(v)
+            } else {
+                println "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
+                result &= v?.toString()?.trim()?.isEmpty()
+            }
+        }
+        result
+    }
+
+    private doFilter(params, Class filterClass, Boolean doCount) {
         log.debug("filtering... params = ${params.toMapString()}")
         //def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
@@ -88,14 +97,17 @@ class FilterPaneService {
             def c = filterClass.createCriteria()
 
             def criteriaClosure = {
-//                def mc = filterClass.metaClass
                 and {
                     filterParse(c, domainClass, params, filterParams, filterOpParams, doCount)
-                } // end and
+                }
 
                 if(doCount) {
                     c.projections {
-                        rowCount()
+                        if(params?.uniqueCountColumn) {
+                            countDistinct(params.uniqueCountColumn)
+                        } else {
+                            rowCount()
+                        }
                     }
                 } else {
                     if(params.offset) {
@@ -118,24 +130,14 @@ class FilterPaneService {
                     }
                     def defaultSort = null
                     try {
-                        defaultSort = filterClass?.mapping?.mapping?.sort
+                        defaultSort = GrailsDomainBinder.getMapping(filterClass)?.sort
                     } catch(Exception ex) {
                         log.info("No mapping property found on filterClass ${filterClass}")
-                        log.error ex
                     }
                     if(params.sort) {
                         if(params.sort.indexOf('.') < 0) { // if not an association..
                             order(params.sort, params.order ?: 'asc')
                         }
-                        // sorting by association is now done when adding the association (filterParse)
-                        /* else {
-                            def parts = params.sort.split("\\.")
-                            if (!associationList.contains(parts[0])) {
-                                c."${parts[0]}" {
-                                    order(parts[1], params.order ?: 'asc')
-                                }
-                            }
-                        }*/
                     } else if(defaultSort != null) {
                         log.debug('No sort specified and default is specified on domain.  Using it.')
                         order(defaultSort, params.order ?: 'asc')
@@ -145,7 +147,12 @@ class FilterPaneService {
                 }
             } // end criteria
 
-            def results = doCount ? c.get(criteriaClosure) : c.list(criteriaClosure)
+            Closure doListOperation = { p ->
+                (p?.listDistinct == true ?
+                 c.listDistinct(criteriaClosure) : c.list(criteriaClosure))
+            }
+
+            def results = doCount ? c.get(criteriaClosure) : doListOperation(params)
 
             if(doCount && results instanceof List) {
                 results = 0I
@@ -167,7 +174,7 @@ class FilterPaneService {
         // GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
         // precision on date picker was 'day', turn this into a between from
         // midnight to 1 ms before midnight of the next day.
-        boolean isDayPrecision = "y".equals(filterParams["${domainProperty.domainClass.name}.${domainProperty.name}_isDayPrecision"])
+        boolean isDayPrecision = "y".equals(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"])
         boolean isOpAlterable = (op == 'Equal' || op == 'NotEqual')
         if(value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
             op = (op == 'Equal') ? 'Between' : 'NotBetween'
@@ -232,64 +239,65 @@ class FilterPaneService {
      * @returns The input parsed to the appropriate type if possible, else null.
      */
     def parseValue(domainProperty, val, params, associatedPropertyParamName) {
-        if(val instanceof String) {
-            val = val.trim()
+        def newValue = val
+        if(newValue instanceof String) {
+            newValue = newValue.trim() ?: null
         }
 
         // GRAILSPLUGINS-1717.  Groovy truth treats empty strings as false.  Compare against null.
-        if(val != null) {
-            Class cls = domainProperty.referencedPropertyType ?: domainProperty.type
+        if(newValue != null) {
+            Class cls = domainProperty?.referencedPropertyType ?: domainProperty.type
             String clsName = cls.simpleName.toLowerCase()
-            log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} val is '${val}', clsName is ${clsName}")
+            log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} value is '${newValue}', clsName is ${clsName}")
 
             if(domainProperty.isEnum()) {
-                def tempVal = val
-                val = null // default to null.  If it's valid, it'll get replaced with the real value.
+                def tempVal = newValue
+                newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
                 try {
                     if(tempVal.toString().length() > 0) {
-                        val = Enum.valueOf(cls, tempVal.toString())
+                        newValue = Enum.valueOf(cls, tempVal.toString())
                     }
                 } catch(IllegalArgumentException iae) {
-                    log.debug("Enum valueOf failed.  val is ${tempVal}")
+                    log.debug("Enum valueOf failed. value is ${tempVal}")
                     log.debug iae
                     // Ignore this.  val is not a valid enum value (probably an empty string).
                 }
             } else if("boolean".equals(clsName)) {
-                val = val.toBoolean()
+                newValue = newValue.toBoolean()
             } else if("int".equals(clsName) || "integer".equals(clsName)) {
-                val = val.isInteger() ? val.toInteger() : null
+                newValue = newValue.isInteger() ? newValue.toInteger() : null
             } else if("long".equals(clsName)) {
-                try { val = val.toLong() } //no isShort()
+                try { newValue = newValue.toLong() } //no isShort()
                 catch(java.lang.NumberFormatException e) {
-                    val = null
+                    newValue = null
                     log.debug e
                 }
             } else if("double".equals(clsName)) {
-                val = val.isDouble() ? val.toDouble() : null
+                newValue = newValue.isDouble() ? newValue.toDouble() : null
             } else if("float".equals(clsName)) {
-                val = val.isFloat() ? val.toFloat() : null
+                newValue = newValue.isFloat() ? newValue.toFloat() : null
             } else if("short".equals(clsName)) {
-                try { val = val.toShort() } //no isShort()
+                try { newValue = newValue.toShort() } //no isShort()
                 catch(java.lang.NumberFormatException e) {
-                    val = null
+                    newValue = null
                     log.debug e
                 }
             } else if("bigdecimal".equals(clsName)) {
-                val = val.isBigDecimal() ? val.toBigDecimal() : null
+                newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null
             } else if("biginteger".equals(clsName)) {
-                val = val.isBigInteger() ? val.toBigInteger() : null
+                newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null
             } else if(java.util.Date.isAssignableFrom(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
-                val = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
+                newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
             } else if("currency".equals(clsName)) {
                 try {
-                    val = Currency.getInstance(val.toString())
+                    newValue = Currency.getInstance(newValue.toString())
                 } catch(IllegalArgumentException iae) {
                     // Do nothing.
                     log.debug iae
                 }
             }
         }
-        val
+        newValue
     }
 }

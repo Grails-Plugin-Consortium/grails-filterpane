@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = "2.1.3"
+    def version = "2.1.4"
     def grailsVersion = "1.3 > *"
 
     def author = "Grails Plugin Consortium"
@@ -24,7 +24,10 @@ class FilterpaneGrailsPlugin {
             'grails-app/conf/codenarc.groovy',
             'grails-app/conf/codenarc.ruleset.all.groovy.txt',
             'grails-app/domain/**',
+            'grails-app/controllers/**',
+            'grails-app/views/book/**',
             'src/docs/**',
+            'test/**',
             'codenarc.properties'
     ]
 }

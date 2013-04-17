@@ -10,6 +10,8 @@
   </g:if>
 <%-- Do we still need this hidden prop? --%>
   <input type="hidden" name="filterProperties" value="${fp.filterProperties}"/>
+  <input type="hidden" name="listDistinct" value="${fp.listDistinct}"/>
+  <input type="hidden" name="uniqueCountColumn" value="${fp.uniqueCountColumn}"/>
 
 
   <table cellspacing="0" cellpadding="0" class="filterPaneTable">
@@ -29,9 +31,7 @@
   </g:else>
 
   <g:if test="${fp.showButtons == true}">
-
-  <g:render template="/filterpane/filterpaneButtons" model="${fp.buttonModel}" />
-
+    <g:render template="/filterpane/filterpaneButtons" model="${fp.buttonModel}" />
   </g:if>
 
   <g:if test="${renderForm}">

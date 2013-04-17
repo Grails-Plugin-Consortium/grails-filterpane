@@ -2,7 +2,8 @@ h2. Change Log
 
 {table}
 *Date* | *Version* | *Notes* | *Known Compatible Grails Versions*
-2011-03-19 | _2.1 | Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization. | 2.1.x
+2011-04-16 | _2.1.4 | Removed grails 2.x requirements and moved to 1.3.x.  Shored up nested queries and added tests and examples to example project. | 1.3.x
+2013-04-12 | _2.1 | Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization. | 2.1.x
 2011-03-19 | _2.0 | Complete rewrite of the plugin  See JIRA notes for changes. | 2.0
 2010-07-26 | _0.7 | Bug fixes. | 1.1.1 +
 2010-03-24 | _0.6.8 | Bug fix for boolean 'false' value not working | 1.1.1 +

@@ -10,6 +10,8 @@ usage:
   pagination: Pagination
   listsorting: List Sorting
   controller: Controller
+nestedqueries:
+  title: Nested Queries
 reference:
   title: Reference
   datatypes:
@@ -25,6 +27,7 @@ reference:
     currentcriteria: currentCriteria
     filterbutton: filterButton
     filterpane: filterPane
+    filterlink: filterLink
     isfiltered: isFiltered
     isnotfiltered: isNotFiltered
     paginate: paginate

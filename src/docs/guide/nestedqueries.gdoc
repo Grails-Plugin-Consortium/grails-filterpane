@@ -1,0 +1,62 @@
+h2. Nested Queries
+
+Nested queries are supported for children objects and collections.  To include these in the filterpane tag lib simply use something
+similar to the following given that a Robot 1-* Part 1-* Function or {code}robot*.parts*.functions{code}
+
+{code}
+<filterpane:filterPane domain="org.grails.example.nested.Robot"
+                         additionalProperties="identifier"
+                         associatedProperties="parts.functions.name, parts.name"
+                         titleKey="fp.tag.filterPane.titleText"
+                         dialog="true"
+                         visible="n"
+                         showSortPanel="n"
+                         showTitle="n"
+                         listDistinct="true"
+                         distinctColumnName="id"
+                         fullAssociationPathFieldNames="false"/>
+{code}
+
+There were two new columns added to the filterPane taglib to help resolve the createCriteria issue where querying on child objects that match multiple parents.  Without using the listUnique() criteria method and providing a projection column name you would return duplicated resultsets.
+
+Take for example the following test:
+
+{code}
+ def "test nested criteria call without distinct"() {
+    given:
+    Book.findOrSaveWhere(title: 'i like turtles', coAuthor: Author.findOrSaveWhere(firstName: 'Co', lastName: 'Author'))
+            .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
+            .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+    Book.findOrSaveWhere(title: 'think about it')
+
+    def c = Book.createCriteria()
+
+    when:
+    def books = c.list {
+        and {
+            'authors' {
+                eq('lastName', 'Dude')
+                order('lastName', 'asc')
+            }
+        }
+    }
+
+    then: 'Incorrect size due to multiple matched children'
+    Book.list().size() == 2
+    books.size() == 2
+}
+{code}
+
+What happens is that multiple children match the nested query and the parent is added once for each matching child.  To correct this you would need to use the `listDistinct` of the criteria.  We achieve this
+by adding two additional parameters to the filterpane tag.
+
+* `listDistinct` A boolean to tell the query to use listDistinct
+* `distinctColumnName` - A string with the column name to group by in the count query (of parent class)
+
+ {code}
+ <filterpane:filterPane domain="org.grails.example.nested.Robot"
+    ...
+    listDistinct="true"
+    distinctColumnName="id"
+    "/>
+ {code}
