@@ -76,7 +76,7 @@ class FilterPaneService {
             if(v instanceof Map){
                 result &= areAllValuesEmptyRecursively(v)
             } else {
-                println "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
+                log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
                 result &= v?.toString()?.trim()?.isEmpty()
             }
         }
