@@ -18,7 +18,8 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+        build(':release:2.2.1',
+              ':rest-client-builder:1.0.3'){
             export = false
         }
 
@@ -27,7 +28,8 @@ grails.project.dependency.resolution = {
         }
 
         test(":code-coverage:1.2.6",
-             ":codenarc:0.18.1") {
+             ":codenarc:0.18.1",
+             ":build-test-data:2.0.5") {
             export = false
         }
 

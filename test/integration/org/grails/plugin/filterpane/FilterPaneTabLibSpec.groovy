@@ -5,6 +5,7 @@ import grails.test.GroovyPagesTestCase
 import grails.test.mixin.TestMixin
 import org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException
 import org.springframework.web.context.request.RequestContextHolder
+import spock.lang.Unroll
 
 @TestMixin(GroovyPagesTestCase)
 class FilterPaneTabLibSpec extends IntegrationSpec {
@@ -106,5 +107,13 @@ class FilterPaneTabLibSpec extends IntegrationSpec {
         't'    | true
         null   | false
         ''     | false
+    }
+
+    def "test filter link unsupported operation exception"() {
+        when:
+        applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[author:[op:"IsAny"]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        thrown(RuntimeException)
     }
 }

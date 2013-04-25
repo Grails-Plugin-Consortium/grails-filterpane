@@ -18,15 +18,25 @@ class FilterPaneTagLib {
      * individual rows in the filter pane.  The values in the text maps are key suffixes for the
      * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
-    def availableOpsByType = [
-            text: ['', 'ILike', 'NotILike', 'Like', 'NotLike', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-            numeric: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                    'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-            date: ['', 'Equal', 'NotEqual', 'LessThan', 'LessThanEquals', 'GreaterThan',
-                    'GreaterThanEquals', 'Between', 'IsNull', 'IsNotNull'],
-            'boolean': ['', 'Equal', 'NotEqual', 'IsNull', 'IsNotNull'],
-            'enum': ['', 'Equal', 'NotEqual'],
-            currency: ['', 'Equal', 'NotEqual']
+    private static final Map availableOpsByType = [
+            text: ['', FilterPaneOperationType.ILike.operation, FilterPaneOperationType.NotILike.operation, 
+                    FilterPaneOperationType.Like.operation, FilterPaneOperationType.NotLike.operation, 
+                    FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation, 
+                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
+            numeric: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation, 
+                    FilterPaneOperationType.LessThan.operation, FilterPaneOperationType.LessThanEquals.operation, 
+                    FilterPaneOperationType.GreaterThan.operation,
+                    FilterPaneOperationType.GreaterThanEquals.operation, FilterPaneOperationType.Between.operation,
+                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
+            date: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
+                    FilterPaneOperationType.LessThan.operation, FilterPaneOperationType.LessThanEquals.operation,
+                    FilterPaneOperationType.GreaterThan.operation,
+                    FilterPaneOperationType.GreaterThanEquals.operation, FilterPaneOperationType.Between.operation,
+                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
+            'boolean': ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
+                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
+            'enum': ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation],
+            currency: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation]
     ]
 
     /**
@@ -200,11 +210,11 @@ class FilterPaneTagLib {
                         def lcFilterOp = filterOp.toString().toLowerCase()
                         switch(lcFilterOp) {
 
-                            case 'isnull':
-                            case 'isnotnull':
+                            case FilterPaneOperationType.IsNull.operation:
+                            case FilterPaneOperationType.IsNotNull.operation:
                                 filterValue = ''
                                 break
-                            case 'between':
+                            case FilterPaneOperationType.Between.operation:
                                 filterValueTo = filterParams["filter.${prop}To"]
                                 if(filterValueTo == 'struct') {
                                     filterValueTo = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
@@ -375,6 +385,125 @@ class FilterPaneTagLib {
         out << g.render(template: "/filterpane/filterpane", model: [fp: renderModel])
     }
 
+    def date = { attrs, body ->
+
+        Date d = FilterPaneUtils.parseDateFromDatePickerParams(attrs.name, params)
+        def model = [:]
+        model.putAll(attrs)
+        model.value = d
+        model.onChange = "grailsFilterPane.selectDefaultOperator('${attrs.opName}')"
+        model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
+        def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
+        out << ret
+    }
+
+    def bool = { attrs, body ->
+        def ret = g.render(template: "/filterpane/boolean", model: attrs)
+        out << ret
+    }
+
+    def input = { attrs, body ->
+
+        def ret = null
+
+        if(attrs?.ctrlType) {
+            switch(attrs.ctrlType) {
+                case 'date':
+                    ret = date(attrs.ctrlAttrs)
+                    break
+                case 'bool':
+                case 'boolean':
+                    ret = bool(attrs.ctrlAttrs)
+                    break
+                case 'select':
+                    ret = g.select(attrs.ctrlAttrs)
+                    break
+                case 'text':
+                    ret = g.textField(attrs.ctrlAttrs)
+                    break
+                default:
+                    ret = "<-- Unknown control type: ${attrs?.ctrlType} -->"
+                    break
+            }
+        }
+
+        out << (ret ?: '')
+    }
+
+    /**
+     * Creates a quick filter html link that links to the specified filter action,
+     * listing items filtered upon the specified values.
+     * Example usage:<br/>
+     * In the <tt>show</tt> view this tag can be used to link to a list of related child objects.
+     * The effect is that when clicking on the link that the tag creates,
+     * the child object's list view is displayed, filtered upon the parent id:<br/>
+     * <br/>
+     * <pre>
+     * ...
+     * <filterpane:filterLink values="${['author.id' : authorInstance.id]}" controller="book">
+     *  <g:message code="author.books.label" default="Books by this author" />
+     * </filterpane:filterLink>
+     * ...
+     * </pre>
+     * @param values
+     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
+     *          Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may
+     *          optionally also contain the key "to" if the op operator is "Between".
+     * @param controller
+     *          The controler that contains the action to use. Optional, default is current controller.
+     * @param action
+     *          The action to use for filtering. Optional, default is <i>filter</i>.
+     * @param *
+     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.         
+     * @body The body of this tag should contain the text to display within the link.
+     */
+    def filterLink = { attrs, body ->
+        def filterParams = attrs.filterParams;
+        def values = attrs.values;
+        def label = body();
+        def controller = attrs.controller;
+        def action = attrs.action ?: 'filter';
+
+        def linkParams = [:];
+        if(filterParams) {linkParams.putAll(filterParams);}
+        if(!values) {throw new IllegalArgumentException("Mandatory argument 'values' is missing.")}
+        if(!values instanceof Map) {throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")}
+        linkParams.sort = params.sort
+        linkParams.order = params.order
+        for(String field : values.keySet()) {
+            def value = values[field]
+
+            if(value instanceof Map && value?.op && !FilterPaneOperationType.getFilterPaneOperationType(value.op)){
+                throw new RuntimeException("Operation type ${value.op} is not supported.  Please see FilterPaneOperationType for supported operations.")
+            }
+
+            if(value == null || value == 'null') {
+                linkParams['filter.op.' + field] = FilterPaneOperationType.IsNull.operation;
+                linkParams['filter.' + field] = '0';
+            }
+            else if(value instanceof Map) {
+                if(value.op == FilterPaneOperationType.IsNull.operation || value.op == FilterPaneOperationType.IsNotNull.operation) {value.value = '0'}
+                linkParams['filter.op.' + field] = value.op ?: FilterPaneOperationType.Equal.operation;
+                linkParams['filter.' + field] = value.value ?: value.from;
+                if(value.to) {linkParams["filter.${field}To"] = value.to;}
+
+            }
+            else {
+                linkParams['filter.op.' + field] = FilterPaneOperationType.Equal.operation;
+                // Find the value also for referenced child objects
+                linkParams['filter.' + field] = value;
+            }
+        }
+
+        def linkAttrs = [action: action]
+        linkAttrs.putAll(attrs)
+        linkAttrs.remove('values')
+        linkAttrs.remove('filterParams')
+        linkAttrs.params = linkParams
+
+        out << g.link(linkAttrs) { label };
+    }
+
     private void assignRenderModels(Map attrs, List sortedProps, ArrayList sortKeys, LinkedHashMap<String, Boolean> renderModel) {
         renderModel.sortModel = [sortValueMessagePrefix: attrs.sortValueMessagePrefix ?: null,
                 sortedProperties: sortedProps,
@@ -407,14 +536,14 @@ class FilterPaneTagLib {
             addFilterPropertyValues(attrs, map.ctrlAttrs, propertyKey)
 
             def opKeys = []
-            opKeys.addAll(this.availableOpsByType[type])
+            opKeys.addAll(availableOpsByType[type])
 
             // If the property is not nullable, no need to allow them to filter
             // in is or is not null.
             def constrainedProperty = sp.domainClass.constrainedProperties[sp.name]
             if((constrainedProperty && !constrainedProperty.isNullable()) || sp.name == 'id') {
-                opKeys.remove("IsNotNull")
-                opKeys.remove("IsNull")
+                opKeys.remove(FilterPaneOperationType.IsNotNull.operation)
+                opKeys.remove(FilterPaneOperationType.IsNull.operation)
             }
 
             map.ctrlType = "text"
@@ -457,7 +586,7 @@ class FilterPaneTagLib {
 
             // If the values list is now specified, limit the operators to == or <>
             if(map.ctrlAttrs.values) {
-                opKeys = ['', 'Equal', 'NotEqual']
+                opKeys = ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation]
 
                 // Also set up the rest of the dropdown ctrl attrs
                 map.ctrlAttrs.from = map.ctrlAttrs.values
@@ -487,7 +616,7 @@ class FilterPaneTagLib {
 //			def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
 //			value: params[opName], valueMessagePrefix:'fp.op',
 //			onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
-            if(params[opName] == "IsNull" || params[opName] == "IsNotNull") {
+            if(params[opName] == FilterPaneOperationType.IsNull.operation || params[opName] == "IsNotNull") {
                 map.ctrlAttrs.style = 'display:none;'
             }
 
@@ -509,131 +638,13 @@ class FilterPaneTagLib {
 
                 boolean showToCtrl = "between".equalsIgnoreCase(params[opName])
                 if(showToCtrl) {
-                    if(map.toCtrlAttrs.value instanceof Date) {
-                        showToCtrl = map.toCtrlAttrs.value != ""
-                    } else {
-                        showToCtrl = map.toCtrlAttrs.value?.trim() != ""
-                    }
+                    showToCtrl = (map.toCtrlAttrs.value instanceof Date) ? map.toCtrlAttrs.value != "" : map.toCtrlAttrs.value?.trim() != ""
                 }
                 map.toCtrlSpanStyle = showToCtrl ? "" : "display:none;"
             } // end if type numeric or date
 
             renderModel.properties << map
         }
-    }
-
-    def date = { attrs, body ->
-
-        Date d = FilterPaneUtils.parseDateFromDatePickerParams(attrs.name, params)
-        def model = [:]
-        model.putAll(attrs)
-        model.value = d
-        model.onChange = "grailsFilterPane.selectDefaultOperator('${attrs.opName}')"
-        model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
-        def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
-        out << ret
-    }
-
-    def bool = { attrs, body ->
-        def ret = g.render(template: "/filterpane/boolean", model: attrs)
-        out << ret
-    }
-
-    def input = { attrs, body ->
-
-        def ret
-
-        if(attrs?.ctrlType) {
-            switch(attrs.ctrlType) {
-                case 'date':
-                    ret = date(attrs.ctrlAttrs)
-                    break
-                case 'bool':
-                case 'boolean':
-                    ret = bool(attrs.ctrlAttrs)
-                    break
-                case 'select':
-                    ret = g.select(attrs.ctrlAttrs)
-                    break
-                case 'text':
-                    ret = g.textField(attrs.ctrlAttrs)
-                    break
-                default:
-                    ret = "<-- Unknown control type: ${attrs?.ctrlType} -->"
-                    break
-            }
-        }
-
-        out << ret ?: ''
-    }
-
-    /**
-     * Creates a quick filter html link that links to the specificed filter action,
-     * listing items filtered upon the specified values.
-     * Example usage:<br/>
-     * In the <tt>show</tt> view this tag can be used to link to a list of related child objects.
-     * The effect is that when clicking on the link that the tag creates,
-     * the child object's list view is displayed, filtered upon the parent id:<br/>
-     * <br/>
-     * <pre>
-     * ...
-     * <filterpane:filterLink values="${['author.id' : authorInstance.id]}" controller="book">
-     *  <g:message code="author.books.label" default="Books by this author" />
-     * </filterpane:filterLink>
-     * ...
-     * </pre>
-     * @param values
-     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
-     *          Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may
-     *          optionally also contain the key "to" if the op operator is "Between".
-     * @param controller
-     *          The controler that contains the action to use. Optional, default is current controller.
-     * @param action
-     *          The action to use for filtering. Optional, default is <i>filter</i>.
-     * @param *
-     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.         
-     * @body The body of this tag should contain the text to display within the link.
-     */
-    def filterLink = { attrs, body ->
-        def filterParams = attrs.filterParams;
-        def values = attrs.values;
-        def label = body();
-        def controller = attrs.controller;
-        def action = attrs.action ?: 'filter';
-
-        def linkParams = [:];
-        if(filterParams){linkParams.putAll(filterParams);}
-        if(!values) {throw new IllegalArgumentException("Mandatory argument 'values' is missing.")}
-        if(!values instanceof Map) {throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")}
-        linkParams.sort = params.sort
-        linkParams.order = params.order
-        for(String field : values.keySet()) {
-            def value = values[field]
-            if(value == null || value == 'null') {
-                linkParams['filter.op.' + field] = 'IsNull';
-                linkParams['filter.' + field] = '0';
-            }
-            else if(value instanceof Map) {
-                if(value.op == 'IsNull' || value.op == 'IsNotNull') {value.value = '0'}
-                linkParams['filter.op.' + field] = value.op ?: 'Equal';
-                linkParams['filter.' + field] = value.value ?: value.from;
-                if(value.to) {linkParams["filter.${field}To"] = value.to;}
-
-            }
-            else {
-                linkParams['filter.op.' + field] = 'Equal';
-                // Find the value also for referenced child objects
-                linkParams['filter.' + field] = value;
-            }
-        }
-
-        def linkAttrs = [action: action]
-        linkAttrs.putAll(attrs)
-        linkAttrs.remove('values')
-        linkAttrs.remove('filterParams')
-        linkAttrs.params = linkParams
-
-        out << g.link(linkAttrs) { label };
     }
 
     /**
