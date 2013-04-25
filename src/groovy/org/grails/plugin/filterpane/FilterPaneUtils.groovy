@@ -3,7 +3,6 @@ package org.grails.plugin.filterpane
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.web.converters.ConverterUtil
 
 import java.text.SimpleDateFormat
 
@@ -178,11 +177,7 @@ class FilterPaneUtils {
         if(beanName) {
             result = grailsApplication.getDomainClass(beanName)
             if(!result) {
-                if(!beanName.contains('.')) {
-                    result = grailsApplication.domainClasses.find { it.clazz.simpleName == beanName }
-                } else {
-                    result = ConverterUtil.getDomainClass(beanName)
-                }
+                result = grailsApplication.domainClasses.find { it.clazz.simpleName == beanName }
             }
         }
         result
