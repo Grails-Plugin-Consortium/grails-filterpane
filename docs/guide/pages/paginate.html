@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.2.8 paginate 2.1.4</title>
+    <title>5.2.8 paginate 2.1.6</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -86,7 +86,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.1.4</p>
+                    <p><strong>Version:</strong> 2.1.6</p>
 
                     
                 </div>
@@ -98,7 +98,7 @@ function addJsClass() {
 <h2 id="paginate">5.2.8 paginate</h2>
 <h4>paginate</h4>
 This is a convenience tag that may be used in place of the grails paginate tag.  It encapsulates adding the appropriate parameters to the grails paginate tag for the developer.
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>total</td><td>Yes</td><td>None</td><td>A numeric total to be used when calculating pages.  This is the same total that is passed to the Grails paginate tag.</td></tr><tr class="table-even"><td>domainBean</td><td>Yes, if total's value is null</td><td>None</td><td>If total's value is null, this tag is used to perform a count for the user and pass that to the Grails paginate tag.  If not specified and total's value is null, 0 will be used as the total count.</td></tr></table>
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>total</td><td>Yes</td><td>None</td><td>A numeric total to be used when calculating pages.  This is the same total that is passed to the Grails paginate tag.</td></tr><tr class="table-even"><td>domainBean</td><td>Yes, if total's value is null</td><td>None</td><td>If total's value is null, this tag is used to perform a count for the user and pass that to the Grails paginate tag.  If not specified and total's value is null, 0 will be used as the total count.</td></tr></table><p class="paragraph"/><div class="code"><pre>&#60;filterpane:paginate total=<span class="java&#45;quote">"$&#123;robotCount&#125;"</span> domainBean=<span class="java&#45;quote">"org.grails.example.nested.Robot"</span>/&#62;</pre></div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
