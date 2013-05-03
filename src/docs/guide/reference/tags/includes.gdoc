@@ -30,3 +30,4 @@ h5. Deprecated Usage (< 2.1.6)
   <title>Robot List</title>
   <filterpane:includes/>
 </head>
+{code}
