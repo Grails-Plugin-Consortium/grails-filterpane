@@ -58,22 +58,22 @@ class FilterPaneService {
                     }
                 } else {
                     def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                    def val = this.parseValue(thisDomainProp, rawValue, filterParams, null)
-                    def val2 = this.parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
+                    def val = parseValue(thisDomainProp, rawValue, filterParams, null)
+                    def val2 = parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                     log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
-                    this.addCriterion(criteria, propName, filterOp, val, val2, filterParams, thisDomainProp)
+                    addCriterion(criteria, propName, filterOp, val, val2, filterParams, thisDomainProp)
                 }
             } else {
-                log.debug "value used ${propName} is a dot notation should switch to a nested map like [filter: [op: ['authors': ['lastName': 'Equal']], 'authors': ['lastName': 'Dude']]]"
+                log.debug "value used ${propName} is a dot notation should switch to a nested map like [filter: [op: ['authors': ['lastName': FilterPaneOperationType.Equal]], 'authors': ['lastName': 'Dude']]]"
             }
             log.debug("==============================================================================='\n")
         }
     }
 
-    private Boolean areAllValuesEmptyRecursively(Map map){
+    private Boolean areAllValuesEmptyRecursively(Map map) {
         def result = true
-        map.each { k,v ->
-            if(v instanceof Map){
+        map.each { k, v ->
+            if(v instanceof Map) {
                 result &= areAllValuesEmptyRecursively(v)
             } else {
                 log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
@@ -175,43 +175,57 @@ class FilterPaneService {
         // precision on date picker was 'day', turn this into a between from
         // midnight to 1 ms before midnight of the next day.
         boolean isDayPrecision = "y".equals(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"])
-        boolean isOpAlterable = (op == 'Equal' || op == 'NotEqual')
+        boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual)
         if(value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
-            op = (op == 'Equal') ? 'Between' : 'NotBetween'
+            op = (op == FilterPaneOperationType.Equal) ? 'Between' : 'NotBetween'
             value = FilterPaneUtils.getBeginningOfDay(value)
             value2 = FilterPaneUtils.getEndOfDay(value)
             log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
         }
 
-        def criteriaMap = ['Equal': 'eq', 'NotEqual': 'ne', 'LessThan': 'lt', 'LessThanEquals': 'le',
-                'GreaterThan': 'gt', 'GreaterThanEquals': 'ge', 'Like': 'like', 'ILike': 'ilike']
+        def criteriaMap = [(FilterPaneOperationType.Equal.operation): 'eq', (FilterPaneOperationType.NotEqual.operation): 'ne',
+                (FilterPaneOperationType.LessThan.operation): 'lt', (FilterPaneOperationType.LessThanEquals.operation): 'le',
+                (FilterPaneOperationType.GreaterThan.operation): 'gt', (FilterPaneOperationType.GreaterThanEquals.operation): 'ge',
+                (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike']
 
         if(value != null) {
             switch(op) {
-                case 'Equal':
-                case 'NotEqual':
-                case 'LessThan':
-                case 'LessThanEquals':
-                case 'GreaterThan':
-                case 'GreaterThanEquals':
+                case FilterPaneOperationType.Equal.operation:
+                case FilterPaneOperationType.NotEqual.operation:
+                case FilterPaneOperationType.LessThan.operation:
+                case FilterPaneOperationType.LessThanEquals.operation:
+                case FilterPaneOperationType.GreaterThan.operation:
+                case FilterPaneOperationType.GreaterThanEquals.operation:
                     criteria."${criteriaMap.get(op)}"(propertyName, value)
                     break
-                case 'Like':
-                case 'ILike':
-                    if(!value.startsWith('*')) value = "*${value}"
-                    if(!value.endsWith('*')) value = "${value}*"
+                case FilterPaneOperationType.Like.operation:
+                case FilterPaneOperationType.ILike.operation:
+                    if(!value.startsWith('*')) {
+                        value = "*${value}"
+                    }
+                    if(!value.endsWith('*')) {
+                        value = "${value}*"
+                    }
                     criteria."${criteriaMap.get(op)}"(propertyName, value?.replaceAll("\\*", "%"))
                     break
                 case 'NotLike':
-                    if(!value.startsWith('*')) value = "*${value}"
-                    if(!value.endsWith('*')) value = "${value}*"
+                    if(!value.startsWith('*')) {
+                        value = "*${value}"
+                    }
+                    if(!value.endsWith('*')) {
+                        value = "${value}*"
+                    }
                     criteria.not {
                         criteria.like(propertyName, value?.replaceAll("\\*", "%"))
                     }
                     break
                 case 'NotILike':
-                    if(!value.startsWith('*')) value = "*${value}"
-                    if(!value.endsWith('*')) value = "${value}*"
+                    if(!value.startsWith('*')) {
+                        value = "*${value}"
+                    }
+                    if(!value.endsWith('*')) {
+                        value = "${value}*"
+                    }
                     criteria.not {
                         criteria.ilike(propertyName, value?.replaceAll("\\*", "%"))
                     }
@@ -241,7 +255,7 @@ class FilterPaneService {
     def parseValue(domainProperty, val, params, associatedPropertyParamName) {
         def newValue = val
         if(newValue instanceof String) {
-            newValue = newValue.trim() ?: null
+            newValue = newValue.trim() ?: ''
         }
 
         // GRAILSPLUGINS-1717.  Groovy truth treats empty strings as false.  Compare against null.

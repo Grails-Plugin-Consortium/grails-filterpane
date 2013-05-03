@@ -255,4 +255,7 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         'IsNull'    | 'unused'         | 1
         'IsNotNull' | 'unused'         | 3
     }
+
+
+
 }

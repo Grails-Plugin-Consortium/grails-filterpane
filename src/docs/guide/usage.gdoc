@@ -1,2 +1,3 @@
 h2.  Usage
+
 The plugin is typically used in an application's list pages.  To use the filters, make the following changes to your list.gsp pages.  For a full list of tags and attributes, see the Reference section later in this document.

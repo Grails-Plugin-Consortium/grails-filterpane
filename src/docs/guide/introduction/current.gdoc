@@ -1,5 +1,7 @@
 h2. Version 2.1 Release Notes
+
 h4. Bug Fixes
+* [GPFILTERPANE-109|http://jira.grails.org/browse/GPFILTERPANE-109] - Filter not working with Equals and ''.
 * [GPFILTERPANE-104|http://jira.grails.org/browse/GPFILTERPANE-104] - Make it possible to supply your own valueMessagePrefix to supplied values.
 * [GPFILTERPANE-99|http://jira.grails.org/browse/GPFILTERPANE-99] - Compile error on Grails 2.2.0
 * [GPFILTERPANE-92|http://jira.grails.org/browse/GPFILTERPANE-92] - Invalid message code in filterpaneSort
@@ -9,3 +11,4 @@ h4. Enhancements
 * Code refactoring to clean up code
 * Added `_Install.groovy` script that copies filterpane views locally on install so user can modify them.
 * Updated taglib and views to remove plugin namespace so locally installed templates will be used instead.
+* Moved to use resources plugin

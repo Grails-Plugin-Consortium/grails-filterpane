@@ -51,8 +51,11 @@ class FilterPaneTagLib {
      * </ul>
      *
      * @since 0.4; attributes since 2.0
+     * @since 2.1.6; resources plugin now standard
+     * @deprecated
      */
     def includes = { attrs, body ->
+        log.error 'includes tag is now deprecated, please include the `filterpane` resources module instead.'
         boolean showCss = false
         boolean showJs = false
         if(attrs != null && attrs.size() > 0) {

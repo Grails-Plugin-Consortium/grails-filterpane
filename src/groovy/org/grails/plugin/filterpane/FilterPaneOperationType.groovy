@@ -25,6 +25,10 @@ enum FilterPaneOperationType implements Serializable {
     }
 
     static FilterPaneOperationType getFilterPaneOperationType(String operation) {
-        FilterPaneOperationType.values().find { it.operation == operation }
+        values().find { it.operation == operation }
+    }
+
+    @Override public String toString() {
+        operation
     }
 }

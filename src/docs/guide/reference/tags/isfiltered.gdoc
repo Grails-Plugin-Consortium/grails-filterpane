@@ -4,3 +4,7 @@ This is a logical tag that will render its body if any filters are applied.
 *Attribute Name* | *Requred* | *Default Value* | *Description*
 (None) | | |
 {table}
+
+{code}
+<filterpane:isFiltered>Filter Applied!</filterpane:isFiltered>
+{code}

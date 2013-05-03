@@ -4,3 +4,7 @@ This is a logical tag that will render its body if no filters are applied.
 *Attribute Name* | *Requred* | *Default Value* | *Description*
 (None) | | |
 {table}
+
+{code}
+<filterpane:isNotFiltered>Pure and Unfiltered!</filterpane:isNotFiltered>
+{code}

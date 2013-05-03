@@ -18,5 +18,7 @@ filterPropertyValues | No | None | (Since 2.0.1) Identical syntax to the filterp
 h5. filterPropertyValues
 
 {code}
-filterPropertyValues="${[bookType:[displayProperty:'display']]}"
+  <filterpane:currentCriteria domainBean="org.grails.example.nested.Robot" dateFormat="${[title: 'MM/dd/yyyy', releaseDate: 'MMM dd, yyyy']}"
+                              removeImgDir="images" removeImgFile="bullet_delete.png" fullAssociationPathFieldNames="no"
+                              filterPropertyValues="${[robotType: [displayProperty: 'display']]}"/>
 {code}

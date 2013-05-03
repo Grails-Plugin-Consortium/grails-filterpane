@@ -8,3 +8,7 @@ id | No | "filterpane" | The id of the html element.
 textKey | No | "fp.tag.filterButton.text" | The message bundle key that contains the text of this button. (i18n)
 appliedTextKey | No | "fp.tag.filterButton.appliedText" | The message bundle key that contains the applied text of this button. (i18n)
 {table}
+
+{code}
+<filterpane:filterButton text="Filter Me" appliedText="Change Filter"/>
+{code}
