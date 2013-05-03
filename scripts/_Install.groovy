@@ -1,4 +1,35 @@
-ant.mkdir(dir: "${basedir}/grails-app/views/filterpane")
-ant.copy(todir: "${basedir}/grails-app/views/filterpane") {
-    fileset(dir: "${pluginBasedir}/grails-app/views/filterpane")
+confirmAll = false
+confirmNone = false
+deleteAll = false
+
+printMessage = { String message -> event('StatusUpdate', [message]) }
+finished = {String message -> event('StatusFinal', [message])}
+errorMessage = { String message -> event('StatusError', [message]) }
+
+def copy = {String source, String target ->
+    printMessage "Copying ${source} to ${target}"
+    def overwrite = confirmAll
+    if(confirmNone) overwrite = false
+    def input = ""
+
+    // only if dir already exists in, ask to overwrite it
+    if(new File(target).exists()) {
+        if(isInteractive && !overwrite && !confirmNone){
+            println 'y = yes, n = no, a = overwrite all, s = skip all'
+            input = grailsConsole.userInput("Overwrite existing files in ${target}?", ["y", "n", "a" ,"s"] as String[])
+        }
+        if(!isInteractive || input == "y" || input == "a") overwrite = true
+        if(input == "a") confirmAll = true
+        if(input == "s") confirmNone = true
+    } else {
+        ant.mkdir(dir: target)
+        overwrite = true    // nothing to overwrite but will be copied (state this in the event message)
+    }
+
+    if(new File(source).isDirectory()) ant.copy(todir: "$target", overwrite: overwrite) { fileset dir: "$source" }
+    else ant.copy(todir: "$target", overwrite: overwrite) { fileset file: "$source" }
+
+    printMessage "Filterpane Files ${overwrite ? '' : 'not '}installed."
 }
+
+copy("${pluginBasedir}/grails-app/views/filterpane", "${basedir}/grails-app/views/filterpane")
