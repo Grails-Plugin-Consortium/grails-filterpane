@@ -13,8 +13,6 @@
   <input type="hidden" name="listDistinct" value="${fp.listDistinct}"/>
   <input type="hidden" name="uniqueCountColumn" value="${fp.uniqueCountColumn}"/>
 
-   Test---------------
-
   <table cellspacing="0" cellpadding="0" class="filterPaneTable">
     <g:each in="${fp.properties}" var="propMap">
       <g:render template="/filterpane/filterpaneProperty" model="${propMap}"/>
