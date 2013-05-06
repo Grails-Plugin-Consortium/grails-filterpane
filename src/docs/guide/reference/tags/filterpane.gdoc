@@ -10,6 +10,7 @@ id | No | "filterpane" | The id of the container div that holds the filter pane.
 class | No | None | The class attribute to add to the container div that holds the filter pane.
 style | No | None | The style attribute to add to the container div that holds the filter pane.
 formName | No | "filterForm" | The name of the filter form element.  Useful if you will use custom javascript on the form.
+formMethod | No | "post" | The method to be used for the filter form.
 filterProperties | No | None | If specified then no default properties are included, only those specified.
 associatedProperties | No | None | Use this if you wish to filter any properties of associated domain objects (e.g. author.lastName).  The value may either be a comma-delimited string, or a List of strings.
 additionalProperties | No | None | By default, identifier, version, and lastUpdated properties are not available to filter by.  Use this attribute to allow them to be filtered.  The value may either be a comma-delimited string, or a List of strings.  Valid values are "id", "identifier", "version", and "lastUpdated"
