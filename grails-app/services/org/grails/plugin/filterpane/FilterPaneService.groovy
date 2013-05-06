@@ -46,7 +46,8 @@ class FilterPaneService {
                             // Are any of the values non-empty?
                             log.debug("== Adding association ${propName}")
                             def nextDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
-                            def nextDomainClass = nextDomainProp.referencedDomainClass
+                            // get next reference domain class or embedded class
+                            def nextDomainClass = nextDomainProp.component
                             // If they want to sort by an associated property, need to do it here.
                             List sort = params.sort.toString().split('\\.')
                             //todo: while this appears to output correct criteria, the sort of child objects doesn't seem to work as intended

@@ -700,8 +700,11 @@ class FilterPaneTagLib {
         int index = 1
         def fieldNamePrefix = ""
 
+        def refClass = null
+
         while(association && index < parts.size()) {
-            refDomain = association.referencedDomainClass
+            // get reference domain class or embedded class
+            refDomain = association.component
             fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.clazz.simpleName)}'s "
             refProperty = ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) ?
                           refDomain.identifier :
