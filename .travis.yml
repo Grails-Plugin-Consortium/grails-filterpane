@@ -12,4 +12,4 @@ branches:
   only:
     - master
 
-script: grails test-app
+script: grails test-app --non-interactive
