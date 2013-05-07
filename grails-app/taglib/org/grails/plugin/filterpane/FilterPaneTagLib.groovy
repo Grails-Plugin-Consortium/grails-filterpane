@@ -12,6 +12,7 @@ class FilterPaneTagLib {
 
     private static final String LAST_UPDATED = 'lastUpdated'
     private static final String DefaultFilterPaneId = 'filterPane'
+    private static final String DEFAULT_FORM_METHOD = 'post'
 
     /**
      * This map contains available filter operations by type.  It is used when creating the
@@ -283,6 +284,7 @@ class FilterPaneTagLib {
         renderModel.containerClass = attrs['class'] ?: (attrs.styleClass ?: '')
         renderModel.containerStyle = attrs.style ?: ''
         renderModel.formName = attrs.formName ?: 'filterPaneForm'
+        renderModel.formMethod = attrs.formMethod ?: DEFAULT_FORM_METHOD
         renderModel.controller = attrs.controller
         renderModel.action = attrs.action ?: 'filter'
         renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
@@ -698,8 +700,11 @@ class FilterPaneTagLib {
         int index = 1
         def fieldNamePrefix = ""
 
+        def refClass = null
+
         while(association && index < parts.size()) {
-            refDomain = association.referencedDomainClass
+            // get reference domain class or embedded class
+            refDomain = association.component
             fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.clazz.simpleName)}'s "
             refProperty = ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) ?
                           refDomain.identifier :
