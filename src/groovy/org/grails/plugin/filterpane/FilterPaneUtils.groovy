@@ -196,6 +196,10 @@ class FilterPaneUtils {
         thisDomainProp
     }
 
+    static resolveReferencedDomainClass(property) {
+        property.embedded ? property.component : property.referencedDomainClass
+    }
+
     static getOperatorMapKey(opType) {
         def type = 'text'
         if(opType.getSimpleName().equalsIgnoreCase("boolean")) {
