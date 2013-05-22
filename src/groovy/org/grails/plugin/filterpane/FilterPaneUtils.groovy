@@ -22,7 +22,7 @@ class FilterPaneUtils {
 
             } else if(params[paramProperty] instanceof String) {
                 try {
-                    return df.parse(params[paramProperty])
+                    return df.parse(params[paramProperty]?.toString())
                 } catch(Exception ex) {
                     /* Do nothing. */
                     log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
@@ -86,10 +86,10 @@ class FilterPaneUtils {
             Date date = (Date) aDate;
             Calendar calendar = Calendar.instance.with {
                 time = date;
-                set(Calendar.HOUR_OF_DAY, 0);
-                set(Calendar.MINUTE, 0);
-                set(Calendar.SECOND, 0);
-                set(Calendar.MILLISECOND, 0);
+                set(HOUR_OF_DAY, 0);
+                set(MINUTE, 0);
+                set(SECOND, 0);
+                set(MILLISECOND, 0);
                 it
             }
             beginningOfDay = calendar.time
@@ -103,10 +103,10 @@ class FilterPaneUtils {
             Date date = (Date) aDate
             Calendar calendar = Calendar.instance.with {
                 time = date
-                set(Calendar.HOUR_OF_DAY, 23)
-                set(Calendar.MINUTE, 59)
-                set(Calendar.SECOND, 59)
-                set(Calendar.MILLISECOND, 999)
+                set(HOUR_OF_DAY, 23)
+                set(MINUTE, 59)
+                set(SECOND, 59)
+                set(MILLISECOND, 999)
                 it
             }
             endOfDay = calendar.time
@@ -141,7 +141,9 @@ class FilterPaneUtils {
         params.each { entry ->
             if(entry.key.startsWith("filter.") || entry.key.equals("filterProperties") || entry.key.equals("filterBean")) {
                 def val = entry.value
-                if(datesToStruct && val instanceof Date) val = 'struct'
+                if(datesToStruct && val instanceof Date) {
+                    val = 'struct'
+                }
                 ret[entry.key] = val
             }
         }
@@ -183,7 +185,7 @@ class FilterPaneUtils {
         result
     }
 
-    static resolveDomainProperty(grailsApplication, domainClass, property) {
+    static resolveDomainProperty(domainClass, property) {
 
         if("id".equals(property) || "identifier".equals(property)) {
             return domainClass.identifier
@@ -208,7 +210,7 @@ class FilterPaneUtils {
                 || opType == Double || opType == double || opType == Float || opType == float
                 || opType == Short || opType == short || opType == BigDecimal || opType == BigInteger) {
             type = 'numeric'
-        } else if(java.util.Date.isAssignableFrom(opType)) {
+        } else if(Date.isAssignableFrom(opType)) {
             type = 'date'
         } else if(opType.isEnum()) {
             type = 'enum'

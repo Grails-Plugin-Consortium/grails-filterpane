@@ -26,7 +26,7 @@ class FilterPaneService {
 
         // op = map entry.  op.key = property name.  op.value = operator.
         // params[op.key] is the value
-        keyList.each { propName ->
+        keyList.each { String propName ->
             log.debug("\n=============================================================================.")
             log.debug("== ${propName}")
 
@@ -45,7 +45,7 @@ class FilterPaneService {
                         criteria."${propName}" {
                             // Are any of the values non-empty?
                             log.debug("== Adding association ${propName}")
-                            def nextDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+                            def nextDomainProp = FilterPaneUtils.resolveDomainProperty(domainClass, propName)
                             def nextDomainClass = FilterPaneUtils.resolveReferencedDomainClass(nextDomainProp)
                             // If they want to sort by an associated property, need to do it here.
                             List sort = params.sort.toString().split('\\.')
@@ -57,7 +57,7 @@ class FilterPaneService {
                         }
                     }
                 } else {
-                    def thisDomainProp = FilterPaneUtils.resolveDomainProperty(grailsApplication, domainClass, propName)
+                    def thisDomainProp = FilterPaneUtils.resolveDomainProperty(domainClass, propName)
                     def val = parseValue(thisDomainProp, rawValue, filterParams, null)
                     def val2 = parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
                     log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
@@ -132,6 +132,7 @@ class FilterPaneService {
                     try {
                         defaultSort = GrailsDomainBinder.getMapping(filterClass)?.sort
                     } catch(Exception ex) {
+                        log.info ex
                         log.info("No mapping property found on filterClass ${filterClass}")
                     }
                     if(params.sort) {
@@ -282,7 +283,7 @@ class FilterPaneService {
                 newValue = newValue.isInteger() ? newValue.toInteger() : null
             } else if("long".equals(clsName)) {
                 try { newValue = newValue.toLong() } //no isShort()
-                catch(java.lang.NumberFormatException e) {
+                catch(NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
@@ -292,7 +293,7 @@ class FilterPaneService {
                 newValue = newValue.isFloat() ? newValue.toFloat() : null
             } else if("short".equals(clsName)) {
                 try { newValue = newValue.toShort() } //no isShort()
-                catch(java.lang.NumberFormatException e) {
+                catch(NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
@@ -300,7 +301,7 @@ class FilterPaneService {
                 newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null
             } else if("biginteger".equals(clsName)) {
                 newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null
-            } else if(java.util.Date.isAssignableFrom(cls)) {
+            } else if(Date.isAssignableFrom(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
             } else if("currency".equals(clsName)) {
