@@ -1,9 +1,17 @@
 package org.grails.plugin.filterpane
 
+import org.joda.time.DateTime
+import org.joda.time.Instant
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalTime
+import org.joda.time.LocalDate
+import org.joda.time.base.AbstractInstant
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.joda.time.base.AbstractPartial
 
+import java.lang.reflect.Constructor
 import java.text.SimpleDateFormat
 
 /**
@@ -76,6 +84,94 @@ class FilterPaneUtils {
             return Date.parse(format, value)// new java.text.SimpleDateFormat(format).parse(value)
         } catch(Exception ex) {
             log.error("${ex.getClass().simpleName} parsing date for property ${paramProperty}: ${ex.message}")
+            return null
+        }
+    }
+
+    static Object parseDateFromDatePickerParams(paramProperty, params, clazz) {
+        if (Date.isAssignableFrom(clazz))
+            return parseDateFromDatePickerParams(paramProperty, params)
+        try {
+            try {
+                // dynamically call the constructor of appropriate Joda class and try to parse the time/date
+                return clazz.getDeclaredConstructor(Object.class).newInstance(params[paramProperty])
+            }
+            catch (Exception ex) {
+                log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
+            }
+
+            def dateTimeRepresent
+
+            def year = params.int("${paramProperty}_year")
+            def month = params.int("${paramProperty}_month")
+            def day = params.int("${paramProperty}_day")
+            def hour = params.int("${paramProperty}_hour")
+            def minute = params.int("${paramProperty}_minute")
+
+            if (minute || hour || day || month || year) {
+                // certain joda class
+                if (clazz == DateTime.class) {
+                    dateTimeRepresent = new DateTime() // current date time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                } else if (clazz == Instant.class) {
+                    dateTimeRepresent = new LocalDateTime() // current local date time - easier implementation with LocalDateTime
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                    // translation to Instant
+                    dateTimeRepresent = new Instant(dateTimeRepresent.localMillis)
+                } else if (clazz == LocalDate.class) {
+                    dateTimeRepresent = new LocalDate() // current time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                } else if (clazz == LocalTime.class) {
+                    dateTimeRepresent = new LocalTime() // current local time
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                } else if (clazz == LocalDateTime.class) {
+                    dateTimeRepresent = new LocalDateTime() // current local date time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                }
+
+                log.debug("Joda time object created $dateTimeRepresent")
+                return dateTimeRepresent
+            }
+            else {
+                return null
+            }
+        } catch(Exception ex) {
+            log.error("Cannot parse date for property $paramProperty", ex)
             return null
         }
     }
@@ -210,7 +306,7 @@ class FilterPaneUtils {
                 || opType == Double || opType == double || opType == Float || opType == float
                 || opType == Short || opType == short || opType == BigDecimal || opType == BigInteger) {
             type = 'numeric'
-        } else if(Date.isAssignableFrom(opType)) {
+        } else if(Date.isAssignableFrom(opType) || AbstractInstant.isAssignableFrom(opType) || AbstractPartial.isAssignableFrom(opType)) {
             type = 'date'
         } else if(opType.isEnum()) {
             type = 'enum'
@@ -219,4 +315,9 @@ class FilterPaneUtils {
         }
         type
     }
+
+   static isDateType(clazz) {
+      // java.util.Date, Joda Time
+      return Date.isAssignableFrom(clazz) || AbstractPartial.isAssignableFrom(clazz) || AbstractInstant.isAssignableFrom(clazz)
+   }
 }

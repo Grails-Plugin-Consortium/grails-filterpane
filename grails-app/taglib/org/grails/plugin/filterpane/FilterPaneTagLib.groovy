@@ -1,5 +1,7 @@
 package org.grails.plugin.filterpane
 
+import org.joda.time.base.AbstractInstant
+import org.joda.time.base.AbstractPartial
 import org.springframework.web.servlet.support.RequestContextUtils
 
 /**
@@ -187,19 +189,22 @@ class FilterPaneTagLib {
                                              : false)
                     boolean isNumericAndBlank = isNumericType && !"".equals(filterValue.toString().trim())
                     boolean isDateType = (domainProp.referencedPropertyType
-                                          ? Date.isAssignableFrom(domainProp.referencedPropertyType)
+                                          ? FilterPaneUtils.isDateType(domainProp.referencedPropertyType)
                                           : false)
                     boolean isEnumType = domainProp?.referencedPropertyType?.isEnum()
                     if(filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
 
                         if(isDateType) {
-                            filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams)
+                            filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams, domainProp.class)
                             if(filterValue) {
                                 def df = renderModel.dateFormat
                                 if(df instanceof Map) {
                                     df = renderModel.dateFormat[prop]
                                 }
-                                filterValue = g.formatDate(format: df, date: filterValue)
+                                if (AbstractPartial.isAssignableFrom(filterValue) || AbstractInstant.isAssignableFrom(filterValue))
+                                    joda.format(value: filterValue, pattern: df)
+                                else
+                                    filterValue = g.formatDate(format: df, date: filterValue)
                             }
                         } else if(isEnumType) {
                             def tempMap = [:]
@@ -392,12 +397,16 @@ class FilterPaneTagLib {
 
     def date = { attrs, body ->
 
-        Date d = FilterPaneUtils.parseDateFromDatePickerParams(attrs.name, params)
+        def domainClass = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domain)
+        def domainProperty = FilterPaneUtils.resolveDomainProperty(domainClass, attrs.propertyName)
+        def d = FilterPaneUtils.parseDateFromDatePickerParams(attrs.name, params, domainProperty.type)
         def model = [:]
         model.putAll(attrs)
         model.value = d
         model.onChange = "grailsFilterPane.selectDefaultOperator('${attrs.opName}')"
         model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
+        model.domainProperty = domainProperty
+
         def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
         out << ret
     }
@@ -552,7 +561,7 @@ class FilterPaneTagLib {
             }
 
             map.ctrlType = "text"
-            if(propertyType.isAssignableFrom(Date.class)) {
+            if(FilterPaneUtils.isDateType(propertyType)) {
                 map.ctrlType = "date"
             } else if(propertyType == Boolean.class || propertyType == boolean.class) {
                 map.ctrlType = "boolean"

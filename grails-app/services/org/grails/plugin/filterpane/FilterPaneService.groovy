@@ -1,6 +1,8 @@
 package org.grails.plugin.filterpane
 
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder
+import org.joda.time.base.AbstractInstant
+import org.joda.time.base.AbstractPartial
 
 class FilterPaneService {
 
@@ -301,9 +303,9 @@ class FilterPaneService {
                 newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null
             } else if("biginteger".equals(clsName)) {
                 newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null
-            } else if(Date.isAssignableFrom(cls)) {
+            } else if(FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
-                newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
+                newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
             } else if("currency".equals(clsName)) {
                 try {
                     newValue = Currency.getInstance(newValue.toString())
