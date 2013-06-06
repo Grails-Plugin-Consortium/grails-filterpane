@@ -88,13 +88,15 @@ class FilterPaneUtils {
         }
     }
 
-    static Object parseJodaTimeFromDatePickerParams(paramProperty, params, clazz) {
+    static Object parseDateFromDatePickerParams(paramProperty, params, clazz) {
+        if (Date.isAssignableFrom(clazz))
+            return parseDateFromDatePickerParams(paramProperty, params)
         try {
             try {
                 // dynamically call the constructor of appropriate Joda class and try to parse the time/date
                 return clazz.getDeclaredConstructor(Object.class).newInstance(params[paramProperty])
             }
-            catch (IllegalArgumentException ex) {
+            catch (Exception ex) {
                 log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
             }
 
@@ -308,4 +310,9 @@ class FilterPaneUtils {
         }
         type
     }
+
+   static isDateType(clazz) {
+      // java.util.Date, Joda Time
+      return Date.isAssignableFrom(clazz) || AbstractPartial.isAssignableFrom(clazz) || AbstractInstant.isAssignableFrom(clazz)
+   }
 }

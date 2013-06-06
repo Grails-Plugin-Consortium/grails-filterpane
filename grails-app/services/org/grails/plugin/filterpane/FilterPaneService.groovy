@@ -303,12 +303,9 @@ class FilterPaneService {
                 newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null
             } else if("biginteger".equals(clsName)) {
                 newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null
-            } else if(Date.isAssignableFrom(cls)) {
+            } else if(FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
-                newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params)
-            } else if(AbstractInstant.isAssignableFrom(cls) || AbstractPartial.isAssignableFrom(cls)) {
-                def paramName = associatedPropertyParamName ?: domainProperty.name
-                newValue = FilterPaneUtils.parseJodaTimeFromDatePickerParams(paramName, params, cls)
+                newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
             } else if("currency".equals(clsName)) {
                 try {
                     newValue = Currency.getInstance(newValue.toString())
