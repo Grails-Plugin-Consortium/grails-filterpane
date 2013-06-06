@@ -405,6 +405,8 @@ class FilterPaneTagLib {
         model.value = d
         model.onChange = "grailsFilterPane.selectDefaultOperator('${attrs.opName}')"
         model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
+        model.domainProperty = domainProperty
+
         def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
         out << ret
     }

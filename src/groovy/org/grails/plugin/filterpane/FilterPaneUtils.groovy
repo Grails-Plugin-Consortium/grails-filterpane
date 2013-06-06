@@ -102,69 +102,74 @@ class FilterPaneUtils {
 
             def dateTimeRepresent
 
-            def year = params["${paramProperty}_year"]
-            def month = params["${paramProperty}_month"]
-            def day = params["${paramProperty}_day"]
-            def hour = params["${paramProperty}_hour"]
-            def minute = params["${paramProperty}_minute"]
+            def year = params.int("${paramProperty}_year")
+            def month = params.int("${paramProperty}_month")
+            def day = params.int("${paramProperty}_day")
+            def hour = params.int("${paramProperty}_hour")
+            def minute = params.int("${paramProperty}_minute")
 
-            // certain joda class
-            if (clazz == DateTime.class) {
-                dateTimeRepresent = new DateTime() // current date time
-                if (year)
-                    dateTimeRepresent = dateTimeRepresent.withYear(year)
-                if (month)
-                    dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                if (day)
-                    dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                if (hour)
-                    dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                if (minute)
-                    dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
-            } else if (clazz == Instant.class) {
-                dateTimeRepresent = new LocalDateTime() // current local date time - easier implementation with LocalDateTime
-                if (year)
-                    dateTimeRepresent = dateTimeRepresent.withYear(year)
-                if (month)
-                    dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                if (day)
-                    dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                if (hour)
-                    dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                if (minute)
-                    dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
-                // translation to Instant
-                dateTimeRepresent = new Instant(dateTimeRepresent)
-            } else if (clazz == LocalDate.class) {
-                dateTimeRepresent = new LocalDate() // current time
-                if (year)
-                    dateTimeRepresent = dateTimeRepresent.withYear(year)
-                if (month)
-                    dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                if (day)
-                    dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-            } else if (clazz == LocalTime.class) {
-                dateTimeRepresent = new LocalTime() // current local time
-                if (hour)
-                    dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                if (minute)
-                    dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
-            } else if (clazz == LocalDateTime.class) {
-                dateTimeRepresent = new LocalDateTime() // current local date time
-                if (year)
-                    dateTimeRepresent = dateTimeRepresent.withYear(year)
-                if (month)
-                    dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                if (day)
-                    dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                if (hour)
-                    dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                if (minute)
-                    dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+            if (minute || hour || day || month || year) {
+                // certain joda class
+                if (clazz == DateTime.class) {
+                    dateTimeRepresent = new DateTime() // current date time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                } else if (clazz == Instant.class) {
+                    dateTimeRepresent = new LocalDateTime() // current local date time - easier implementation with LocalDateTime
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                    // translation to Instant
+                    dateTimeRepresent = new Instant(dateTimeRepresent.localMillis)
+                } else if (clazz == LocalDate.class) {
+                    dateTimeRepresent = new LocalDate() // current time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                } else if (clazz == LocalTime.class) {
+                    dateTimeRepresent = new LocalTime() // current local time
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                } else if (clazz == LocalDateTime.class) {
+                    dateTimeRepresent = new LocalDateTime() // current local date time
+                    if (year)
+                        dateTimeRepresent = dateTimeRepresent.withYear(year)
+                    if (month)
+                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
+                    if (day)
+                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    if (hour)
+                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
+                    if (minute)
+                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                }
+
+                log.debug("Joda time object created $dateTimeRepresent")
+                return dateTimeRepresent
             }
-
-            log.debug("Joda time object created $dateTimeRepresent")
-            return dateTimeRepresent
+            else {
+                return null
+            }
         } catch(Exception ex) {
             log.error("Cannot parse date for property $paramProperty", ex)
             return null
