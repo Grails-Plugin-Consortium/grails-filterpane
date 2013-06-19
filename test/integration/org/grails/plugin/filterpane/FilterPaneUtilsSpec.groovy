@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
  */
 class FilterPaneUtilsSpec extends IntegrationSpec {
 
-    @Unroll def "parse date from only the date param #theDate"() {
+    @Unroll def "parse date from only the date param #theDate #type"() {
         given:
         GrailsParameterMap params = new GrailsParameterMap(['testDate': theDate], null)
 
@@ -24,9 +24,9 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
         date.time == expecetedDate.time
 
         where:
-        theDate                                      | expecetedDate
-        Timestamp.valueOf('2010-07-26 20:38:15.000') | Timestamp.valueOf('2010-07-26 20:38:15.000')
-        'Mon Jul 26 20:38:15 CDT 2010'               | Timestamp.valueOf('2010-07-26 20:38:15.000')
+        theDate                                      | expecetedDate | type
+        Timestamp.valueOf('2010-07-26 20:38:15.000') | Timestamp.valueOf('2010-07-26 20:38:15.000') | 'timestamp'
+        'Mon Jul 26 20:38:15 CDT 2010'               | Timestamp.valueOf('2010-07-26 20:38:15.000') | 'string'
 
     }
 
