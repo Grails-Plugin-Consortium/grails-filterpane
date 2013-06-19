@@ -1,0 +1,5 @@
+h4. Joda Time
+
+Joda Time 1.4 is now included with the plugin.  May need to set ` legacyResolve true` in BuildConfig.groovy to inherit plugin dependencies.
+
+The file `_dateControl.gsp` will attempt to render the joda taglib objects if using the appropriate types DateTime, LocalTime, LocalDate and Instance.  You may customize this if you wish via the installed template files in your project.

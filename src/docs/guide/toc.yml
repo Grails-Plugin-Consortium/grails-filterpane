@@ -10,6 +10,7 @@ usage:
   pagination: Pagination
   listsorting: List Sorting
   controller: Controller
+  jodatime: Joda Time
 nestedqueries:
   title: Nested Queries
 reference:
