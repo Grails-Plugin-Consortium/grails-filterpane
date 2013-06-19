@@ -4,6 +4,7 @@ grails.project.dependency.resolution = {
 
     inherits 'global'
     log 'warn'
+    legacyResolve true
 
     repositories {
         grailsCentral()
@@ -18,9 +19,8 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":joda-time:1.4") {
-            export = false
-        }
+        compile(":joda-time:1.4")
+
         build(':release:2.2.1',
               ':rest-client-builder:1.0.3'){
             export = false

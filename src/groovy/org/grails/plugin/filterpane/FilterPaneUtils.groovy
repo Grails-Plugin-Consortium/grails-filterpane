@@ -42,7 +42,8 @@ class FilterPaneUtils {
             def day = params["${paramProperty}_day"]
             def hour = params["${paramProperty}_hour"]
             def minute = params["${paramProperty}_minute"]
-            boolean paramExists = (minute || hour || day || month || year)
+            def second = params["${paramProperty}_second"]
+            boolean paramExists = (minute || hour || day || month || year || second)
 
 //                log.debug("Parsing date from params: ${year} ${month} ${day} ${hour} ${minute}")
 
@@ -72,8 +73,16 @@ class FilterPaneUtils {
                 format += 'mm'
                 value += zeroPad(minute)
             } else if(paramProperty.endsWith('To')) {
-                format += 'mm:ss.SSS'
-                value += '59:59.999'
+                format += 'mm'
+                value += '59'
+            }
+
+            if(second != null){
+                format += 'ss'
+                value += zeroPad(second)
+            } else if(paramProperty.endsWith('To')) {
+                format += 'ss.SS'
+                value += '59.999'
             }
 
             if(value == '' || !paramExists) { // Don't even bother parsing.  Just return null if blank.
@@ -107,61 +116,45 @@ class FilterPaneUtils {
             def day = params.int("${paramProperty}_day")
             def hour = params.int("${paramProperty}_hour")
             def minute = params.int("${paramProperty}_minute")
+            def second = params.int("${paramProperty}_second")
 
-            if (minute || hour || day || month || year) {
+            if (minute || hour || day || month || year || second) {
                 // certain joda class
                 if (clazz == DateTime.class) {
-                    dateTimeRepresent = new DateTime() // current date time
-                    if (year)
-                        dateTimeRepresent = dateTimeRepresent.withYear(year)
-                    if (month)
-                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                    if (day)
-                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                    if (hour)
-                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                    if (minute)
-                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                    dateTimeRepresent = new DateTime().withMillisOfSecond(0) // current date time
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withDayOfMonth', day)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
                 } else if (clazz == Instant.class) {
-                    dateTimeRepresent = new LocalDateTime() // current local date time - easier implementation with LocalDateTime
-                    if (year)
-                        dateTimeRepresent = dateTimeRepresent.withYear(year)
-                    if (month)
-                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                    if (day)
-                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                    if (hour)
-                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                    if (minute)
-                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
-                    // translation to Instant
+                    dateTimeRepresent = new LocalDateTime().withMillisOfSecond(0) // current local date time - easier implementation with LocalDateTime
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withDayOfMonth', day)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
                     dateTimeRepresent = new Instant(dateTimeRepresent.localMillis)
                 } else if (clazz == LocalDate.class) {
-                    dateTimeRepresent = new LocalDate() // current time
-                    if (year)
-                        dateTimeRepresent = dateTimeRepresent.withYear(year)
-                    if (month)
-                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                    if (day)
-                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
+                    dateTimeRepresent = new LocalDate()// current time
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withDayOfMonth', day)
                 } else if (clazz == LocalTime.class) {
-                    dateTimeRepresent = new LocalTime() // current local time
-                    if (hour)
-                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                    if (minute)
-                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                    dateTimeRepresent = new LocalTime().withMillisOfSecond(0) // current local time
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
                 } else if (clazz == LocalDateTime.class) {
-                    dateTimeRepresent = new LocalDateTime() // current local date time
-                    if (year)
-                        dateTimeRepresent = dateTimeRepresent.withYear(year)
-                    if (month)
-                        dateTimeRepresent = dateTimeRepresent.withMonthOfYear(month)
-                    if (day)
-                        dateTimeRepresent = dateTimeRepresent.withDayOfMonth(day)
-                    if (hour)
-                        dateTimeRepresent = dateTimeRepresent.withHourOfDay(hour)
-                    if (minute)
-                        dateTimeRepresent = dateTimeRepresent.withMinuteOfHour(minute)
+                    dateTimeRepresent = new LocalDateTime().withMillisOfSecond(0) // current local date time
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withDayOfMonth', day)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
+                    dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
                 }
 
                 log.debug("Joda time object created $dateTimeRepresent")
@@ -174,6 +167,14 @@ class FilterPaneUtils {
             log.error("Cannot parse date for property $paramProperty", ex)
             return null
         }
+    }
+
+    static private setDate(dateTimeRepresent, method, val){
+        def newDate = dateTimeRepresent
+        if(val != null){
+            newDate = dateTimeRepresent."$method"(val)
+        }
+        newDate
     }
 
     static Date getBeginningOfDay(aDate) {

@@ -1,63 +1,86 @@
 package org.grails.plugin.filterpane
 
-import java.sql.Timestamp
-
 import grails.plugin.spock.IntegrationSpec
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.joda.time.*
+import spock.lang.Unroll
+
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 /**
  */
 class FilterPaneUtilsSpec extends IntegrationSpec {
 
-    def "parse date from datepicker from date"() {
+    @Unroll def "parse date from only the date param #theDate"() {
         given:
-        def testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
-
-        def params = [testDate: testDate,
-                testDate_year: '2010',
-                testDate_month: '7',
-                testDate_day: '26',
-                testDate_hour: '20',
-                testDate_minute: '38',
-                testDate_second: '15'
-        ]
+        GrailsParameterMap params = new GrailsParameterMap(['testDate': theDate], null)
 
         when:
         def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
 
         then:
         date
+        date.time == expecetedDate.time
+
+        where:
+        theDate                                      | expecetedDate
+        Timestamp.valueOf('2010-07-26 20:38:15.000') | Timestamp.valueOf('2010-07-26 20:38:15.000')
+        'Mon Jul 26 20:38:15 CDT 2010'               | Timestamp.valueOf('2010-07-26 20:38:15.000')
+
+    }
+
+    def "parse date from datepicker from date part params"() {
+        given:
+        Timestamp testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
+
+        GrailsParameterMap params = new GrailsParameterMap([
+                                                                   testDate_year: '2010',
+                                                                   testDate_month: '7',
+                                                                   testDate_day: '26',
+                                                                   testDate_hour: '20',
+                                                                   testDate_minute: '38',
+                                                                   testDate_second: '15'
+                                                           ], null)
+
+        when:
+        def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
+
+        then:
+        date
+        date.time == testDate.time
     }
 
     def "parse date from datepicker from string"() {
         given:
-        def testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
+        Timestamp testDate = Timestamp.valueOf('2010-07-26 20:38:15.000')
 
-        def params = [testDate: testDate.toString(),
-                testDate_year: '2010',
-                testDate_month: '7',
-                testDate_day: '26',
-                testDate_hour: '20',
-                testDate_minute: '38',
-                testDate_second: '15'
-        ]
+        GrailsParameterMap params = new GrailsParameterMap([
+                                                                   testDate_year: '2010',
+                                                                   testDate_month: '7',
+                                                                   testDate_day: '26',
+                                                                   testDate_hour: '20',
+                                                                   testDate_minute: '38',
+                                                                   testDate_second: '15'
+                                                           ], null)
 
         when:
         def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
 
         then:
         date
+        date.time == testDate.time
     }
 
     def "parse date from datepicker from struct"() {
         given:
-        def params = [testDate: 'struct',
-                testDate_year: '2010',
-                testDate_month: '7',
-                testDate_day: '26',
-                testDate_hour: '20',
-                testDate_minute: '38',
-                testDate_second: '15'
-        ]
+        GrailsParameterMap params = new GrailsParameterMap([testDate_year: '2010',
+                                                                   testDate_month: '7',
+                                                                   testDate_day: '26',
+                                                                   testDate_hour: '20',
+                                                                   testDate_minute: '38',
+                                                                   testDate_second: '15'
+                                                           ], null)
 
         when:
         def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
@@ -113,5 +136,75 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
         then:
         !endOfDay
     }
+
+    @Unroll def "test isDateType for type #dateType equals #isDate"() {
+        when:
+        Boolean isDateType = FilterPaneUtils.isDateType(dateType)
+
+        then:
+        isDateType == isDate
+
+        where:
+        dateType      | isDate
+        Date          | true
+        DateTime      | true
+        DateMidnight  | true
+        LocalDate     | true
+        LocalTime     | true
+        LocalDateTime | true
+        Instant       | true
+        Duration      | false
+        Interval      | false
+        String        | false
+        Integer       | false
+    }
+
+
+    @Unroll def "parse joda dates from datepicker for #theDate is #expectedDate"() {
+        given:
+        GrailsParameterMap params = new GrailsParameterMap([testDate_year: '2005',
+                                                                   testDate_month: '3',
+                                                                   testDate_day: '26',
+                                                                   testDate_hour: '0',
+                                                                   testDate_minute: '0',
+                                                                   testDate_second: '0'
+                                                           ], null)
+
+        when:
+        def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params, theDate)
+
+        then:
+        date
+        date.toDate() == expectedDate
+
+        where:
+        theDate   | expectedDate
+        DateTime  | new Date(105, 2, 26)
+        LocalDate | new Date(105, 2, 26)
+    }
+
+    @Unroll def "parse joda times from datepicker for #theDate is #expectedDate"() {
+        given:
+        GrailsParameterMap params = new GrailsParameterMap([testDate_year: '2005',
+                                                                   testDate_month: '3',
+                                                                   testDate_day: '26',
+                                                                   testDate_hour: '0',
+                                                                   testDate_minute: '0',
+                                                                   testDate_second: '0'
+                                                           ], null)
+
+        when:
+        def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params, theDate)
+
+        then:
+        date
+        date.toString() == expectedDate
+
+        where:
+        theDate   | expectedDate
+        Instant   | '2005-03-26T00:00:00.000Z'
+        LocalTime | '00:00:00.000'
+    }
+
 
 }
