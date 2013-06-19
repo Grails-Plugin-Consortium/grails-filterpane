@@ -3,6 +3,7 @@ package org.grails.plugin.filterpane
 import grails.plugin.spock.IntegrationSpec
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.*
+import spock.lang.Ignore
 import spock.lang.Unroll
 
 import java.sql.Timestamp
@@ -14,6 +15,7 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
 
     @Unroll def "parse date from only the date param #theDate #type"() {
         given:
+        println theDate.toString()
         GrailsParameterMap params = new GrailsParameterMap(['testDate': theDate], null)
 
         when:
@@ -21,7 +23,7 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
 
         then:
         date
-        date.time == expecetedDate.time
+        date.toGMTString() == expecetedDate.toGMTString()
 
         where:
         theDate                                      | expecetedDate | type

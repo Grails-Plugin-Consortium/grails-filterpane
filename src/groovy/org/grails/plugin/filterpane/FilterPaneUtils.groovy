@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
  */
 class FilterPaneUtils {
 
-    private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd hh:mm:ss zzz yyyy')
+    private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy')
     private static final Log log = LogFactory.getLog(this)
 
     static Date parseDateFromDatePickerParams(paramProperty, params) {
