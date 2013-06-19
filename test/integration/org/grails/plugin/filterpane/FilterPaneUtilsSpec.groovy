@@ -25,8 +25,9 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
         date.toGMTString() == expecetedDate.toGMTString()
 
         where:
+        //this is a bit wonky due to timezone offsets on local v. test machines
         theDate                                      | expecetedDate | type
-        Timestamp.valueOf('2005-03-26 20:38:15.000') | new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy').parse('Sat Mar 26 21:38:15 CDT 2005') | 'timestamp'
+        Timestamp.valueOf('2005-03-26 20:38:15.000') | new Date(105, 2, 26, 20, 38, 15) | 'timestamp'
         'Sat Mar 26 21:38:15 CDT 2005'               | new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy').parse('Sat Mar 26 21:38:15 CDT 2005') | 'string'
 
     }
