@@ -27,8 +27,8 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
 
         where:
         theDate                                      | expecetedDate | type
-        Timestamp.valueOf('2005-03-26 20:38:15.000') | new Date(105, 2, 26, 20, 38, 15) | 'timestamp'
-        'Sat Mar 26 21:38:15 CDT 2005'               | new Date(105, 2, 26, 20, 38, 15) | 'string'
+        Timestamp.valueOf('2005-03-26 20:38:15.000') | Timestamp.valueOf('2005-03-26 20:38:15.000') | 'timestamp'
+        'Sat Mar 26 21:38:15 CDT 2005'               | Timestamp.valueOf('2005-03-26 20:38:15.000') | 'string'
 
     }
 
