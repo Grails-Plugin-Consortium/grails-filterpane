@@ -15,6 +15,7 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
     @Unroll def "parse date from only the date param #theDate #type"() {
         given:
         GrailsParameterMap params = new GrailsParameterMap(['testDate': theDate], null)
+        TimeZone.setDefault(TimeZone.getTimeZone('America/Chicago'))
 
         when:
         def date = FilterPaneUtils.parseDateFromDatePickerParams('testDate', params)
