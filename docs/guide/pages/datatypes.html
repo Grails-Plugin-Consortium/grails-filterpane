@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>5.1 Data Types 2.1.6</title>
+    <title>5.1 Data Types 2.1.8</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -86,7 +86,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.1.6</p>
+                    <p><strong>Version:</strong> 2.1.8</p>
 
                     
                 </div>
@@ -135,7 +135,9 @@ If a property is not nullable (constraint nullable="false"), the <strong class="
 
 <h2 id="date">5.1.3 Date</h2>
 <h4> Date</h4>
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>&#60;</td><td>Less Than</td></tr><tr class="table-even"><td>&#60;=</td><td>Less Than or Equal To</td></tr><tr class="table-odd"><td>&#62;</td><td>Greater Than</td></tr><tr class="table-even"><td>&#62;=</td><td>Greater Than or Equal To</td></tr><tr class="table-odd"><td>Between</td><td>Between</td></tr><tr class="table-even"><td>Is Null</td><td>Is Null</td></tr><tr class="table-odd"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>&#60;</td><td>Less Than</td></tr><tr class="table-even"><td>&#60;=</td><td>Less Than or Equal To</td></tr><tr class="table-odd"><td>&#62;</td><td>Greater Than</td></tr><tr class="table-even"><td>&#62;=</td><td>Greater Than or Equal To</td></tr><tr class="table-odd"><td>Between</td><td>Between</td></tr><tr class="table-even"><td>Is Null</td><td>Is Null</td></tr><tr class="table-odd"><td>Is Not Null</td><td>Is Not Null</td></tr></table><p class="paragraph"/><blockquote class="note">
+It appears that grails date picker does not currently support seconds input.  This may cause the equals operator or between to return unexpected results.  You may need to take that into account when using filters to be inclusive and round up or down to the next second when filtering.
+</blockquote>
 
 
 <h2 id="boolean">5.1.4 Boolean</h2>
