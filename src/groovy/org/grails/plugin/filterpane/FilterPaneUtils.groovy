@@ -111,12 +111,12 @@ class FilterPaneUtils {
 
             def dateTimeRepresent
 
-            def year = params.int("${paramProperty}_year")
-            def month = params.int("${paramProperty}_month")
-            def day = params.int("${paramProperty}_day")
-            def hour = params.int("${paramProperty}_hour")
-            def minute = params.int("${paramProperty}_minute")
-            def second = params.int("${paramProperty}_second")
+            def year = params["${paramProperty}_year"]
+            def month = params["${paramProperty}_month"]
+            def day = params["${paramProperty}_day"]
+            def hour = params["${paramProperty}_hour"]
+            def minute = params["${paramProperty}_minute"]
+            def second = params["${paramProperty}_second"]
 
             if (minute || hour || day || month || year || second) {
                 // certain joda class
@@ -172,7 +172,11 @@ class FilterPaneUtils {
     static private setDate(dateTimeRepresent, method, val){
         def newDate = dateTimeRepresent
         if(val != null){
-            newDate = dateTimeRepresent."$method"(val)
+            try {
+                newDate = dateTimeRepresent."$method"(Integer.parseInt(val))
+            } catch(Exception ex){
+                log.error "Value for $method call appears to invalid Integer.  Value is: $val", ex
+            }
         }
         newDate
     }

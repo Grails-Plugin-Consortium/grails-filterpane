@@ -11,3 +11,7 @@ Between | Between
 Is Null | Is Null
 Is Not Null | Is Not Null
 {table}
+
+{note}
+It appears that grails date picker does not currently support seconds input.  This may cause the equals operator or between to return unexpected results.  You may need to take that into account when using filters to be inclusive and round up or down to the next second when filtering.
+{note}

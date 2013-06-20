@@ -22,12 +22,12 @@ class FilterPaneTagLib {
      * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
     private static final Map availableOpsByType = [
-            text: ['', FilterPaneOperationType.ILike.operation, FilterPaneOperationType.NotILike.operation, 
-                    FilterPaneOperationType.Like.operation, FilterPaneOperationType.NotLike.operation, 
-                    FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation, 
+            text: ['', FilterPaneOperationType.ILike.operation, FilterPaneOperationType.NotILike.operation,
+                    FilterPaneOperationType.Like.operation, FilterPaneOperationType.NotLike.operation,
+                    FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
                     FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
-            numeric: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation, 
-                    FilterPaneOperationType.LessThan.operation, FilterPaneOperationType.LessThanEquals.operation, 
+            numeric: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
+                    FilterPaneOperationType.LessThan.operation, FilterPaneOperationType.LessThanEquals.operation,
                     FilterPaneOperationType.GreaterThan.operation,
                     FilterPaneOperationType.GreaterThanEquals.operation, FilterPaneOperationType.Between.operation,
                     FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
@@ -69,11 +69,13 @@ class FilterPaneTagLib {
             showJs = true
         }
 
-        if(showCss)
+        if(showCss) {
             out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: 'css', plugin: 'filterpane', file: 'fp.css')}\" />\n"
+        }
 
-        if(showJs)
+        if(showJs) {
             out << "<script type=\"text/javascript\" src=\"${g.resource(dir: 'js', plugin: 'filterpane', file: 'fp.js')}\"></script>"
+        }
     }
 
     def isFiltered = { attrs, body ->
@@ -125,7 +127,9 @@ class FilterPaneTagLib {
         } else if(attrs.domainBean) {
             def dc = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
 
-            if(dc) count = dc.clazz.count()
+            if(dc) {
+                count = dc.clazz.count()
+            }
         }
         attrs.total = count
         attrs.params = filterParams
@@ -152,7 +156,9 @@ class FilterPaneTagLib {
             def domainBean = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
 
             def getProp = { key, filterOp ->
-                if(key.startsWith('filter.op') && filterOp != null && filterOp != '') {return key[10..-1]}
+                if(key.startsWith('filter.op') && filterOp != null && filterOp != '') {
+                    return key[10..-1]
+                }
                 false
             }
 
@@ -195,16 +201,18 @@ class FilterPaneTagLib {
                     if(filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
 
                         if(isDateType) {
-                            filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams, domainProp.class)
+                            def clazz = domainProp?.type ?: domainProp.class
+                            filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams, clazz)
                             if(filterValue) {
                                 def df = renderModel.dateFormat
                                 if(df instanceof Map) {
                                     df = renderModel.dateFormat[prop]
                                 }
-                                if (AbstractPartial.isAssignableFrom(filterValue) || AbstractInstant.isAssignableFrom(filterValue))
-                                    joda.format(value: filterValue, pattern: df)
-                                else
+                                if(AbstractPartial.isAssignableFrom(clazz) || AbstractInstant.isAssignableFrom(clazz)) {
+                                    filterValue = joda.format(value: filterValue, pattern: df)
+                                } else {
                                     filterValue = g.formatDate(format: df, date: filterValue)
+                                }
                             }
                         } else if(isEnumType) {
                             def tempMap = [:]
@@ -384,7 +392,9 @@ class FilterPaneTagLib {
         def sortKeys = []
         sortedProps.each { sp ->
             def name = (finalProps.find { sp.name == it.value })?.value
-            if(name) sortKeys << name
+            if(name) {
+                sortKeys << name
+            }
         }
         associatedPropNames.each { apn -> sortKeys << apn }
         log.debug("Sorted props: ${sortedProps}")
@@ -479,30 +489,38 @@ class FilterPaneTagLib {
         def action = attrs.action ?: 'filter';
 
         def linkParams = [:];
-        if(filterParams) {linkParams.putAll(filterParams);}
-        if(!values) {throw new IllegalArgumentException("Mandatory argument 'values' is missing.")}
-        if(!values instanceof Map) {throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")}
+        if(filterParams) {
+            linkParams.putAll(filterParams);
+        }
+        if(!values) {
+            throw new IllegalArgumentException("Mandatory argument 'values' is missing.")
+        }
+        if(!values instanceof Map) {
+            throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")
+        }
         linkParams.sort = params.sort
         linkParams.order = params.order
         for(String field : values.keySet()) {
             def value = values[field]
 
-            if(value instanceof Map && value?.op && !FilterPaneOperationType.getFilterPaneOperationType(value.op)){
+            if(value instanceof Map && value?.op && !FilterPaneOperationType.getFilterPaneOperationType(value.op)) {
                 throw new RuntimeException("Operation type ${value.op} is not supported.  Please see FilterPaneOperationType for supported operations.")
             }
 
             if(value == null || value == 'null') {
                 linkParams['filter.op.' + field] = FilterPaneOperationType.IsNull.operation;
                 linkParams['filter.' + field] = '0';
-            }
-            else if(value instanceof Map) {
-                if(value.op == FilterPaneOperationType.IsNull.operation || value.op == FilterPaneOperationType.IsNotNull.operation) {value.value = '0'}
+            } else if(value instanceof Map) {
+                if(value.op == FilterPaneOperationType.IsNull.operation || value.op == FilterPaneOperationType.IsNotNull.operation) {
+                    value.value = '0'
+                }
                 linkParams['filter.op.' + field] = value.op ?: FilterPaneOperationType.Equal.operation;
                 linkParams['filter.' + field] = value.value ?: value.from;
-                if(value.to) {linkParams["filter.${field}To"] = value.to;}
+                if(value.to) {
+                    linkParams["filter.${field}To"] = value.to;
+                }
 
-            }
-            else {
+            } else {
                 linkParams['filter.op.' + field] = FilterPaneOperationType.Equal.operation;
                 // Find the value also for referenced child objects
                 linkParams['filter.' + field] = value;
@@ -573,8 +591,7 @@ class FilterPaneTagLib {
                 List inList = constrainedProperty?.getInList()
                 if(inList) {
                     map.ctrlAttrs.values = inList
-                }
-                else if(sp.type.isEnum()) {
+                } else if(sp.type.isEnum()) {
                     //map.ctrlAttrs.values = sp.type.enumConstants as List
                     def valueList = []
 
@@ -728,7 +745,9 @@ class FilterPaneTagLib {
     }
 
     private def addFilterPropertyValues(def tagAttrs, def ctrlAttrs, def propertyKey) {
-        if(tagAttrs.filterPropertyValues && tagAttrs.filterPropertyValues[propertyKey]) {ctrlAttrs.putAll(tagAttrs.filterPropertyValues[propertyKey])}
+        if(tagAttrs.filterPropertyValues && tagAttrs.filterPropertyValues[propertyKey]) {
+            ctrlAttrs.putAll(tagAttrs.filterPropertyValues[propertyKey])
+        }
 
         if(!ctrlAttrs.id) {
             ctrlAttrs.id = propertyKey
