@@ -1,33 +1,38 @@
 h2. Change Log
 
 {table}
-*Date* | *Version* | *Notes* | *Known Compatible Grails Versions*
-2011-06-18 | _2.1.8 | Adding support for Joda time. | 1.3.x
-2011-05-22 | _2.1.7 | Adding ability to define post or get filter form.  Adding french messaging support | 1.3.x
-2011-05-02 | _2.1.6 | Added fix GPFILTERPANE-109, moved to use resources plugin include deprecated filterpane:include tag and updated docs | 1.3.x
-2011-04-25 | _2.1.5 | Added fix GPFILTERPANE-108 and cleaned up utils for finding classes without package | 1.3.x
-2011-04-16 | _2.1.4 | Removed grails 2.x requirements and moved to 1.3.x.  Shored up nested queries and added tests and examples to example project. | 1.3.x
-2013-04-12 | _2.1 | Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization. | 2.1.x
-2011-03-19 | _2.0 | Complete rewrite of the plugin  See JIRA notes for changes. | 2.0
-2010-07-26 | _0.7 | Bug fixes. | 1.1.1 +
-2010-03-24 | _0.6.8 | Bug fix for boolean 'false' value not working | 1.1.1 +
-2010-03-23 | _0.6.7 | Some bug fixes and improvements to Grails-1.2.1 compatibility | 1.1.1 +
-2010-02-17 | _0.6.6 | Should now work with Grails-1.2.1 and 1.1.1 | 1.1.1 +
-2010-02-03 | _0.6.5 | Fixed several issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016] | 1.1.1 +
-2009-11-17 | _0.6.4 | Added customForm attribute to filterPane tag.  See docs for details in the reference section below. | 1.1.1
-2009-10-27 | _0.6.3 | Fixed [http://jira.codehaus.org/browse/GRAILSPLUGINS-1629] | 1.1.1
-2009-09-13 | _0.6.2 | Child collection filtering fixed (GRAILSPLUGINS-1503).  Filter service reworked to use Grails API instead of Groovy meta classes.  Several integration tests added. | 1.1.1
-2009-07-28 | _0.6.1 | Fixed a minor issue when rendering dropdowns for enums in associated properties. | 1.1.1
-2009-07-27 | _0.6  | Completed several JIRA issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149] for details. | 1.1
-2009-04-07 |  _0.5  | Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114] | 1.1
-2009-03-22 |  _0.4.3  | JIRA GRAILSPLUGINS-985 fixed. | 1.1
-2009-03-22 |  _0.4.2  | Now compatible with Grails 1.1.  See JIRA GRAILSPLUGINS-999 | 1.0.4, 1.1
-2009-03-22 |  _0.4.1  | Completed JIRAs GRAILSPLUGINS-822 and GRAILSPLUGINS-903 | 1.0.4
-2009-01-27 |  _0.3.1  | Moved debug output to log.debug statements. | 1.0.4
-2009-01-26 |  _0.3  | Fixed packaging glitches.  Updated example app. | 1.0.4
-2009-01-25 |  _0.2  | No major changes.  Mainly code cleanup.  Classes are now in packages, as per plugin specs. | 1.0.4
-2009-01-16 |  _0.1  | First release. | 1.0.4
+*Date* | *Version* | *Notes* | *Known Compatible Grails Versions* | *Template Changes*
+2011-06-18 | _2.1.8 | Adding support for Joda time. | 1.3.x | *Yes*
+2011-05-22 | _2.1.7 | Adding ability to define post or get filter form.  Adding french messaging support | 1.3.x | *Yes*
+2011-05-02 | _2.1.6 | Added fix GPFILTERPANE-109, moved to use resources plugin include deprecated filterpane:include tag and updated docs | 1.3.x | *Yes*
+2011-04-25 | _2.1.5 | Added fix GPFILTERPANE-108 and cleaned up utils for finding classes without package | 1.3.x | *Yes*
+2011-04-16 | _2.1.4 | Removed grails 2.x requirements and moved to 1.3.x.  Shored up nested queries and added tests and examples to example project. | 1.3.x | *Yes*
+2013-04-12 | _2.1 | Fixed 2.2.x compiler error.  Added install script to copy templates locally for customization. | 2.1.x | *Yes*
+2011-03-19 | _2.0 | Complete rewrite of the plugin  See JIRA notes for changes. | 2.0 | No
+2010-07-26 | _0.7 | Bug fixes. | 1.1.1 + | Unknown
+2010-03-24 | _0.6.8 | Bug fix for boolean 'false' value not working | 1.1.1 + | Unknown
+2010-03-23 | _0.6.7 | Some bug fixes and improvements to Grails-1.2.1 compatibility | 1.1.1 + | Unknown
+2010-02-17 | _0.6.6 | Should now work with Grails-1.2.1 and 1.1.1 | 1.1.1 + | Unknown
+2010-02-03 | _0.6.5 | Fixed several issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/16016] | 1.1.1 + | Unknown
+2009-11-17 | _0.6.4 | Added customForm attribute to filterPane tag.  See docs for details in the reference section below. | 1.1.1 | Unknown
+2009-10-27 | _0.6.3 | Fixed [http://jira.codehaus.org/browse/GRAILSPLUGINS-1629] | 1.1.1 | Unknown
+2009-09-13 | _0.6.2 | Child collection filtering fixed (GRAILSPLUGINS-1503).  Filter service reworked to use Grails API instead of Groovy meta classes.  Several integration tests added. | 1.1.1 | Unknown
+2009-07-28 | _0.6.1 | Fixed a minor issue when rendering dropdowns for enums in associated properties. | 1.1.1 | Unknown
+2009-07-27 | _0.6  | Completed several JIRA issues.  See [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15149] for details. | 1.1 | Unknown
+2009-04-07 |  _0.5  | Fixed JIRA issues 836, 988, and 1045.  Form action is now POST.  Entering in a filter value will now auto-select the first operator in its associated dropdown if none is selected (except for date properties).  More info on issues at [http://jira.codehaus.org/browse/GRAILSPLUGINS/fixforversion/15114] | 1.1 | Unknown
+2009-03-22 |  _0.4.3  | JIRA GRAILSPLUGINS-985 fixed. | 1.1 | Unknown
+2009-03-22 |  _0.4.2  | Now compatible with Grails 1.1.  See JIRA GRAILSPLUGINS-999 | 1.0.4, 1.1 | Unknown
+2009-03-22 |  _0.4.1  | Completed JIRAs GRAILSPLUGINS-822 and GRAILSPLUGINS-903 | 1.0.4 | Unknown
+2009-01-27 |  _0.3.1  | Moved debug output to log.debug statements. | 1.0.4 | Unknown
+2009-01-26 |  _0.3  | Fixed packaging glitches.  Updated example app. | 1.0.4 | Unknown
+2009-01-25 |  _0.2  | No major changes.  Mainly code cleanup.  Classes are now in packages, as per plugin specs. | 1.0.4 | Unknown
+2009-01-16 |  _0.1  | First release. | 1.0.4 | Unknown
 {table}
+
+h3. Template Changes
+Templates change from time to time and it is a good idea to diff the files in the plugin source with your local copies as new files will not override your current files to preserve your customization.
+
+
 
 h3. Upgrading to 2.0.
 Version 2.0 is a complete rewrite / refactoring of the plugin to make better use of modern Grails practices (and a better working knowledge of Grails).  All tags are now rendered via templates instead of string builders in code.  This should make the plugin more extensible in the future.  Many bugs and feature enhancements were also completed for the release.
