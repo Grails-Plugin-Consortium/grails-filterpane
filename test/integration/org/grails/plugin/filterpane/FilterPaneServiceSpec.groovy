@@ -81,7 +81,7 @@ class FilterPaneServiceSpec extends IntegrationSpec {
     def "test emdash filtering"() {
         given:
         def params = ['filter': [op: [title: 'ILike'], title: 'how']]
-        Book.findOrSaveWhere(title: 'Hello—how are you')
+        Book.findOrSaveWhere(title: 'Helloï¿½how are you')
 
         when:
         def results = filterPaneService.filter(params, Book)
@@ -256,6 +256,75 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         'IsNotNull' | 'unused'         | 3
     }
 
+
+
+    def "get book by single bookType InList"() {
+        given:
+        def params = [filter: [op: ['bookType': 'InList'], 'bookType': [BookType.Fiction.toString()].toArray()]]
+        Book.findOrSaveWhere(bookType: BookType.Fiction)
+        Book.findOrSaveWhere(bookType: BookType.Reference)
+        Book.findOrSaveWhere(bookType: BookType.NonFiction)
+
+        when:
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
+
+        then:
+        Book.list().size() == 3
+        books.size() == 1
+        books[0].bookType == BookType.Fiction
+    }
+
+    def "get book by single bookType NotInList"() {
+        given:
+        def params = [filter: [op: ['bookType': 'NotInList'], 'bookType': [BookType.Fiction.toString()].toArray()]]
+        Book.findOrSaveWhere(bookType: BookType.Fiction)
+        Book.findOrSaveWhere(bookType: BookType.Reference)
+        Book.findOrSaveWhere(bookType: BookType.NonFiction)
+
+        when:
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
+
+        then:
+        Book.list().size() == 3
+        books.size() == 2
+        books.findAll{it.bookType == BookType.Fiction}.size() == 0
+        books.findAll{it.bookType == BookType.Reference}.size() == 1
+        books.findAll{it.bookType == BookType.NonFiction}.size() == 1
+    }
+
+    def "get book by multiple bookType InList"() {
+        given:
+        def params = [filter: [op: ['bookType': 'InList'], 'bookType': [BookType.Fiction.toString(), BookType.NonFiction.toString()].toArray()]]
+        Book.findOrSaveWhere(bookType: BookType.Fiction)
+        Book.findOrSaveWhere(bookType: BookType.Reference)
+        Book.findOrSaveWhere(bookType: BookType.NonFiction)
+
+        when:
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
+
+        then:
+        Book.list().size() == 3
+        books.size() == 2
+        books.findAll{it.bookType == BookType.Fiction}.size() == 1
+        books.findAll{it.bookType == BookType.Reference}.size() == 0
+        books.findAll{it.bookType == BookType.NonFiction}.size() == 1
+    }
+
+    def "get book by multiple bookType NotInList"() {
+        given:
+        def params = [filter: [op: ['bookType': 'NotInList'], 'bookType': [BookType.Fiction.toString(), BookType.NonFiction.toString()].toArray()]]
+        Book.findOrSaveWhere(bookType: BookType.Fiction)
+        Book.findOrSaveWhere(bookType: BookType.Reference)
+        Book.findOrSaveWhere(bookType: BookType.NonFiction)
+
+        when:
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
+
+        then:
+        Book.list().size() == 3
+        books.size() == 1
+        books[0].bookType == BookType.Reference
+    }
 
 
 }

@@ -245,6 +245,12 @@ class FilterPaneService {
                 case 'NotBetween':
                     criteria.not { between(propertyName, value, value2) }
                     break
+                case 'InList':
+                    criteria.inList(propertyName, value)
+                    break
+                case 'NotInList':
+                    criteria.not { inList(propertyName, value) }
+                    break
                 default:
                     break
             } // end op switch
@@ -271,7 +277,9 @@ class FilterPaneService {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
                 try {
-                    if(tempVal.toString().length() > 0) {
+                    if(tempVal instanceof Object[]){
+                        newValue = tempVal.collect{ Enum.valueOf(cls, it.toString()) }
+                    } else if(tempVal.toString().length() > 0) {
                         newValue = Enum.valueOf(cls, tempVal.toString())
                     }
                 } catch(IllegalArgumentException iae) {
