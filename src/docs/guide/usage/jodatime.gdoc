@@ -2,12 +2,22 @@ h4. Joda Time
 
 Joda Time 1.4 is now included with the plugin.  May need to set ` legacyResolve true` in BuildConfig.groovy to inherit plugin dependencies.
 
-The file `_dateControl.gsp` will attempt to render the joda taglib objects if using the appropriate types DateTime, LocalTime, LocalDate and Instance.  You may customize this if you wish via the installed template files in your project.
+The file `_dateControl.gsp` will attempt to render the joda taglib objects if using the appropriate types. You may customize this if you wish via the installed template files in your project.
+
+h5. Supported Types
+{table}
+*Joda Class* | *Default Joda Tag*
+DateTime | [dateTimePicker|http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html]
+LocalTime | [timePicker|http://gpc.github.io/grails-joda-time/ref/Tags/timePicker.html]
+LocalDateTime | [dateTimePicker|http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html]
+LocalDate | [datePicker|http://gpc.github.io/grails-joda-time/ref/Tags/datePicker.html]
+Instance | [dateTimePicker|http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html]
+{table}
 
 
 h5. DateTime Mapping & Support
 
-For `DateTime` mapping support please see [Joda Time Docs|http://gpc.github.io/grails-joda-time/guide/persistence.html]
+For `DateTime` mapping support please see [Joda Time Plugin Docs|http://gpc.github.io/grails-joda-time/guide/persistence.html]
 
 {note}
 It is currently not possible to do certain types of criteria query with DateTime properties mapped using PersistentDateTimeWithZone (or any other multi-column Hibernate UserType). Aggregate functions (max, min, avg, count, etc.) in projections will not work on such properties and neither will the 'between' criterion.
