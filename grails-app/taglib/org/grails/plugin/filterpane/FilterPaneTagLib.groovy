@@ -109,7 +109,7 @@ class FilterPaneTagLib {
         } else {
             renderModel.text = resolveAttribute(attrs.textKey, "fp.tag.filterButton.text", attrs.text, "Filter")
         }
-        out << g.render(template: "/filterpane/filterButton", model: renderModel)
+        out << g.render(template: "/_filterpane/filterButton", model: renderModel)
     }
 
     /**
@@ -265,7 +265,7 @@ class FilterPaneTagLib {
             }
             //log.debug("=================================================================")
             //log.debug("renderModel: ${renderModel}")
-            out << g.render(template: "/filterpane/currentCriteria", model: renderModel)
+            out << g.render(template: "/_filterpane/currentCriteria", model: renderModel)
         }
 
     }
@@ -402,7 +402,7 @@ class FilterPaneTagLib {
 
         assignRenderModels(attrs, sortedProps, sortKeys, renderModel)
 
-        out << g.render(template: "/filterpane/filterpane", model: [fp: renderModel])
+        out << g.render(template: "/_filterpane/filterpane", model: [fp: renderModel])
     }
 
     def date = { attrs, body ->
@@ -417,12 +417,12 @@ class FilterPaneTagLib {
         model.isDayPrecision = (attrs.precision == 'day') ? 'y' : 'n'
         model.domainProperty = domainProperty
 
-        def ret = g.render(template: "/filterpane/dateControl", model: [ctrlAttrs: model])
+        def ret = g.render(template: "/_filterpane/dateControl", model: [ctrlAttrs: model])
         out << ret
     }
 
     def bool = { attrs, body ->
-        def ret = g.render(template: "/filterpane/boolean", model: attrs)
+        def ret = g.render(template: "/_filterpane/boolean", model: attrs)
         out << ret
     }
 
