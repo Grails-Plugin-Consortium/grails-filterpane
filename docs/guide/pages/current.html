@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1.1 Current Version Changes 2.1.8</title>
+    <title>1.1 Current Version Changes 2.1.9</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -33,19 +33,22 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/templates.html"><strong>4</strong><span>Templates</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>5</strong><span>Reference</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/nestedqueries.html"><strong>5</strong><span>Nested Queries</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>6</strong><span>Reference</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>7</strong><span>Roadmap</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>7</strong><span>Internationalization i18n</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>8</strong><span>Support</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>8</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>9</strong><span>Support</span></a>
                     </div>
                     
                 </div>
@@ -84,7 +87,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.1.8</p>
+                    <p><strong>Version:</strong> 2.1.9</p>
 
                     
                 </div>
@@ -94,19 +97,22 @@ function addJsClass() {
                 
 
 <h2 id="current">1.1 Current Version Changes</h2>
-<h2>Version 2.1 Release Notes</h2><p class="paragraph"/><h4>Bug Fixes</h4>
+<h2>Version 2.1.9 Release Notes</h2><p class="paragraph"/><h4>Bug</h4>
 <ul class="star">
-<li><a href="http://jira.grails.org/browse/GPFILTERPANE-109" target="blank">GPFILTERPANE-109</a> - Filter not working with Equals and ''.</li>
-<li><a href="http://jira.grails.org/browse/GPFILTERPANE-104" target="blank">GPFILTERPANE-104</a> - Make it possible to supply your own valueMessagePrefix to supplied values.</li>
-<li><a href="http://jira.grails.org/browse/GPFILTERPANE-99" target="blank">GPFILTERPANE-99</a> - Compile error on Grails 2.2.0</li>
-<li><a href="http://jira.grails.org/browse/GPFILTERPANE-92" target="blank">GPFILTERPANE-92</a> - Invalid message code in filterpaneSort</li>
-<li><a href="http://jira.grails.org/browse/GPFILTERPANE-35" target="blank">GPFILTERPANE-35</a> - Quick filter link tags</li>
+<li>GPFILTERPANE-110 - Cannot build latest version with maven due to user input required</li>
+<li>GPFILTERPANE-111 - Improve Filterpane Template gsp</li>
+</ul><p class="paragraph"/><h4>New Feature</h4>
+<ul class="star">
+<li>GPFILTERPANE-37 - Support for remote ajax calls</li>
+<li>GPFILTERPANE-44 - Support for the 'in'-operator</li>
+</ul><p class="paragraph"/><h4>Task</h4>
+<ul class="star">
+<li>GPFILTERPANE-48 - Update the books sample project index page. It is sorely out of date.</li>
 </ul><p class="paragraph"/><h4>Enhancements</h4>
 <ul class="star">
-<li>Code refactoring to clean up code</li>
-<li>Added `_Install.groovy` script that copies filterpane views locally on install so user can modify them.</li>
-<li>Updated taglib and views to remove plugin namespace so locally installed templates will be used instead.</li>
-<li>Moved to use resources plugin</li>
+<li>Removed `_Install.groovy`</li>
+<li>Users can override templates in local _filterpane folder if necessary, uses plugin templates by default</li>
+<li>Support for enum inList and notInList added</li>
 </ul><p class="paragraph"/>
 
 

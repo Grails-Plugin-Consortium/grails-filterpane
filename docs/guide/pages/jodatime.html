@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3.5 Joda Time 2.1.8</title>
+    <title>3.5 Joda Time 2.1.9</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -33,19 +33,22 @@ function addJsClass() {
                     <div class="toc-item" style="margin-left:0"><a href="../../guide/usage.html"><strong>3</strong><span>Usage</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/templates.html"><strong>4</strong><span>Templates</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>5</strong><span>Reference</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/nestedqueries.html"><strong>5</strong><span>Nested Queries</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>6</strong><span>Internationalization i18n</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/reference.html"><strong>6</strong><span>Reference</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>7</strong><span>Roadmap</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/internationalization.html"><strong>7</strong><span>Internationalization i18n</span></a>
                     </div>
                     
-                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>8</strong><span>Support</span></a>
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/roadmap.html"><strong>8</strong><span>Roadmap</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/support.html"><strong>9</strong><span>Support</span></a>
                     </div>
                     
                 </div>
@@ -77,7 +80,7 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/templates.html"><strong>4</strong><span>Templates</span> >></a></div>
                 
 
 
@@ -86,7 +89,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.1.8</p>
+                    <p><strong>Version:</strong> 2.1.9</p>
 
                     
                 </div>
@@ -96,8 +99,9 @@ function addJsClass() {
                 
 
 <h2 id="jodatime">3.5 Joda Time</h2>
-<h4>Joda Time</h4><p class="paragraph"/>Joda Time 1.4 is now included with the plugin.  May need to set ` legacyResolve true` in BuildConfig.groovy to inherit plugin dependencies.<p class="paragraph"/>The file `_dateControl.gsp` will attempt to render the joda taglib objects if using the appropriate types DateTime, LocalTime, LocalDate and Instance.  You may customize this if you wish via the installed template files in your project.<p class="paragraph"/>
-<h5>DateTime Mapping &#38; Support</h5><p class="paragraph"/>For `DateTime` mapping support please see <a href="http://gpc.github.io/grails-joda-time/guide/persistence.html" target="blank">Joda Time Docs</a><p class="paragraph"/><blockquote class="note">
+<h4>Joda Time</h4><p class="paragraph"/>Joda Time 1.4 is now included with the plugin.  May need to set ` legacyResolve true` in BuildConfig.groovy to inherit plugin dependencies.<p class="paragraph"/>The file `_dateControl.gsp` will attempt to render the joda taglib objects if using the appropriate types. You may customize this if you wish via the installed template files in your project.<p class="paragraph"/><h5>Supported Types</h5>
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Joda Class</strong></th><th><strong class="bold">Default Joda Tag</strong></th></tr><tr class="table-odd"><td>DateTime</td><td><a href="http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html" target="blank">dateTimePicker</a></td></tr><tr class="table-even"><td>LocalTime</td><td><a href="http://gpc.github.io/grails-joda-time/ref/Tags/timePicker.html" target="blank">timePicker</a></td></tr><tr class="table-odd"><td>LocalDateTime</td><td><a href="http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html" target="blank">dateTimePicker</a></td></tr><tr class="table-even"><td>LocalDate</td><td><a href="http://gpc.github.io/grails-joda-time/ref/Tags/datePicker.html" target="blank">datePicker</a></td></tr><tr class="table-odd"><td>Instance</td><td><a href="http://gpc.github.io/grails-joda-time/ref/Tags/dateTimePicker.html" target="blank">dateTimePicker</a></td></tr></table><p class="paragraph"/>
+<h5>DateTime Mapping &#38; Support</h5><p class="paragraph"/>For `DateTime` mapping support please see <a href="http://gpc.github.io/grails-joda-time/guide/persistence.html" target="blank">Joda Time Plugin Docs</a><p class="paragraph"/><blockquote class="note">
 It is currently not possible to do certain types of criteria query with DateTime properties mapped using PersistentDateTimeWithZone (or any other multi-column Hibernate UserType). Aggregate functions (max, min, avg, count, etc.) in projections will not work on such properties and neither will the 'between' criterion.
 </blockquote>
 
@@ -106,7 +110,7 @@ It is currently not possible to do certain types of criteria query with DateTime
                 
                     <div class="toc-item prev-left"><a href="../../guide/example.html">&lt;&lt; <strong>2</strong><span>Example Project</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../../guide/nestedqueries.html"><strong>4</strong><span>Nested Queries</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../../guide/templates.html"><strong>4</strong><span>Templates</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
