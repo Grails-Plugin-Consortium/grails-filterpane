@@ -1,25 +1,24 @@
 package org.grails.plugin.filterpane
 
-import org.joda.time.DateTime
-import org.joda.time.Instant
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
-import org.joda.time.LocalDate
-import org.joda.time.base.AbstractInstant
+import java.text.SimpleDateFormat
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.joda.time.DateTime
+import org.joda.time.Instant
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalTime
+import org.joda.time.base.AbstractInstant
 import org.joda.time.base.AbstractPartial
-
-import java.lang.reflect.Constructor
-import java.text.SimpleDateFormat
 
 /**
  * @author skrenek
  */
 class FilterPaneUtils {
 
-    private static SimpleDateFormat df = new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy')
+    private static String df = 'EEE MMM dd HH:mm:ss zzz yyyy'
     private static final Log log = LogFactory.getLog(this)
 
     static Date parseDateFromDatePickerParams(paramProperty, params) {
@@ -30,7 +29,7 @@ class FilterPaneUtils {
 
             } else if(params[paramProperty] instanceof String) {
                 try {
-                    return df.parse(params[paramProperty]?.toString())
+                    return new SimpleDateFormat(df).parse(params[paramProperty]?.toString())
                 } catch(Exception ex) {
                     /* Do nothing. */
                     log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
@@ -184,13 +183,13 @@ class FilterPaneUtils {
     static Date getBeginningOfDay(aDate) {
         Date beginningOfDay = null
         if(aDate && Date.isAssignableFrom(aDate.class)) {
-            Date date = (Date) aDate;
+            Date date = (Date) aDate
             Calendar calendar = Calendar.instance.with {
-                time = date;
-                set(HOUR_OF_DAY, 0);
-                set(MINUTE, 0);
-                set(SECOND, 0);
-                set(MILLISECOND, 0);
+                time = date
+                set(HOUR_OF_DAY, 0)
+                set(MINUTE, 0)
+                set(SECOND, 0)
+                set(MILLISECOND, 0)
                 it
             }
             beginningOfDay = calendar.time
