@@ -1,12 +1,11 @@
 class FilterpaneGrailsPlugin {
-    def version = "2.1.9.1"
+    def version = "2.1.9"
     def grailsVersion = "1.3 > *"
 
     def author = "Grails Plugin Consortium"
     def authorEmail = ""
     def title = "Dynamically filter / search domain objects."
     def description = "This plugin adds automatic and customizable filtering capabilities to any Grails application's list views."
-
     // URL to the plugin's documentation
     def documentation = "http://grails-plugin-consortium.github.io/grails-filterpane/"
 
