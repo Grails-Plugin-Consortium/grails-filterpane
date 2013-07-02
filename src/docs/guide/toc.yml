@@ -11,6 +11,8 @@ usage:
   listsorting: List Sorting
   controller: Controller
   jodatime: Joda Time
+templates:
+  override: Overrideing Templates
 nestedqueries:
   title: Nested Queries
 reference:

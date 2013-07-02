@@ -1,14 +1,18 @@
-h2. Version 2.1 Release Notes
+h2. Version 2.1.9 Release Notes
 
-h4. Bug Fixes
-* [GPFILTERPANE-109|http://jira.grails.org/browse/GPFILTERPANE-109] - Filter not working with Equals and ''.
-* [GPFILTERPANE-104|http://jira.grails.org/browse/GPFILTERPANE-104] - Make it possible to supply your own valueMessagePrefix to supplied values.
-* [GPFILTERPANE-99|http://jira.grails.org/browse/GPFILTERPANE-99] - Compile error on Grails 2.2.0
-* [GPFILTERPANE-92|http://jira.grails.org/browse/GPFILTERPANE-92] - Invalid message code in filterpaneSort
-* [GPFILTERPANE-35|http://jira.grails.org/browse/GPFILTERPANE-35] - Quick filter link tags
+h4. Bug
+* [GPFILTERPANE-110] - Cannot build latest version with maven due to user input required
+* [GPFILTERPANE-111] - Improve Filterpane Template gsp
+
+h4. New Feature
+* [GPFILTERPANE-37] - Support for remote ajax calls
+* [GPFILTERPANE-44] - Support for the 'in'-operator
+
+h4. Task
+* [GPFILTERPANE-48] - Update the books sample project index page. It is sorely out of date.
+
 
 h4. Enhancements
-* Code refactoring to clean up code
-* Added `_Install.groovy` script that copies filterpane views locally on install so user can modify them.
-* Updated taglib and views to remove plugin namespace so locally installed templates will be used instead.
-* Moved to use resources plugin
+* Removed `_Install.groovy`
+* Users can override templates in local _filterpane folder if necessary, uses plugin templates by default
+* Support for enum inList and notInList added

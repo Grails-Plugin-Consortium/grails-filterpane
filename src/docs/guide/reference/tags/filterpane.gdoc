@@ -46,3 +46,11 @@ h5. customForm
 	<g:actionSubmit value="Apply Filter From Outside Filter Pane" action="filterCustomForm" />
 </form>
 {code}
+
+h5. Template
+
+This uses
+* _filterpane/_filterpane.gsp
+* _filterpane/_filterpaneProperty.gsp
+* _filterpane/_filterpaneSort.gsp
+* _filterpane/_filterpaneButtons.gsp

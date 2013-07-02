@@ -4,4 +4,6 @@ _(since 0.6)_
 *Operator* | *Select Option Display Text*
 "=" | Equal To
 <> | Not Equal To
+InList | In List
+InList | Not In List
 {table}
