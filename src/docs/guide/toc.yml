@@ -12,6 +12,7 @@ usage:
   controller: Controller
   jodatime: Joda Time
 templates:
+  title: Templates
   override: Overrideing Templates
 nestedqueries:
   title: Nested Queries

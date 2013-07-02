@@ -1,15 +1,15 @@
 h2. Version 2.1.9 Release Notes
 
 h4. Bug
-* [GPFILTERPANE-110] - Cannot build latest version with maven due to user input required
-* [GPFILTERPANE-111] - Improve Filterpane Template gsp
+* GPFILTERPANE-110 - Cannot build latest version with maven due to user input required
+* GPFILTERPANE-111 - Improve Filterpane Template gsp
 
 h4. New Feature
-* [GPFILTERPANE-37] - Support for remote ajax calls
-* [GPFILTERPANE-44] - Support for the 'in'-operator
+* GPFILTERPANE-37 - Support for remote ajax calls
+* GPFILTERPANE-44 - Support for the 'in'-operator
 
 h4. Task
-* [GPFILTERPANE-48] - Update the books sample project index page. It is sorely out of date.
+* GPFILTERPANE-48 - Update the books sample project index page. It is sorely out of date.
 
 
 h4. Enhancements
