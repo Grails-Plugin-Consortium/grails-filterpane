@@ -1,8 +1,6 @@
 package org.grails.plugin.filterpane
 
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder
-import org.joda.time.base.AbstractInstant
-import org.joda.time.base.AbstractPartial
 
 class FilterPaneService {
 
