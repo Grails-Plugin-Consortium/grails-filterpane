@@ -24,10 +24,10 @@ class FilterPaneUtils {
     static Date parseDateFromDatePickerParams(paramProperty, params) {
         try {
             if(params[paramProperty] instanceof Date) {
+                return params[paramProperty]
+            }
 
-                return (Date) params[paramProperty]
-
-            } else if(params[paramProperty] instanceof String) {
+            if(params[paramProperty] instanceof String) {
                 try {
                     return new SimpleDateFormat(df).parse(params[paramProperty]?.toString())
                 } catch(Exception ex) {
@@ -102,7 +102,7 @@ class FilterPaneUtils {
         try {
             try {
                 // dynamically call the constructor of appropriate Joda class and try to parse the time/date
-                return clazz.getDeclaredConstructor(Object.class).newInstance(params[paramProperty])
+                return clazz.getDeclaredConstructor(Object).newInstance(params[paramProperty])
             }
             catch (Exception ex) {
                 log.debug("Parse exception for ${params[paramProperty]}: ${ex.message}")
@@ -119,7 +119,7 @@ class FilterPaneUtils {
 
             if (minute || hour || day || month || year || second) {
                 // certain joda class
-                if (clazz == DateTime.class) {
+                if (clazz == DateTime) {
                     dateTimeRepresent = new DateTime().withMillisOfSecond(0) // current date time
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
@@ -127,7 +127,7 @@ class FilterPaneUtils {
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
-                } else if (clazz == Instant.class) {
+                } else if (clazz == Instant) {
                     dateTimeRepresent = new LocalDateTime().withMillisOfSecond(0) // current local date time - easier implementation with LocalDateTime
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
@@ -136,17 +136,17 @@ class FilterPaneUtils {
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
                     dateTimeRepresent = new Instant(dateTimeRepresent.localMillis)
-                } else if (clazz == LocalDate.class) {
+                } else if (clazz == LocalDate) {
                     dateTimeRepresent = new LocalDate()// current time
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withDayOfMonth', day)
-                } else if (clazz == LocalTime.class) {
+                } else if (clazz == LocalTime) {
                     dateTimeRepresent = new LocalTime().withMillisOfSecond(0) // current local time
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withHourOfDay', hour)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMinuteOfHour', minute)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withSecondOfMinute', second)
-                } else if (clazz == LocalDateTime.class) {
+                } else if (clazz == LocalDateTime) {
                     dateTimeRepresent = new LocalDateTime().withMillisOfSecond(0) // current local date time
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withYear', year)
                     dateTimeRepresent = setDate(dateTimeRepresent, 'withMonthOfYear', month)
@@ -159,9 +159,7 @@ class FilterPaneUtils {
                 log.debug("Joda time object created $dateTimeRepresent")
                 return dateTimeRepresent
             }
-            else {
-                return null
-            }
+            return null
         } catch(Exception ex) {
             log.error("Cannot parse date for property $paramProperty", ex)
             return null
@@ -181,7 +179,7 @@ class FilterPaneUtils {
     }
 
     static Date getBeginningOfDay(aDate) {
-        Date beginningOfDay = null
+        Date beginningOfDay
         if(aDate && Date.isAssignableFrom(aDate.class)) {
             Date date = (Date) aDate
             Calendar calendar = Calendar.instance.with {
@@ -198,7 +196,7 @@ class FilterPaneUtils {
     }
 
     static Date getEndOfDay(aDate) {
-        Date endOfDay = null
+        Date endOfDay
         if(aDate && Date.isAssignableFrom(aDate.class)) {
             Date date = (Date) aDate
             Calendar calendar = Calendar.instance.with {
@@ -262,8 +260,8 @@ class FilterPaneUtils {
     }
 
     static resolveDomainClass(grailsApplication, bean) {
-        String beanName = null
-        def result = null
+        String beanName
+        def result
 
         log.debug("resolveDomainClass: bean is ${bean?.class}")
         if(bean instanceof GrailsDomainClass) {
