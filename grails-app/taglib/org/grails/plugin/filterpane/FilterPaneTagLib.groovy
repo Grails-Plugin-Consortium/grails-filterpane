@@ -38,7 +38,7 @@ class FilterPaneTagLib {
                     FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
             'boolean': ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
                     FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
-            'enum': ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation],
+            'enum': ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation],
             currency: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation]
     ]
 
@@ -191,12 +191,12 @@ class FilterPaneTagLib {
                     def filterValue = filterParams["filter.${prop}"]
                     def filterValueTo = null
                     boolean isNumericType = (domainProp.referencedPropertyType
-                                             ? Number.isAssignableFrom(domainProp.referencedPropertyType)
-                                             : false)
+                    ? Number.isAssignableFrom(domainProp.referencedPropertyType)
+                    : false)
                     boolean isNumericAndBlank = isNumericType && !"".equals(filterValue.toString().trim())
                     boolean isDateType = (domainProp.referencedPropertyType
-                                          ? FilterPaneUtils.isDateType(domainProp.referencedPropertyType)
-                                          : false)
+                    ? FilterPaneUtils.isDateType(domainProp.referencedPropertyType)
+                    : false)
                     boolean isEnumType = domainProp?.referencedPropertyType?.isEnum()
                     if(filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
 
@@ -302,8 +302,8 @@ class FilterPaneTagLib {
         renderModel.action = attrs.action ?: 'filter'
         renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
         renderModel.formAction = renderModel.controller ?
-                                 g.createLink(controller: renderModel.controller, action: renderModel.action) :
-                                 renderModel.action;
+            g.createLink(controller: renderModel.controller, action: renderModel.action) :
+            renderModel.action;
         renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
         renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
         renderModel.showTitle = attrs.showTitle ? resolveBoolAttrValue(attrs.showTitle) : true
@@ -440,6 +440,9 @@ class FilterPaneTagLib {
                     ret = bool(attrs.ctrlAttrs)
                     break
                 case 'select':
+                    ret = g.select(attrs.ctrlAttrs)
+                    break
+                case 'select-list':
                     ret = g.select(attrs.ctrlAttrs)
                     break
                 case 'text':
@@ -634,9 +637,29 @@ class FilterPaneTagLib {
                     map.ctrlAttrs.valueMessagePrefix = valueMessageAltPrefix
                 }
                 map.ctrlType = "select"
+
+                if(map.domainProperty.type.isEnum()){
+                    opKeys = ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation]
+                    def tempVal = map.ctrlAttrs.value
+                    def newValue = null
+                    try {
+                        if(tempVal instanceof Object[]){
+                            newValue = tempVal.collect{ Enum.valueOf(map.domainProperty.type, it.toString()) }
+                        } else if(tempVal.toString().length() > 0) {
+                            newValue = Enum.valueOf(map.domainProperty.type, tempVal.toString())
+                        }
+                    } catch(IllegalArgumentException iae) {
+                        log.debug("Enum valueOf failed. value is ${tempVal}")
+                        log.debug iae
+                        // Ignore this.  val is not a valid enum value (probably an empty string).
+                    }
+                    map.ctrlAttrs.value = newValue
+                    map.ctrlAttrs.multiple = true
+                    map.ctrlType = "select-list"
+                }
             }
 
-            if(map.ctrlType == 'select' || map.ctrlType == 'text') {
+            if(map.ctrlType == 'select' || map.ctrlType == 'select-list' || map.ctrlType == 'text') {
                 map.ctrlAttrs.onChange = "grailsFilterPane.selectDefaultOperator('${opName}')"
             }
 
@@ -730,8 +753,8 @@ class FilterPaneTagLib {
             refDomain = FilterPaneUtils.resolveReferencedDomainClass(association)
             fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.clazz.simpleName)}'s "
             refProperty = ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) ?
-                          refDomain.identifier :
-                          refDomain.persistentProperties.find { it.name == parts[index] }
+                refDomain.identifier :
+                refDomain.persistentProperties.find { it.name == parts[index] }
             //log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
             association = (refProperty?.association == true && refProperty?.type?.isEnum() == false) ? refProperty : null
             index += 1
