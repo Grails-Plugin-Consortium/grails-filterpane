@@ -88,6 +88,22 @@ class FilterPaneTabLibSpec extends IntegrationSpec {
         output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.dateCreated=Between&amp;filter.dateCreated=2013-01-01&amp;filter.dateCreatedTo=2013-01-31">testing</a>'
     }
 
+    def "test filter link inlist"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[bookType:[op:"InList", value:"[F, NF]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.bookType=InList&amp;filter.bookType=%5BF%2C+NF%5D">testing</a>'
+    }
+
+    def "test filter link notinlist"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[bookType:[op:"NotInList", value:"[R]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.bookType=NotInList&amp;filter.bookType=%5BR%5D">testing</a>'
+    }
+
     def "test boolean value checks"() {
 
         given:
