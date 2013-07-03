@@ -22,3 +22,7 @@ h5. filterPropertyValues
                               removeImgDir="images" removeImgFile="bullet_delete.png" fullAssociationPathFieldNames="no"
                               filterPropertyValues="${[robotType: [displayProperty: 'display']]}"/>
 {code}
+
+h5. Template
+
+This uses _filterpane/_currentCriteria.gsp

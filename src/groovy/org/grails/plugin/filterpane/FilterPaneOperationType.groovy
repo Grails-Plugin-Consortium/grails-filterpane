@@ -22,7 +22,7 @@ enum FilterPaneOperationType implements Serializable {
 
     String operation
 
-    def FilterPaneOperationType(String operation) {
+    FilterPaneOperationType(String operation) {
         this.operation = operation
     }
 
@@ -30,7 +30,7 @@ enum FilterPaneOperationType implements Serializable {
         values().find { it.operation == operation }
     }
 
-    @Override public String toString() {
+    @Override String toString() {
         operation
     }
 }

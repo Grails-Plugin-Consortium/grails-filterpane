@@ -12,3 +12,7 @@ appliedTextKey | No | "fp.tag.filterButton.appliedText" | The message bundle key
 {code}
 <filterpane:filterButton text="Filter Me" appliedText="Change Filter"/>
 {code}
+
+h5. Template
+
+This uses _filterpane/_filterButton.gsp

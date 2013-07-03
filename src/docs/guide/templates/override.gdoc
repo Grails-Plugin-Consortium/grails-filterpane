@@ -1,0 +1,7 @@
+h3. Overriding Templates
+
+To override a template simply create a {code}_filterpane{code} folder in your projects view directory.  Then copy the file you wish to override from the filterpane plugin's {code}_filterpane{code} directory.  You may create these files from scratch, but you will need to refer to the original template or taglib to see what params are being bound.
+
+You can refer to the [demo project|https://github.com/Grails-Plugin-Consortium/grails-filterpane-demo/tree/master/grails-app/views/_filterpane] to see an example of this in action.
+
+{note}If you used a version since 2.0 and you customized templates in the filterpane folder, simply move them into _filterpane and everything should be good to go.{note}
