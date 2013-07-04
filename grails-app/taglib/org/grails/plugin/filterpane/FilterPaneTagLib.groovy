@@ -152,7 +152,7 @@ class FilterPaneTagLib {
         }
         attrs.total = count
         attrs.params = filterParams
-        out << paginate(attrs, body)
+        out << g.paginate(attrs, body)
     }
 
     def currentCriteria = { attrs, body ->
