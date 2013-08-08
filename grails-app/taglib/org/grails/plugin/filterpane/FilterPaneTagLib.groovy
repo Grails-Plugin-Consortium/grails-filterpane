@@ -10,11 +10,11 @@ import org.springframework.web.servlet.support.RequestContextUtils
 
 /**
  * @author skrenek
- *
  */
 class FilterPaneTagLib {
 
     static namespace = 'filterpane'
+
     GrailsPluginManager pluginManager
     GrailsConventionGroovyPageLocator groovyPageLocator
 
@@ -343,7 +343,7 @@ class FilterPaneTagLib {
            * Need properties to filter,
            * associated properties
            * additional properties
-           * excluded properties 
+           * excluded properties
            */
 
         def finalProps = [:]
@@ -411,7 +411,7 @@ class FilterPaneTagLib {
 
         log.debug "${finalProps.size()} final props: ${finalProps}"
 
-        // sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass 
+        // sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass
         def sortedProps = finalProps.keySet().asList().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain))
 
         renderModel.properties = []
@@ -507,7 +507,7 @@ class FilterPaneTagLib {
      * ...
      * </pre>
      * @param values
-     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
+     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering.
      *          Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may
      *          optionally also contain the key "to" if the op operator is "Between".
      * @param controller
@@ -515,7 +515,7 @@ class FilterPaneTagLib {
      * @param action
      *          The action to use for filtering. Optional, default is <i>filter</i>.
      * @param *
-     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.         
+     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.
      * @body The body of this tag should contain the text to display within the link.
      */
     def filterLink = { attrs, body ->
@@ -701,9 +701,9 @@ class FilterPaneTagLib {
             map.opName = opName
             map.opKeys = opKeys
             map.opValue = params[opName]
-//			def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
-//			value: params[opName], valueMessagePrefix:'fp.op',
-//			onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
+//            def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
+//            value: params[opName], valueMessagePrefix:'fp.op',
+//            onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
             if(params[opName] == FilterPaneOperationType.IsNull.operation || params[opName] == "IsNotNull") {
                 map.ctrlAttrs.style = 'display:none;'
             }

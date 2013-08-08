@@ -1,17 +1,18 @@
 package org.grails.plugin.filterpane
+
 class Bookmark {
 
-	Book book
-	int page
-	Date dateCreated
-	
+    Book book
+    int page
+    Date dateCreated
+
     static constraints = {
-		book()
-		page()
-		dateCreated()
+        book()
+        page()
+        dateCreated()
     }
-	
-	static mapping = {
-		sort "page"
-	}
+
+    static mapping = {
+        sort "page"
+    }
 }
