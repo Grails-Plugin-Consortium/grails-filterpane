@@ -130,7 +130,7 @@ class FilterPaneService {
                     }
                     def defaultSort
                     try {
-                        defaultSort = GrailsDomainBinder.getMapping(filterClass)?.sort
+                        defaultSort = new GrailsDomainBinder().getMapping(filterClass)?.sort
                     } catch(Exception ex) {
                         log.info ex
                         log.info("No mapping property found on filterClass ${filterClass}")
