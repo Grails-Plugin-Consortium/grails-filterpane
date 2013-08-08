@@ -1,19 +1,19 @@
 package org.grails.plugin.filterpane
 
 class Author {
-	String firstName = 'first'
-	String lastName = 'last'
+    String firstName = 'first'
+    String lastName = 'last'
     FavoriteGenre favoriteGenre
-	Publisher publisher
-	int age = -1
+    Publisher publisher
+    int age = -1
     Date birthdate = new Date()
-	
-	static hasMany = [ books: Book ]
+
+    static hasMany = [ books: Book ]
     static belongsTo = [Book]
-	
-	String toString() {
-		return "${lastName}, ${firstName}"
-	}
+
+    String toString() {
+        "${lastName}, ${firstName}"
+    }
 
     static constraints = {
         firstName blank: false

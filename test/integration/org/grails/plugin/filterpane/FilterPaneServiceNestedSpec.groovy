@@ -6,8 +6,6 @@ import org.grails.plugin.filterpane.nested.Part
 import org.grails.plugin.filterpane.nested.Robot
 import spock.lang.Unroll
 
-/**
- */
 class FilterPaneServiceNestedSpec extends IntegrationSpec {
 
     def filterPaneService

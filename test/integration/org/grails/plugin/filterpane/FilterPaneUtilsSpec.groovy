@@ -1,16 +1,22 @@
 package org.grails.plugin.filterpane
 
 import grails.plugin.spock.IntegrationSpec
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-import org.joda.time.*
-import spock.lang.Ignore
-import spock.lang.Unroll
 
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
-/**
- */
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.joda.time.DateMidnight
+import org.joda.time.DateTime
+import org.joda.time.Duration
+import org.joda.time.Instant
+import org.joda.time.Interval
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalTime
+
+import spock.lang.Unroll
+
 class FilterPaneUtilsSpec extends IntegrationSpec {
 
     @Unroll def "parse date from only the date param #theDate #type"() {
@@ -207,6 +213,4 @@ class FilterPaneUtilsSpec extends IntegrationSpec {
         Instant   | '2005-03-26T00:00:00.000Z'
         LocalTime | '00:00:00.000'
     }
-
-
 }

@@ -1,4 +1,5 @@
 package org.grails.plugin.filterpane
+
 class Book {
 
     static hasMany = [bookmarks: Bookmark, authors: Author]
@@ -27,8 +28,6 @@ class Book {
         lastUpdated(nullable: true)
         readPriority(inList: ['Low', 'Normal', 'High'])
         cost(min: 0.00)
-        authors nullable:true
-        bookmarks nullable:true
     }
 
     static mapping = {
@@ -38,6 +37,6 @@ class Book {
     }
 
     String toString() {
-        return title
+        title
     }
 }
