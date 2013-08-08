@@ -4,8 +4,6 @@ import grails.plugin.spock.IntegrationSpec
 import org.hibernate.QueryException
 import spock.lang.Unroll
 
-/**
- */
 class FilterPaneServiceSpec extends IntegrationSpec {
 
     def filterPaneService
@@ -325,6 +323,4 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         books.size() == 1
         books[0].bookType == BookType.Reference
     }
-
-
 }

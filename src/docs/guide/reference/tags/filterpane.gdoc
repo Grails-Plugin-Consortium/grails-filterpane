@@ -39,11 +39,11 @@ filterPropertyValues="${['author.lastName':
 h5. customForm
 {code}
 <form id="author-form" name="author-form" method="post">
-	 <filterpane:filterPane id="author-filter-pane" domainBean="com.zeddware.grails.plugins.filterpane.Author"
+    <filterpane:filterPane id="author-filter-pane" domainBean="com.zeddware.grails.plugins.filterpane.Author"
             associatedProperties="books.title, books.bookType"
             titleKey="fp.tag.filterPane.titleText" customForm="true"
-	    formName="author-form"/>
-	<g:actionSubmit value="Apply Filter From Outside Filter Pane" action="filterCustomForm" />
+            formName="author-form"/>
+    <g:actionSubmit value="Apply Filter From Outside Filter Pane" action="filterCustomForm" />
 </form>
 {code}
 

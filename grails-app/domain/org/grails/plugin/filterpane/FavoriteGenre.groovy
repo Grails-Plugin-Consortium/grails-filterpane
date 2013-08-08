@@ -1,19 +1,15 @@
 package org.grails.plugin.filterpane
-enum FavoriteGenre {
-    SciFi('Science Fiction'), Fantasy(), Romance(), Mystery(), Fiction(), Reference(), Satire();
 
-    private String display;
+enum FavoriteGenre {
+    SciFi('Science Fiction'), Fantasy(), Romance(), Mystery(), Fiction(), Reference(), Satire()
+
+    final String display
 
     private FavoriteGenre() {
-        display = name();
+        this.display = name()
     }
 
     private FavoriteGenre(String display) {
-        this.display = display;
-    }
-
-    public String getDisplay() {
-        return display;
+        this.display = display
     }
 }
-

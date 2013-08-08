@@ -117,7 +117,7 @@ class FilterPaneService {
                         maxResults(params.max.toInteger())
                     }
                     if(params.fetchMode) {
-                        def fetchModes = null
+                        def fetchModes
                         if(params.fetchMode instanceof Map) {
                             fetchModes = params.fetchModes
                         }
@@ -128,9 +128,9 @@ class FilterPaneService {
                             }
                         }
                     }
-                    def defaultSort = null
+                    def defaultSort
                     try {
-                        defaultSort = GrailsDomainBinder.getMapping(filterClass)?.sort
+                        defaultSort = new GrailsDomainBinder().getMapping(filterClass)?.sort
                     } catch(Exception ex) {
                         log.info ex
                         log.info("No mapping property found on filterClass ${filterClass}")
