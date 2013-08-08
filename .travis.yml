@@ -3,23 +3,9 @@ language: groovy
 jdk:
 - oraclejdk6
 
-before_install:
-- rm -rf ~/.gvm
-- curl -s get.gvmtool.net > ~/install_gvm.sh
-- chmod 775 ~/install_gvm.sh
-- ~/install_gvm.sh
-- echo "gvm_auto_answer=true" > ~/.gvm/etc/config
-- curl -s https://raw.github.com/ctoestreich/gvm/master/src/main/bash/gvm-install.sh > ~/.gvm/src/gvm-install.sh
-- source ~/.gvm/bin/gvm-init.sh
-- gvm install grails 2.2.1
-- gvm use grails 2.2.1
-
 branches:
   only:
     - master
 
-script: grails test-app --non-interactive
-  && gvm install grails 2.2.2
-  && gvm use grails 2.2.2
-  && grails upgrade --non-interactive
-  && grails test-app --non-interactive
+script: ./grailsw refresh-dependencies
+     && ./grailsw test-app
