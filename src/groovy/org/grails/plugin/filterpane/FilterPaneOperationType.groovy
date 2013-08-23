@@ -1,7 +1,5 @@
 package org.grails.plugin.filterpane
 
-/**
- */
 enum FilterPaneOperationType implements Serializable {
 
     ILike('ILike'),
@@ -30,7 +28,7 @@ enum FilterPaneOperationType implements Serializable {
         values().find { it.operation == operation }
     }
 
-    @Override String toString() {
+    String toString() {
         operation
     }
 }

@@ -10,11 +10,11 @@ import org.springframework.web.servlet.support.RequestContextUtils
 
 /**
  * @author skrenek
- *
  */
 class FilterPaneTagLib {
 
     static namespace = 'filterpane'
+
     GrailsPluginManager pluginManager
     GrailsConventionGroovyPageLocator groovyPageLocator
 
@@ -76,11 +76,11 @@ class FilterPaneTagLib {
         }
 
         if(showCss) {
-            out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${resource(dir: 'css', plugin: 'filterpane', file: 'fp.css')}\" />\n"
+            out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: 'css', plugin: 'filterpane', file: 'fp.css')}\" />\n"
         }
 
         if(showJs) {
-            out << "<script type=\"text/javascript\" src=\"${resource(dir: 'js', plugin: 'filterpane', file: 'fp.js')}\"></script>"
+            out << "<script type=\"text/javascript\" src=\"${g.resource(dir: 'js', plugin: 'filterpane', file: 'fp.js')}\"></script>"
         }
     }
 
@@ -118,7 +118,7 @@ class FilterPaneTagLib {
 
         Map template = getTemplatePath('filterButton')
 
-        out << render(template: template.path, plugin: template.plugin, model: renderModel)
+        out << g.render(template: template.path, plugin: template.plugin, model: renderModel)
     }
 
     Map<String, String> getTemplatePath(String templateName) {
@@ -152,7 +152,7 @@ class FilterPaneTagLib {
         }
         attrs.total = count
         attrs.params = filterParams
-        out << paginate(attrs, body)
+        out << g.paginate(attrs, body)
     }
 
     def currentCriteria = { attrs, body ->
@@ -230,7 +230,7 @@ class FilterPaneTagLib {
                                 if(AbstractPartial.isAssignableFrom(clazz) || AbstractInstant.isAssignableFrom(clazz)) {
                                     filterValue = joda.format(value: filterValue, pattern: df)
                                 } else {
-                                    filterValue = formatDate(format: df, date: filterValue)
+                                    filterValue = g.formatDate(format: df, date: filterValue)
                                 }
                             }
                         } else if(isEnumType) {
@@ -267,7 +267,7 @@ class FilterPaneTagLib {
                                         if(df instanceof Map) {
                                             df = renderModel.dateFormat[prop]
                                         }
-                                        filterValueTo = formatDate(format: df, date: filterValueTo)
+                                        filterValueTo = g.formatDate(format: df, date: filterValueTo)
                                     }
                                 }
                                 break
@@ -294,7 +294,7 @@ class FilterPaneTagLib {
             //log.debug("renderModel: ${renderModel}")
             Map template = getTemplatePath('currentCriteria')
 
-            out << render(template: template.path, plugin: template.plugin, model: renderModel)
+            out << g.render(template: template.path, plugin: template.plugin, model: renderModel)
         }
 
     }
@@ -331,7 +331,7 @@ class FilterPaneTagLib {
         renderModel.action = attrs.action ?: 'filter'
         renderModel.customForm = "true".equalsIgnoreCase(attrs?.customForm) || attrs?.customForm == true
         renderModel.formAction = renderModel.controller ?
-                                 createLink(controller: renderModel.controller, action: renderModel.action) :
+                                 g.createLink(controller: renderModel.controller, action: renderModel.action) :
                                  renderModel.action
         renderModel.showSortPanel = attrs.showSortPanel ? resolveBoolAttrValue(attrs.showSortPanel) : true
         renderModel.showButtons = attrs.showButtons ? resolveBoolAttrValue(attrs.showButtons) : true
@@ -343,7 +343,7 @@ class FilterPaneTagLib {
            * Need properties to filter,
            * associated properties
            * additional properties
-           * excluded properties 
+           * excluded properties
            */
 
         def finalProps = [:]
@@ -411,7 +411,7 @@ class FilterPaneTagLib {
 
         log.debug "${finalProps.size()} final props: ${finalProps}"
 
-        // sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass 
+        // sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass
         def sortedProps = finalProps.keySet().asList().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain))
 
         renderModel.properties = []
@@ -433,7 +433,7 @@ class FilterPaneTagLib {
 
         Map template = getTemplatePath('filterpane')
 
-        out << render(template: template.path, plugin: template.plugin, model: [fp: renderModel])
+        out << g.render(template: template.path, plugin: template.plugin, model: [fp: renderModel])
     }
 
     def date = { attrs, body ->
@@ -451,13 +451,13 @@ class FilterPaneTagLib {
 
         Map template = getTemplatePath('dateControl')
 
-        out << render(template: template.path, plugin: template.plugin, model: [ctrlAttrs: model])
+        out << g.render(template: template.path, plugin: template.plugin, model: [ctrlAttrs: model])
     }
 
     def bool = { attrs, body ->
         Map template = getTemplatePath('boolean')
 
-        out << render(template: template.path, plugin: template.plugin, model: attrs)
+        out << g.render(template: template.path, plugin: template.plugin, model: attrs)
     }
 
     def input = { attrs, body ->
@@ -474,13 +474,13 @@ class FilterPaneTagLib {
                     ret = bool(attrs.ctrlAttrs)
                     break
                 case 'select':
-                    ret = select(attrs.ctrlAttrs)
+                    ret = g.select(attrs.ctrlAttrs)
                     break
                 case 'select-list':
-                    ret = select(attrs.ctrlAttrs)
+                    ret = g.select(attrs.ctrlAttrs)
                     break
                 case 'text':
-                    ret = textField(attrs.ctrlAttrs)
+                    ret = g.textField(attrs.ctrlAttrs)
                     break
                 default:
                     ret = "<-- Unknown control type: ${attrs?.ctrlType} -->"
@@ -507,7 +507,7 @@ class FilterPaneTagLib {
      * ...
      * </pre>
      * @param values
-     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering. 
+     *          A map containing field values by field name. The field is the field within the bean (with the filter) that should be used for filtering.
      *          Optionally, instead of the field value, you can supply a map like this [op:<The filter operator>, value:<the filter value>]. This map may
      *          optionally also contain the key "to" if the op operator is "Between".
      * @param controller
@@ -515,7 +515,7 @@ class FilterPaneTagLib {
      * @param action
      *          The action to use for filtering. Optional, default is <i>filter</i>.
      * @param *
-     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.         
+     *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.
      * @body The body of this tag should contain the text to display within the link.
      */
     def filterLink = { attrs, body ->
@@ -570,7 +570,7 @@ class FilterPaneTagLib {
         linkAttrs.remove('filterParams')
         linkAttrs.params = linkParams
 
-        out << link(linkAttrs) { label }
+        out << g.link(linkAttrs) { label }
     }
 
     private void assignRenderModels(Map attrs, List sortedProps, ArrayList sortKeys, LinkedHashMap<String, Boolean> renderModel) {
@@ -578,14 +578,14 @@ class FilterPaneTagLib {
                 sortedProperties: sortedProps,
                 sortKeys: sortKeys,
                 sortValue: params.sort ?: "",
-                noSelection: ['': message(code: 'fp.tag.filterPane.sort.noSelection.text', default: 'Select a Property')],
+                noSelection: ['': g.message(code: 'fp.tag.filterPane.sort.noSelection.text', default: 'Select a Property')],
                 orderAsc: params.order == 'asc',
                 orderDesc: params.order == 'desc']
 
         renderModel.buttonModel = [
-                cancelText: message(code: 'fp.tag.filterPane.button.cancel.text', default: 'Cancel'),
-                clearText: message(code: 'fp.tag.filterPane.button.clear.text', default: 'Clear'),
-                applyText: message(code: 'fp.tag.filterPane.button.apply.text', default: 'Apply'),
+                cancelText: g.message(code: 'fp.tag.filterPane.button.cancel.text', default: 'Cancel'),
+                clearText: g.message(code: 'fp.tag.filterPane.button.clear.text', default: 'Clear'),
+                applyText: g.message(code: 'fp.tag.filterPane.button.apply.text', default: 'Apply'),
                 action: renderModel.action,
                 containerId: renderModel.containerId,
                 formName: renderModel.formName]
@@ -701,9 +701,9 @@ class FilterPaneTagLib {
             map.opName = opName
             map.opKeys = opKeys
             map.opValue = params[opName]
-//			def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
-//			value: params[opName], valueMessagePrefix:'fp.op',
-//			onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
+//            def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
+//            value: params[opName], valueMessagePrefix:'fp.op',
+//            onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
             if(params[opName] == FilterPaneOperationType.IsNull.operation || params[opName] == "IsNotNull") {
                 map.ctrlAttrs.style = 'display:none;'
             }
@@ -754,9 +754,9 @@ class FilterPaneTagLib {
         def result
 
         if(customKey) {
-            result = message(code: customKey, default: defaultValue)
+            result = g.message(code: customKey, default: defaultValue)
         } else {
-            result = attrValue ?: message(code: localizationKey, default: defaultValue)
+            result = attrValue ?: g.message(code: localizationKey, default: defaultValue)
         }
 
         result ?: defaultValue
@@ -842,6 +842,6 @@ class FilterPaneTagLib {
         log.debug("fieldName is ${fieldName}")
         */
 
-        message(code: fieldNameKey, default: message(code: fieldNameAltKey, default: message(code: fieldNamei18NTemplateKey, default: fieldName)))
+        g.message(code: fieldNameKey, default: g.message(code: fieldNameAltKey, default: g.message(code: fieldNamei18NTemplateKey, default: fieldName)))
     }
 }

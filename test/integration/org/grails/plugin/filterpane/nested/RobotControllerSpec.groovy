@@ -1,15 +1,6 @@
 package org.grails.plugin.filterpane.nested
 
 import grails.plugin.spock.IntegrationSpec
-import org.grails.plugin.filterpane.BookController
-import org.grails.plugin.filterpane.Publisher
-import org.grails.plugin.filterpane.Author
-import org.grails.plugin.filterpane.FavoriteGenre
-import org.grails.plugin.filterpane.Book
-import org.grails.plugin.filterpane.BookType
-
-/**
- */
 
 class RobotControllerSpec extends IntegrationSpec {
 
