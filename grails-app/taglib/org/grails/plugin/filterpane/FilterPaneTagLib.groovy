@@ -385,9 +385,9 @@ class FilterPaneTagLib {
         // Only id and version are supported right now.
         for(ap in additionalPropNames) {
             if("id".equals(ap) || "identifier".equals(ap)) {
-                finalProps[domain.identifier] = domain.identifier.name
+                finalProps[domain.identifier.name] = domain.identifier
             } else if("version".equals(ap)) {
-                finalProps[domain.version] = domain.version.name
+                finalProps[domain.version.name] = domain.version
             }
         }
 
@@ -402,7 +402,7 @@ class FilterPaneTagLib {
         }
 
         // Construct the final properties to filter
-        persistentProps.each { finalProps[it] = it.name }
+        persistentProps.each { finalProps[it.name] = it }
 
         // Add the associated properties
         associatedPropNames.each { dottedName ->
@@ -411,21 +411,16 @@ class FilterPaneTagLib {
 
         log.debug "${finalProps.size()} final props: ${finalProps}"
 
-        // sortedProps is a list of GrailsDomainClassProperty instances, sorted by order they appear in the GrailsDomainClass
-        def sortedProps = finalProps.keySet().asList().sort(new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain))
+        // sortedProps is a list of Entry instances where the key is the property name and the value is a GrailsDomainClassProperty instance.
+        // The list is sorted by order the properties appear in the GrailsDomainClass
+        def domainComparator = new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain)
+        def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
 
         renderModel.properties = []
 
         mapSortedProps(sortedProps, finalProps, attrs, useFullAssociationPath, renderModel)
 
-        def sortKeys = []
-        sortedProps.each { sp ->
-            def name = (finalProps.find { sp.name == it.value })?.value
-            if(name) {
-                sortKeys << name
-            }
-        }
-        associatedPropNames.each { apn -> sortKeys << apn }
+        def sortKeys = sortedProps.collect { it.key }
         log.debug("Sorted props: ${sortedProps}")
         log.debug("Sort keys: ${sortKeys}")
 
@@ -575,7 +570,7 @@ class FilterPaneTagLib {
 
     private void assignRenderModels(Map attrs, List sortedProps, ArrayList sortKeys, LinkedHashMap<String, Boolean> renderModel) {
         renderModel.sortModel = [sortValueMessagePrefix: attrs.sortValueMessagePrefix ?: null,
-                sortedProperties: sortedProps,
+                sortedProperties: sortedProps.collect { it.value },
                 sortKeys: sortKeys,
                 sortValue: params.sort ?: "",
                 noSelection: ['': g.message(code: 'fp.tag.filterPane.sort.noSelection.text', default: 'Select a Property')],
@@ -592,9 +587,10 @@ class FilterPaneTagLib {
     }
 
     private void mapSortedProps(List sortedProps, finalProps, attrs, boolean useFullAssociationPath, renderModel) {
-        sortedProps.each { sp ->
+        sortedProps.each { entry ->
+            def propertyKey = entry.key
+            def sp = entry.value
             def map = [domainProperty: sp]
-            def propertyKey = finalProps[sp]
             def opName = "filter.op.${propertyKey}"
             def propertyType = sp.type
             def type = FilterPaneUtils.getOperatorMapKey(propertyType)
@@ -796,8 +792,9 @@ class FilterPaneTagLib {
 
         if(refProperty && !refProperty.association) {
             log.debug("adding association ${dottedName}")
-            refProperty.metaClass.getFilterPaneFieldNamePrefix = {-> return fieldNamePrefix }
-            finalProps[refProperty] = dottedName
+            def prefixMethod = "getPrefix${dottedName.replaceAll('\\.', '')}"
+            refProperty.metaClass."${prefixMethod}" = {-> fieldNamePrefix }
+            finalProps[dottedName] = refProperty
         }
     }
 
@@ -827,8 +824,9 @@ class FilterPaneTagLib {
             fieldNamei18NTemplateKey = "${sp.domainClass.propertyName}.${sp.name}"
             // GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
             def prefix = ""
-            if(sp.filterPaneFieldNamePrefix && useFullAssociationPath) {
-                prefix = sp.filterPaneFieldNamePrefix
+            def prefixMethod = "prefix${propName.replaceAll('\\.', '')}"
+            if(sp."${prefixMethod}" && useFullAssociationPath) {
+                prefix = sp."${prefixMethod}"
             } else {
                 prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)}'s "
             }
