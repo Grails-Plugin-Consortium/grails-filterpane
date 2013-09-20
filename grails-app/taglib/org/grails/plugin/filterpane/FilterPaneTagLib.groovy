@@ -175,7 +175,7 @@ class FilterPaneTagLib {
             def domainBean = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
 
             def getProp = { key, filterOp ->
-                if(key.startsWith('filter.op') && filterOp != null && filterOp != '') {
+                if(key.startsWith('filter.op.') && filterOp != null && filterOp != '') {
                     return key[10..-1]
                 }
                 false
