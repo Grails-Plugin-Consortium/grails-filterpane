@@ -795,6 +795,12 @@ class FilterPaneTagLib {
             index += 1
         }
 
+        // search for refProperty in sub classes
+        if(!refProperty && refDomain) {
+            def subClassPersistentProps = FilterPaneUtils.resolveSubDomainsProperties(refDomain)
+            refProperty = subClassPersistentProps.find { it.name == parts[parts.size()-1] } // last attribute matter
+        }
+
         if(refProperty && !refProperty.association) {
             log.debug("adding association ${dottedName}")
             def prefixMethod = "getPrefix${dottedName.replaceAll('\\.', '')}"
