@@ -308,7 +308,7 @@ class FilterPaneUtils {
         def type = 'text'
         if(opType.getSimpleName().equalsIgnoreCase("boolean")) {
             type = 'boolean'
-        } else if( opType == Integer || opType == int || opType == Long || opType == long
+        } else if( opType == Byte || opType == byte || opType == Integer || opType == int || opType == Long || opType == long
                 || opType == Double || opType == double || opType == Float || opType == float
                 || opType == Short || opType == short || opType == BigDecimal || opType == BigInteger) {
             type = 'numeric'
