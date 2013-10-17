@@ -383,11 +383,7 @@ class FilterPaneTagLib {
         }
 
         // Resolve additional properties: id, version and sub class attributes.
-        def subClassPersistentProps = []
-        domain.subClasses.each { subDomain ->
-            def newProps = subDomain.persistentProperties.findAll { !subClassPersistentProps.contains(it) && !persistentProps.contains(it) }
-            subClassPersistentProps.addAll(newProps)
-        }
+        def subClassPersistentProps = FilterPaneUtils.resolveSubDomainsProperties(domain)
         for(ap in additionalPropNames) {
             if("id".equals(ap) || "identifier".equals(ap)) {
                 finalProps[domain.identifier.name] = domain.identifier
