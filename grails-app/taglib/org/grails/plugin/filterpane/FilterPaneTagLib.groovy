@@ -419,7 +419,7 @@ class FilterPaneTagLib {
         def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
 
         // add 'class' property if domain class has its implementers
-        if (domain.hasSubClasses()) {
+        if (domain.hasSubClasses() && !excludePropNames.contains("class")) {
             // class property should be as a first in a sorted props
             sortedProps.add(0, new MapEntry("class", [name: "class", type: Class, domainClass: domain, naturalName: "Class"])) // fake GrailsDomainClassProperty object
             log.debug "Add 'class' property to sortedProps"
