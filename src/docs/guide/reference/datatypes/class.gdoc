@@ -1,0 +1,11 @@
+h4. Class
+_(since 2.3)_
+{table}
+*Operator* | *Select Option Display Text*
+InList | In List
+NotInList | Not In List
+{table}
+
+{note}
+The class attribute is covered by the filter only if a filtered domain class has some implementers (only not abstract implementers are covered). This gives the ability to filter entries based on their domain class.
+{note}

@@ -25,6 +25,7 @@ reference:
     date: Date
     boolean: Boolean
     enum: Enum
+    class: Class
   tags:
     title: Tags
     includes: includes
