@@ -382,12 +382,21 @@ class FilterPaneTagLib {
             }
         }
 
-        // Only id and version are supported right now.
+        // Resolve additional properties: id, version and sub class attributes.
+        def subClassPersistentProps = []
+        domain.subClasses.each { subDomain ->
+            def newProps = subDomain.persistentProperties.findAll { !subClassPersistentProps.contains(it) && !persistentProps.contains(it) }
+            subClassPersistentProps.addAll(newProps)
+        }
         for(ap in additionalPropNames) {
             if("id".equals(ap) || "identifier".equals(ap)) {
                 finalProps[domain.identifier.name] = domain.identifier
             } else if("version".equals(ap)) {
                 finalProps[domain.version.name] = domain.version
+            } else {
+                def subClassProperty = subClassPersistentProps.find { it.name == ap }
+                if(subClassProperty)
+                    finalProps[subClassProperty.name] = subClassProperty
             }
         }
 

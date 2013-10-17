@@ -293,6 +293,16 @@ class FilterPaneUtils {
             it.name == property
         }
 
+        // it could be also subclass persistent property
+        if (!thisDomainProp) {
+            def subClassPersistentProps = []
+            domainClass.subClasses.each { subDomain ->
+                def newProps = subDomain.persistentProperties.findAll { !subClassPersistentProps.contains(it) && !domainClass.persistentProperties.contains(it) }
+                subClassPersistentProps.addAll(newProps)
+            }
+            thisDomainProp = subClassPersistentProps.find { it.name == property }
+        }
+
         thisDomainProp
     }
 
