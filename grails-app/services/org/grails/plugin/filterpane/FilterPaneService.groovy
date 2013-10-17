@@ -287,6 +287,13 @@ class FilterPaneService {
                 }
             } else if("boolean".equals(clsName)) {
                 newValue = newValue.toBoolean()
+            } else if("byte".equals(clsName)) {
+               try {
+                  newValue = new Byte(newValue) // no isByte()
+               } catch (NumberFormatException e) {
+                  newValue = null
+                  log.debug e
+               }
             } else if("int".equals(clsName) || "integer".equals(clsName)) {
                 newValue = newValue.isInteger() ? newValue.toInteger() : null
             } else if("long".equals(clsName)) {
