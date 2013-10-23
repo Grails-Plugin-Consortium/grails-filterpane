@@ -297,11 +297,30 @@ class FilterPaneUtils {
             it.name == property
         }
 
+        // it could be also subclass persistent property
+        if (!thisDomainProp) {
+            def subClassPersistentProps = resolveSubDomainsProperties(domainClass)
+            thisDomainProp = subClassPersistentProps.find { it.name == property }
+        }
+
         thisDomainProp
     }
 
     static resolveReferencedDomainClass(property) {
         property.embedded ? property.component : property.referencedDomainClass
+    }
+
+    /**
+     * List all persistent properties of all subclasses of given domain class. Doesn't cover properties of the domain
+     * super class.
+     */
+    static resolveSubDomainsProperties(domainClass) {
+        def subClassPersistentProps = []
+        domainClass.subClasses.each { subDomain ->
+            def newProps = subDomain.persistentProperties.findAll { !subClassPersistentProps.contains(it) && !domainClass.persistentProperties.contains(it) }
+            subClassPersistentProps.addAll(newProps)
+        }
+        return subClassPersistentProps
     }
 
     static getOperatorMapKey(opType) {
