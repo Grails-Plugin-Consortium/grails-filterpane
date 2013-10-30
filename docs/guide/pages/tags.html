@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.2 Tags 2.2.1</title>
+    <title>6.2 Tags 2.2.5</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -89,7 +89,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.2.1</p>
+                    <p><strong>Version:</strong> 2.2.5</p>
 
                     
                 </div>
@@ -170,11 +170,11 @@ This tag generates the filter pane itself.  As of release 0.4, this tag pulls as
     'readPriority.name':&#91;values:ReadPriority.list()&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>
 <h5>customForm</h5>
 <div class="code"><pre>&#60;form id=<span class="java&#45;quote">"author&#45;form"</span> name=<span class="java&#45;quote">"author&#45;form"</span> method=<span class="java&#45;quote">"post"</span>&#62;
-	 &#60;filterpane:filterPane id=<span class="java&#45;quote">"author&#45;filter&#45;pane"</span> domainBean=<span class="java&#45;quote">"com.zeddware.grails.plugins.filterpane.Author"</span>
+    &#60;filterpane:filterPane id=<span class="java&#45;quote">"author&#45;filter&#45;pane"</span> domainBean=<span class="java&#45;quote">"com.zeddware.grails.plugins.filterpane.Author"</span>
             associatedProperties=<span class="java&#45;quote">"books.title, books.bookType"</span>
             titleKey=<span class="java&#45;quote">"fp.tag.filterPane.titleText"</span> customForm=<span class="java&#45;quote">"<span class="java&#45;keyword">true</span>"</span>
-	    formName=<span class="java&#45;quote">"author&#45;form"</span>/&#62;
-	&#60;g:actionSubmit value=<span class="java&#45;quote">"Apply Filter From Outside Filter Pane"</span> action=<span class="java&#45;quote">"filterCustomForm"</span> /&#62;
+            formName=<span class="java&#45;quote">"author&#45;form"</span>/&#62;
+    &#60;g:actionSubmit value=<span class="java&#45;quote">"Apply Filter From Outside Filter Pane"</span> action=<span class="java&#45;quote">"filterCustomForm"</span> /&#62;
 &#60;/form&#62;</pre></div><p class="paragraph"/><h5>Template</h5><p class="paragraph"/>This uses
 <ul class="star">
 <li>_filterpane/_filterpane.gsp</li>
