@@ -382,12 +382,17 @@ class FilterPaneTagLib {
             }
         }
 
-        // Only id and version are supported right now.
+        // Resolve additional properties: id, version and sub class attributes.
+        def subClassPersistentProps = FilterPaneUtils.resolveSubDomainsProperties(domain)
         for(ap in additionalPropNames) {
             if("id".equals(ap) || "identifier".equals(ap)) {
                 finalProps[domain.identifier.name] = domain.identifier
             } else if("version".equals(ap)) {
                 finalProps[domain.version.name] = domain.version
+            } else {
+                def subClassProperty = subClassPersistentProps.find { it.name == ap }
+                if(subClassProperty)
+                    finalProps[subClassProperty.name] = subClassProperty
             }
         }
 
@@ -788,6 +793,12 @@ class FilterPaneTagLib {
             //log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
             association = (refProperty?.association == true && refProperty?.type?.isEnum() == false) ? refProperty : null
             index += 1
+        }
+
+        // search for refProperty in sub classes
+        if(!refProperty && refDomain) {
+            def subClassPersistentProps = FilterPaneUtils.resolveSubDomainsProperties(refDomain)
+            refProperty = subClassPersistentProps.find { it.name == parts[parts.size()-1] } // last attribute matter
         }
 
         if(refProperty && !refProperty.association) {
