@@ -7,6 +7,7 @@ import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPage
 import org.joda.time.base.AbstractInstant
 import org.joda.time.base.AbstractPartial
 import org.springframework.web.servlet.support.RequestContextUtils
+import java.lang.reflect.Modifier
 
 /**
  * @author skrenek
@@ -28,6 +29,7 @@ class FilterPaneTagLib {
      * resource bundle.  The prefix used in the valueMessagePrefix attribute will be fp.op.
      */
     private static final Map availableOpsByType = [
+            class: ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation],
             text: ['', FilterPaneOperationType.ILike.operation, FilterPaneOperationType.NotILike.operation,
                     FilterPaneOperationType.Like.operation, FilterPaneOperationType.NotLike.operation,
                     FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
@@ -421,6 +423,13 @@ class FilterPaneTagLib {
         def domainComparator = new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain)
         def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
 
+        // add 'class' property if domain class has its implementers
+        if (domain.hasSubClasses() && !excludePropNames.contains("class")) {
+            // class property should be as a first in a sorted props
+            sortedProps.add(0, new MapEntry("class", [name: "class", type: Class, domainClass: domain, naturalName: "Class"])) // fake GrailsDomainClassProperty object
+            log.debug "Add 'class' property to sortedProps"
+        }
+
         renderModel.properties = []
 
         mapSortedProps(sortedProps, finalProps, attrs, useFullAssociationPath, renderModel)
@@ -629,6 +638,10 @@ class FilterPaneTagLib {
                 List inList = constrainedProperty?.getInList()
                 if(inList) {
                     map.ctrlAttrs.values = inList
+                } else if(type == 'class') { // property is class type
+                    def domainClasses = sp.domainClass.subClasses.findAll { !Modifier.isAbstract( it.clazz.modifiers ) } // do not add abstract classes
+                    map.ctrlAttrs.values = domainClasses.collect { it.name } // set values
+                    map.ctrlAttrs.keys = domainClasses.collect { it.fullName } // set keys
                 } else if(sp.type.isEnum()) {
                     //map.ctrlAttrs.values = sp.type.enumConstants as List
                     def valueList = []
@@ -692,6 +705,21 @@ class FilterPaneTagLib {
                     map.ctrlAttrs.multiple = true
                     map.ctrlType = "select-list"
                 }
+
+                if(type == 'class') {
+                    opKeys = ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation]
+                    def tempVal = map.ctrlAttrs.value
+                    def newValue
+                    newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
+                    if(tempVal instanceof Object[]){
+                        newValue = tempVal.collect{ it.toString() }
+                    } else if(tempVal.toString().length() > 0) {
+                        newValue = tempVal.toString()
+                    }
+                    map.ctrlAttrs.value = newValue
+                    map.ctrlAttrs.multiple = true
+                    map.ctrlType = "select-list"
+                }
             }
 
             if(map.ctrlType == 'select' || map.ctrlType == 'select-list' || map.ctrlType == 'text') {
@@ -715,7 +743,10 @@ class FilterPaneTagLib {
             map.fieldLabel = fieldName
 
             // Add this new field name as a property of this instance
-            sp.metaClass.getFilterPaneFieldName = {-> new String(fieldName) }
+            if (sp.metaClass)
+                sp.metaClass.getFilterPaneFieldName = {-> new String(fieldName) }
+            else
+                sp.getFilterPaneFieldName = {-> new String(fieldName) }
 
             // For numeric and date types, build the "To" control, in case they select between.
             if(type == "numeric" || type == "date") {

@@ -271,7 +271,15 @@ class FilterPaneService {
             String clsName = cls.simpleName.toLowerCase()
             log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} value is '${newValue}', clsName is ${clsName}")
 
-            if(domainProperty.isEnum()) {
+            if("class".equals(clsName)) {
+                def tempVal = newValue
+                newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
+                if(tempVal instanceof Object[]){
+                    newValue = tempVal.collect{ it.toString() }
+                } else if(tempVal.toString().length() > 0) {
+                    newValue = tempVal.toString()
+                }
+            } else if(domainProperty.isEnum()) {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
                 try {

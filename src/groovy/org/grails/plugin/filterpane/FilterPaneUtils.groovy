@@ -289,6 +289,10 @@ class FilterPaneUtils {
             return domainClass.identifier
         }
 
+        if("class".equals(property)) {
+            return [name: "class", type: Class, domainClass: domainClass, naturalName: "Class"] // fake GrailsDomainClassProperty object
+        }
+
         def thisDomainProp = domainClass.persistentProperties.find {
             it.name == property
         }
@@ -333,7 +337,8 @@ class FilterPaneUtils {
             type = 'enum'
         } else if(opType.simpleName.equalsIgnoreCase("currency")) {
             type = 'currency'
-        }
+        } else if(opType == Class)
+            type = 'class'
         type
     }
 
