@@ -2,6 +2,7 @@ h2. Change Log
 
 {table}
 *Date* | *Version* | *Notes* | *Grails Versions* | *Template Changes*
+2013-10-30 | 2.2.6 | Fixing another issue for filters starting with 'op' | 1.3.x | No
 2013-10-30 | 2.2.5 | Add support for filtering by subclass properties. Allow filter by associated properties (last persistent property can be in subclass) as well as direct persistent properties of subclasses.  Support filtering by a class attribute when filtered domain class has its implementers (sub classes). | 1.3.x | No
 2013-07-02 | 2.2.4 | Fix for http://jira.grails.org/browse/GPFILTERPANE-113 | 1.3.x + | *No*
 2013-07-02 | 2.1.9 | Template refactor.  Rename dir to _filterpane and do not install locally. Ability to override as needed like Fields plugin.  Added support for InList and NotInList for enum types. | 1.3.x + | *Yes*
