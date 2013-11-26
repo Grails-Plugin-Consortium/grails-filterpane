@@ -251,7 +251,7 @@ class FilterPaneUtils {
     static boolean isFilterApplied(params) {
         boolean isApplied = false
         params.each { key, value ->
-            if(key.startsWith('filter.op') && value != null && !''.equals(value)) {
+            if(key.startsWith('filter.op.') && value != null && !''.equals(value)) {
                 isApplied = true
                 return
             }

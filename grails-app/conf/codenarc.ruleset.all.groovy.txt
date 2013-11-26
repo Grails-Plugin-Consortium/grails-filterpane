@@ -26,6 +26,7 @@ ruleset {
     DuplicateMapKey 
     DuplicateSetValue 
     EmptyCatchBlock 
+    EmptyClass 
     EmptyElseBlock 
     EmptyFinallyBlock 
     EmptyForStatement 
@@ -74,6 +75,7 @@ ruleset {
     SynchronizedOnThis 
     SynchronizedReadObjectMethod 
     SystemRunFinalizersOnExit 
+    ThisReferenceEscapesConstructor 
     ThreadGroup 
     ThreadLocalNotStaticFinal 
     ThreadYield 
@@ -118,6 +120,11 @@ ruleset {
     DuplicateNumberLiteral 
     DuplicateStringLiteral 
     
+    // rulesets/enhanced.xml
+    CloneWithoutCloneable 
+    JUnitAssertEqualsConstantActualValue 
+    UnsafeImplementationAsMap 
+    
     // rulesets/exceptions.xml
     CatchArrayIndexOutOfBoundsException 
     CatchError 
@@ -151,16 +158,18 @@ ruleset {
     SpaceAfterClosingBrace 
     SpaceAfterComma 
     SpaceAfterFor 
-    //SpaceAfterIf
+    SpaceAfterIf 
     SpaceAfterOpeningBrace 
     SpaceAfterSemicolon 
     SpaceAfterSwitch 
     SpaceAfterWhile 
+    SpaceAroundClosureArrow 
     SpaceAroundOperator 
     SpaceBeforeClosingBrace 
     SpaceBeforeOpeningBrace 
     
     // rulesets/generic.xml
+    IllegalClassMember 
     IllegalClassReference 
     IllegalPackageReference 
     IllegalRegex 
@@ -171,6 +180,8 @@ ruleset {
     // rulesets/grails.xml
     GrailsDomainHasEquals 
     GrailsDomainHasToString 
+    GrailsDomainReservedSqlKeywordName 
+    GrailsDomainWithServiceReference 
     GrailsDuplicateConstraint 
     GrailsDuplicateMapping 
     GrailsPublicControllerMethod 
@@ -206,6 +217,7 @@ ruleset {
     ExplicitStackInstantiation 
     ExplicitTreeSetInstantiation 
     GStringAsMapKey 
+    GStringExpressionWithinString 
     GetterMethodCouldBeProperty 
     GroovyLangImmutable 
     UseCollectMany 
@@ -232,6 +244,7 @@ ruleset {
     JUnitAssertAlwaysSucceeds 
     JUnitFailWithoutMessage 
     JUnitLostTest 
+    JUnitPublicField 
     JUnitPublicNonTestMethod 
     JUnitSetUpCallsSuper 
     JUnitStyleAssertions 
@@ -262,6 +275,7 @@ ruleset {
     // rulesets/naming.xml
     AbstractClassName 
     ClassName 
+    ClassNameSameAsFilename 
     ConfusingMethodName 
     FactoryMethodName 
     FieldName 
@@ -285,6 +299,7 @@ ruleset {
     UnsafeArrayDeclaration 
     
     // rulesets/serialization.xml
+    EnumCustomSerializationIgnored 
     SerialPersistentFields 
     SerialVersionUID 
     SerializableClassMustDefineSerialVersionUID 
@@ -351,5 +366,7 @@ ruleset {
     UnusedPrivateField 
     UnusedPrivateMethod 
     UnusedPrivateMethodParameter 
-    UnusedVariable
+    UnusedVariable 
+    
+    
 }

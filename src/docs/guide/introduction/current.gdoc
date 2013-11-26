@@ -1,18 +1,4 @@
-h2. Version 2.1.9 Release Notes
+h2. Version 2.2.5 Release Notes
 
-h4. Bug
-* GPFILTERPANE-110 - Cannot build latest version with maven due to user input required
-* GPFILTERPANE-111 - Improve Filterpane Template gsp
-
-h4. New Feature
-* GPFILTERPANE-37 - Support for remote ajax calls
-* GPFILTERPANE-44 - Support for the 'in'-operator
-
-h4. Task
-* GPFILTERPANE-48 - Update the books sample project index page. It is sorely out of date.
-
-
-h4. Enhancements
-* Removed `_Install.groovy`
-* Users can override templates in local _filterpane folder if necessary, uses plugin templates by default
-* Support for enum inList and notInList added
+* Filter by subclass attributes [https://github.com/Grails-Plugin-Consortium/grails-filterpane/pull/27]
+* Filter by class [https://github.com/Grails-Plugin-Consortium/grails-filterpane/pull/27]
