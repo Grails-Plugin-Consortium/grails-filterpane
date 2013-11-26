@@ -281,7 +281,9 @@ class FilterPaneService {
                 if (domainProperty?.name == "class")
                     resolveClassValue = { classValue -> classValue.toString() }
                 else
-                    resolveClassValue = { classValue -> grailsApplication.getDomainClass(classValue.toString())?.clazz }
+                    resolveClassValue = { classValue ->
+                        Class.forName(classValue.toString(), false, Thread.currentThread().contextClassLoader)
+                    }
                 // resolve value
                 if(tempVal instanceof Object[]){
                     newValue = tempVal.collect{ resolveClassValue(tempVal.toString()) }
