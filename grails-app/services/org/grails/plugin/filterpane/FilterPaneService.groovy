@@ -274,10 +274,19 @@ class FilterPaneService {
             if("class".equals(clsName)) {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
+
+                // the default class property (automatically added by GORM if class has som sub classes) needs
+                // to be put as String into criteria however custom Class property needs to be type of Class
+                def resolveClassValue
+                if (domainProperty?.name == "class")
+                    resolveClassValue = { classValue -> classValue.toString() }
+                else
+                    resolveClassValue = { classValue -> grailsApplication.getDomainClass(classValue.toString())?.clazz }
+                // resolve value
                 if(tempVal instanceof Object[]){
-                    newValue = tempVal.collect{ it.toString() }
+                    newValue = tempVal.collect{ resolveClassValue(tempVal.toString()) }
                 } else if(tempVal.toString().length() > 0) {
-                    newValue = tempVal.toString()
+                   newValue = resolveClassValue(tempVal.toString())
                 }
             } else if(domainProperty.isEnum()) {
                 def tempVal = newValue
