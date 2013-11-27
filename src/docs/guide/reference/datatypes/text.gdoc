@@ -3,6 +3,7 @@ _(String, char)_
 {table}
 *Operator* | *Select Option Display Text*
 ILike | Contains
+ILike | Begins With (Using no leading wild-card eg: ilike 'foo%')
 Not ILike | Does Not Contain
 Like | Contains (Case Sensitive)
 Not Like | Does Not Contain (Case Sensitive)

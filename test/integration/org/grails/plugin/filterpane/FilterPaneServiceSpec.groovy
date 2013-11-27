@@ -170,8 +170,8 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         Book.list().size() == 2
         books.size() == 2
         books[0].authors.size() == 2
-        books[0].authors.find {it.firstName == 'Cool'}
-        books[0].authors.find {it.firstName == 'Another'}
+        books[0].authors.find { it.firstName == 'Cool' }
+        books[0].authors.find { it.firstName == 'Another' }
     }
 
     def "get author for book by association filter using listDistinct"() {
@@ -189,8 +189,8 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         Book.list().size() == 2
         books.size() == 1
         books[0].authors.size() == 2
-        books[0].authors.find {it.firstName == 'Cool'}
-        books[0].authors.find {it.firstName == 'Another'}
+        books[0].authors.find { it.firstName == 'Cool' }
+        books[0].authors.find { it.firstName == 'Another' }
     }
 
     def "test for empty params"() {
@@ -206,8 +206,144 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         then:
         books.size() == 5
         5.times {
-            books.find {it.title == "Book ${it}"}
+            books.find { it.title == "Book ${it}" }
         }
+    }
+
+    def "get author count for book by title using begins with"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'BeginsWith']], 'authors': ['lastName': 'Dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
+    }
+
+    def "get author count for book by title using begins with invalid case"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'BeginsWith']], 'authors': ['lastName': 'dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 0
+    }
+
+    def "get author count for book by title using begins with case insensitive"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'IBeginsWith']], 'authors': ['lastName': 'dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
+    }
+
+    def "get author count for book by title using begins with case insensitive caps"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'IBeginsWith']], 'authors': ['lastName': 'DUDE']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
+    }
+
+    def "get author count for book by title using ends with"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'EndsWith']], 'authors': ['lastName': 'Dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
+    }
+
+    def "get author count for book by title using ends with invalid case"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'EndsWith']], 'authors': ['lastName': 'dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 0
+    }
+
+    def "get author count for book by title using ends with case insensitive"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'IEndsWith']], 'authors': ['lastName': 'dude']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
+    }
+
+    def "get author count for book by title using ends with case insensitive caps"() {
+        given:
+        def params = ['filter': [op: ['authors': ['lastName': 'IEndsWith']], 'authors': ['lastName': 'DUDE']]]
+        Book.findOrSaveWhere(title: 'i hate bears')
+        Book.findOrSaveWhere(title: 'i hate zombies')
+        Book.findOrSaveWhere(title: 'i like turtles')
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+
+        when:
+        def books = filterPaneService.count(params, Book)
+
+        then: 'count will be = number of authors in book since unique column not specified'
+        Book.list().size() == 3
+        books == 1
     }
 
     @Unroll
@@ -226,32 +362,47 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         books.size() == listCount
 
         where:
-        operator    | title            | listCount
-        'ILike'     | 'BEARS*'         | 2
-        'ILike'     | '*ZOMBIES'       | 1
-        'ILike'     | '*zombies'       | 1
-        'Like'      | 'turtles'        | 2
-        'Like'      | '*turtles'       | 2
-        'Like'      | '*turtles*'      | 2
-        'Like'      | 'TURTLES'        | 0
-        'Like'      | '*TURTLES'       | 0
-        'Like'      | '*TURTLES*'      | 0
-        'Like'      | 'i like zombies' | 1
-        'Like'      | '*LIKE*'         | 0
-        'Like'      | '*like*'         | 3
-        'Equal'     | 'like'           | 0
-        'Equal'     | 'i like zombies' | 1
-        'Equal'     | 'I LIKE ZOMBIES' | 0
-        'NotEqual'  | 'i like zombies' | 2
-        'NotEqual'  | 'zombies'        | 3
-        'NotLike'   | 'zombies'        | 2
-        'NotLike'   | '*zombies'       | 2
-        'NotLike'   | '*like*'         | 0
-        'NotILike'  | '*turtles*'      | 1
-        'NotILike'  | '*TURTLES*'      | 1
-        'NotILike'  | '*ZOMBIES'       | 2
-        'IsNull'    | 'unused'         | 1
-        'IsNotNull' | 'unused'         | 3
+        operator      | title            | listCount
+        'ILike'       | 'BEARS*'         | 2
+        'ILike'       | '*ZOMBIES'       | 1
+        'ILike'       | '*zombies'       | 1
+        'Like'        | 'turtles'        | 2
+        'Like'        | '*turtles'       | 2
+        'Like'        | '*turtles*'      | 2
+        'Like'        | 'TURTLES'        | 0
+        'Like'        | '*TURTLES'       | 0
+        'Like'        | '*TURTLES*'      | 0
+        'Like'        | 'i like zombies' | 1
+        'Like'        | '*LIKE*'         | 0
+        'Like'        | '*like*'         | 3
+        'Equal'       | 'like'           | 0
+        'Equal'       | 'i like zombies' | 1
+        'Equal'       | 'I LIKE ZOMBIES' | 0
+        'NotEqual'    | 'i like zombies' | 2
+        'NotEqual'    | 'zombies'        | 3
+        'NotLike'     | 'zombies'        | 2
+        'NotLike'     | '*zombies'       | 2
+        'NotLike'     | '*like*'         | 0
+        'NotILike'    | '*turtles*'      | 1
+        'NotILike'    | '*TURTLES*'      | 1
+        'NotILike'    | '*ZOMBIES'       | 2
+        'IsNull'      | 'unused'         | 1
+        'BeginsWith'  | 'i like'         | 3
+        'BeginsWith'  | 'I LIKE'         | 0
+        'BeginsWith'  | 'like'           | 0
+        'BeginsWith'  | 'LIKE'           | 0
+        'IBeginsWith' | 'i like'         | 3
+        'IBeginsWith' | 'I LIKE'         | 3
+        'IBeginsWith' | 'like'           | 0
+        'IBeginsWith' | 'LIKE'           | 0
+        'EndsWith'    | 'rabbits'        | 2
+        'EndsWith'    | 'RABBITS'        | 0
+        'EndsWith'    | 'like'           | 0
+        'EndsWith'    | 'LIKE'           | 0
+        'IEndsWith'   | 'rabbits'        | 2
+        'IEndsWith'   | 'RABBITS'        | 2
+        'IEndsWith'   | 'like'           | 0
+        'IEndsWith'   | 'LIKE'           | 0
     }
 
 
@@ -285,9 +436,9 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         then:
         Book.list().size() == 3
         books.size() == 2
-        books.findAll{it.bookType == BookType.Fiction}.size() == 0
-        books.findAll{it.bookType == BookType.Reference}.size() == 1
-        books.findAll{it.bookType == BookType.NonFiction}.size() == 1
+        books.findAll { it.bookType == BookType.Fiction }.size() == 0
+        books.findAll { it.bookType == BookType.Reference }.size() == 1
+        books.findAll { it.bookType == BookType.NonFiction }.size() == 1
     }
 
     def "get book by multiple bookType InList"() {
@@ -303,9 +454,9 @@ class FilterPaneServiceSpec extends IntegrationSpec {
         then:
         Book.list().size() == 3
         books.size() == 2
-        books.findAll{it.bookType == BookType.Fiction}.size() == 1
-        books.findAll{it.bookType == BookType.Reference}.size() == 0
-        books.findAll{it.bookType == BookType.NonFiction}.size() == 1
+        books.findAll { it.bookType == BookType.Fiction }.size() == 1
+        books.findAll { it.bookType == BookType.Reference }.size() == 0
+        books.findAll { it.bookType == BookType.NonFiction }.size() == 1
     }
 
     def "get book by multiple bookType NotInList"() {

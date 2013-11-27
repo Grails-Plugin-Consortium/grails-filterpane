@@ -194,7 +194,9 @@ class FilterPaneService {
         def criteriaMap = [(FilterPaneOperationType.Equal.operation): 'eq', (FilterPaneOperationType.NotEqual.operation): 'ne',
                 (FilterPaneOperationType.LessThan.operation): 'lt', (FilterPaneOperationType.LessThanEquals.operation): 'le',
                 (FilterPaneOperationType.GreaterThan.operation): 'gt', (FilterPaneOperationType.GreaterThanEquals.operation): 'ge',
-                (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike']
+                (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike',
+                (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
+                (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
         if(value != null) {
             switch(op) {
@@ -213,6 +215,20 @@ class FilterPaneService {
                     }
                     if(!value.endsWith('*')) {
                         value = "${value}*"
+                    }
+                    criteria."${criteriaMap.get(op)}"(propertyName, value?.replaceAll("\\*", "%"))
+                    break
+                case FilterPaneOperationType.BeginsWith.operation:
+                case FilterPaneOperationType.IBeginsWith.operation:
+                    if(!value.endsWith('*')) {
+                        value = "${value}*"
+                    }
+                    criteria."${criteriaMap.get(op)}"(propertyName, value?.replaceAll("\\*", "%"))
+                    break
+                case FilterPaneOperationType.EndsWith.operation:
+                case FilterPaneOperationType.IEndsWith.operation:
+                    if(!value.startsWith('*')) {
+                        value = "*${value}"
                     }
                     criteria."${criteriaMap.get(op)}"(propertyName, value?.replaceAll("\\*", "%"))
                     break

@@ -104,6 +104,38 @@ class FilterPaneTabLibSpec extends IntegrationSpec {
         output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.bookType=NotInList&amp;filter.bookType=%5BR%5D">testing</a>'
     }
 
+    def "test filter link BeginsWith"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[title:[op:"BeginsWith", value:"[R]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.title=BeginsWith&amp;filter.title=%5BR%5D">testing</a>'
+    }
+
+    def "test filter link IBeginsWith"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[title:[op:"IBeginsWith", value:"[R]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.title=IBeginsWith&amp;filter.title=%5BR%5D">testing</a>'
+    }
+
+    def "test filter link EndsWith"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[title:[op:"EndsWith", value:"[R]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.title=EndsWith&amp;filter.title=%5BR%5D">testing</a>'
+    }
+
+    def "test filter link IEndsWith"() {
+        when:
+        def output = applyTemplate('<filterpane:filterLink controller=\'book\' values=\'[title:[op:"IEndsWith", value:"[R]" ]]\'>testing</filterpane:filterLink>', [:])
+
+        then:
+        output == '<a href="/book/filter?sort=&amp;order=&amp;filter.op.title=IEndsWith&amp;filter.title=%5BR%5D">testing</a>'
+    }
+
     def "test boolean value checks"() {
 
         given:

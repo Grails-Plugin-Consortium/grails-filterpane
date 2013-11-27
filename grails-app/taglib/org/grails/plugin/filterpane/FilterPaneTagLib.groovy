@@ -33,7 +33,9 @@ class FilterPaneTagLib {
             text: ['', FilterPaneOperationType.ILike.operation, FilterPaneOperationType.NotILike.operation,
                     FilterPaneOperationType.Like.operation, FilterPaneOperationType.NotLike.operation,
                     FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
-                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation],
+                    FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation,
+                    FilterPaneOperationType.IBeginsWith.operation, FilterPaneOperationType.BeginsWith.operation,
+                    FilterPaneOperationType.IEndsWith.operation, FilterPaneOperationType.EndsWith.operation],
             numeric: ['', FilterPaneOperationType.Equal.operation, FilterPaneOperationType.NotEqual.operation,
                     FilterPaneOperationType.LessThan.operation, FilterPaneOperationType.LessThanEquals.operation,
                     FilterPaneOperationType.GreaterThan.operation,
@@ -583,6 +585,7 @@ class FilterPaneTagLib {
     }
 
     private void assignRenderModels(Map attrs, List sortedProps, ArrayList sortKeys, LinkedHashMap<String, Boolean> renderModel) {
+        //noinspection GroovyAssignabilityCheck
         renderModel.sortModel = [sortValueMessagePrefix: attrs.sortValueMessagePrefix ?: null,
                 sortedProperties: sortedProps.collect { it.value },
                 sortKeys: sortKeys,
@@ -591,6 +594,7 @@ class FilterPaneTagLib {
                 orderAsc: params.order == 'asc',
                 orderDesc: params.order == 'desc']
 
+        //noinspection GroovyAssignabilityCheck
         renderModel.buttonModel = [
                 cancelText: g.message(code: 'fp.tag.filterPane.button.cancel.text', default: 'Cancel'),
                 clearText: g.message(code: 'fp.tag.filterPane.button.clear.text', default: 'Clear'),

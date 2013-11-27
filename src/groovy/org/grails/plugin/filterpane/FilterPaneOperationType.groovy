@@ -16,7 +16,11 @@ enum FilterPaneOperationType implements Serializable {
     GreaterThanEquals('GreaterThanEquals'),
     Between('Between'),
     InList('InList'),
-    NotInList('NotInList')
+    NotInList('NotInList'),
+    BeginsWith('BeginsWith'),
+    IBeginsWith('IBeginsWith'),
+    EndsWith('EndsWith'),
+    IEndsWith('IEndsWith')
 
     String operation
 

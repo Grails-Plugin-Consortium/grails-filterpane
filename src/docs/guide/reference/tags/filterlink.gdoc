@@ -21,6 +21,26 @@ Filtering all items by property firstName contains some text, requires that you 
 values="${[firstName:[op:'ILike', value:'Ada']]}"
 {code}
 
+Filtering all items by property firstName beginning with some text (case sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+{code}
+values="${[firstName:[op:'BeginsWith', value:'Ada']]}"
+{code}
+
+Filtering all items by property firstName beginning with some text (case in-sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+{code}
+values="${[firstName:[op:'IBeginsWith', value:'Ada']]}"
+{code}
+
+Filtering all items by property firstName ending with some text (case sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+{code}
+values="${[firstName:[op:'EndsWith', value:'bert']]}"
+{code}
+
+Filtering all items by property firstName ending with some text (case in-sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+{code}
+values="${[firstName:[op:'IEndsWith', value:'bert']]}"
+{code}
+
 Filtering all items by property age between 17 and 42.
 {code}
 values="${[age:[op:'Between', from:17, to:42]]}"
