@@ -140,8 +140,15 @@ class FilterPaneService {
                             order(params.sort, params.order ?: 'asc')
                         }
                     } else if(defaultSort != null) {
-                        log.debug('No sort specified and default is specified on domain.  Using it.')
-                        order(defaultSort, params.order ?: 'asc')
+                        log.debug('No sort specified and default is specified on domain. Using it.')
+                        // Grails >2.3 uses SortConfig for default sort
+                        if (defaultSort.respondsTo("getName") && defaultSort.respondsTo("getDirection")) {
+                            order(defaultSort.name, defaultSort.direction ?: 'asc')
+                        }
+                        else {
+                            // backward support for older grails
+                            order(defaultSort, params.order ?: 'asc')
+                        }
                     } else {
                         log.debug('No sort parameter or default sort specified.')
                     }
