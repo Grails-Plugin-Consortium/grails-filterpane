@@ -140,8 +140,15 @@ class FilterPaneService {
                             order(params.sort, params.order ?: 'asc')
                         }
                     } else if(defaultSort != null) {
-                        log.debug('No sort specified and default is specified on domain.  Using it.')
-                        order(defaultSort, params.order ?: 'asc')
+                        log.debug('No sort specified and default is specified on domain. Using it.')
+                        // Grails >2.3 uses SortConfig for default sort
+                        if (defaultSort.respondsTo("getName") && defaultSort.respondsTo("getDirection")) {
+                            order(defaultSort.name, defaultSort.direction ?: 'asc')
+                        }
+                        else {
+                            // backward support for older grails
+                            order(defaultSort, params.order ?: 'asc')
+                        }
                     } else {
                         log.debug('No sort parameter or default sort specified.')
                     }
@@ -274,10 +281,21 @@ class FilterPaneService {
             if("class".equals(clsName)) {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
+
+                // the default class property (automatically added by GORM if class has som sub classes) needs
+                // to be put as String into criteria however custom Class property needs to be type of Class
+                def resolveClassValue
+                if (domainProperty?.name == "class")
+                    resolveClassValue = { classValue -> classValue.toString() }
+                else
+                    resolveClassValue = { classValue ->
+                        Class.forName(classValue.toString(), false, Thread.currentThread().contextClassLoader)
+                    }
+                // resolve value
                 if(tempVal instanceof Object[]){
-                    newValue = tempVal.collect{ it.toString() }
+                    newValue = tempVal.collect{ resolveClassValue(tempVal.toString()) }
                 } else if(tempVal.toString().length() > 0) {
-                    newValue = tempVal.toString()
+                   newValue = resolveClassValue(tempVal.toString())
                 }
             } else if(domainProperty.isEnum()) {
                 def tempVal = newValue
