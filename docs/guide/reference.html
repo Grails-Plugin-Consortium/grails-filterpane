@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6 Reference 2.2.5</title>
+    <title>6 Reference 2.3.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -89,7 +89,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.2.5</p>
+                    <p><strong>Version:</strong> 2.3.0</p>
 
                     
                 </div>
@@ -164,7 +164,7 @@ function addJsClass() {
 <h2 id="text">6.1.1 Text</h2>
 <h4>Text</h4>
  <em class="italic">(String, char)</em> 
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>ILike</td><td>Contains</td></tr><tr class="table-even"><td>Not ILike</td><td>Does Not Contain</td></tr><tr class="table-odd"><td>Like</td><td>Contains (Case Sensitive)</td></tr><tr class="table-even"><td>Not Like</td><td>Does Not Contain (Case Sensitive)</td></tr><tr class="table-odd"><td>"="</td><td>Equal To</td></tr><tr class="table-even"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-odd"><td>Is Null</td><td>Is Null</td></tr><tr class="table-even"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Operator</strong></th><th><strong class="bold">Select Option Display Text</strong></th></tr><tr class="table-odd"><td>ILike</td><td>Contains</td></tr><tr class="table-even"><td>ILike</td><td>Begins With (Using no leading wild-card eg: ilike 'foo%')</td></tr><tr class="table-odd"><td>Not ILike</td><td>Does Not Contain</td></tr><tr class="table-even"><td>Like</td><td>Contains (Case Sensitive)</td></tr><tr class="table-odd"><td>Not Like</td><td>Does Not Contain (Case Sensitive)</td></tr><tr class="table-even"><td>"="</td><td>Equal To</td></tr><tr class="table-odd"><td>&#60;&#62;</td><td>Not Equal To</td></tr><tr class="table-even"><td>Is Null</td><td>Is Null</td></tr><tr class="table-odd"><td>Is Not Null</td><td>Is Not Null</td></tr></table>
 
 
 <h2 id="numeric">6.1.2 Numeric</h2>
@@ -263,7 +263,11 @@ This tag generates a html link that links to a filter action listing items filte
 Additionally you may use all the optional attributes that you can use for the grails tag g:link.<p class="paragraph"/><h5>values examples</h5>
 The simplest version is filtering all items by property firstName equals Adam.
 <div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:'Adam'&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName contains some text, requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
-<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'ILike', value:'Ada'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property age between 17 and 42.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'ILike', value:'Ada'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName beginning with some text (case sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'BeginsWith', value:'Ada'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName beginning with some text (case in-sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'IBeginsWith', value:'Ada'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName ending with some text (case sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'EndsWith', value:'bert'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property firstName ending with some text (case in-sensitive), requires that you specify the operator. The same applies to all the other single argument operators of the filterpane see below.
+<div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;firstName:&#91;op:'IEndsWith', value:'bert'&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/>Filtering all items by property age between 17 and 42.
 <div class="code"><pre>values=<span class="java&#45;quote">"$&#123;&#91;age:&#91;op:'Between', from:17, to:42&#93;&#93;&#125;"</span></pre></div><p class="paragraph"/><h5>example usage</h5>
 Creating a link that links to a filtered list of books where the author is the same as the current authorInstance:
 <div class="code"><pre>&#60;filterpane:filterLink values=<span class="java&#45;quote">"$&#123;&#91;'author.id' : authorInstance.id&#93;&#125;"</span> controller=<span class="java&#45;quote">"book"</span> action=<span class="java&#45;quote">"filter"</span>&#62;
