@@ -1,8 +1,8 @@
-h3. List.gsp
+h3. Modifying your gsp
 1.  Add the javascript and stylesheet includes to the head section of your page.
 
 {code}
-<filterpane:includes />
+<r:require module="filterpane" />
 {code}
 
 2.  Somewhere in your page (typically near the bottom of the body tag), add the filter pane.  This has the result of rendering a container div in your page. The domain is the fully qualified domain class name (domainClass.fullName)
