@@ -311,8 +311,8 @@ class FilterPaneService {
                         try {
                             return Class.forName(classValue.toString(), false, Thread.currentThread().contextClassLoader)
                         }
-                        catch (ClassNotFoundException) {
-                            log.debug("Cannot resolve class $classValue for filter.")
+                        catch (Exception e) {
+                            log.error("Cannot resolve class $classValue for filter.", e)
                             return null
                         }
                     }
@@ -333,8 +333,7 @@ class FilterPaneService {
                         newValue = Enum.valueOf(cls, tempVal.toString())
                     }
                 } catch(IllegalArgumentException iae) {
-                    log.debug("Enum valueOf failed. value is ${tempVal}")
-                    log.debug iae
+                    log.debug("Enum valueOf failed. value is ${tempVal}", iae)
                     // Ignore this.  val is not a valid enum value (probably an empty string).
                 }
             } else if("boolean".equals(clsName)) {
