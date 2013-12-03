@@ -142,12 +142,14 @@ class FilterPaneService {
                     } else if(defaultSort != null) {
                         log.debug('No sort specified and default is specified on domain. Using it.')
                         // Grails >2.3 uses SortConfig for default sort
-                        if (defaultSort.respondsTo("getName") && defaultSort.respondsTo("getDirection")) {
-                            order(defaultSort.name, defaultSort.direction ?: 'asc')
-                        }
-                        else {
+                        if (defaultSort instanceof String) {
                             // backward support for older grails
                             order(defaultSort, params.order ?: 'asc')
+                        }
+                        else {
+                             defaultSort.namesAndDirections?.each { name, direction ->
+                                order(name, direction ?: 'asc')
+                            }
                         }
                     } else {
                         log.debug('No sort parameter or default sort specified.')
@@ -301,12 +303,20 @@ class FilterPaneService {
                 // the default class property (automatically added by GORM if class has som sub classes) needs
                 // to be put as String into criteria however custom Class property needs to be type of Class
                 def resolveClassValue
-                if (domainProperty?.name == "class")
+                if (domainProperty?.name == "class") {
                     resolveClassValue = { classValue -> classValue.toString() }
-                else
+                }
+                else {
                     resolveClassValue = { classValue ->
-                        Class.forName(classValue.toString(), false, Thread.currentThread().contextClassLoader)
+                        try {
+                            return Class.forName(classValue.toString(), false, Thread.currentThread().contextClassLoader)
+                        }
+                        catch (ClassNotFoundException) {
+                            log.debug("Cannot resolve class $classValue for filter.")
+                            return null
+                        }
                     }
+                }
                 // resolve value
                 if(tempVal instanceof Object[]){
                     newValue = tempVal.collect{ resolveClassValue(tempVal.toString()) }
