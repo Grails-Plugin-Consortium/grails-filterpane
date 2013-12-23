@@ -300,7 +300,7 @@ class FilterPaneService {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
 
-                // the default class property (automatically added by GORM if class has som sub classes) needs
+                // the default class property (automatically added by GORM if class has some sub classes) needs
                 // to be put as String into criteria however custom Class property needs to be type of Class
                 def resolveClassValue
                 if (domainProperty?.name == "class") {
@@ -319,7 +319,7 @@ class FilterPaneService {
                 }
                 // resolve value
                 if(tempVal instanceof Object[]){
-                    newValue = tempVal.collect{ resolveClassValue(tempVal.toString()) }
+                    newValue = tempVal.collect{ resolveClassValue(it.toString()) }
                 } else if(tempVal.toString().length() > 0) {
                    newValue = resolveClassValue(tempVal.toString())
                 }
