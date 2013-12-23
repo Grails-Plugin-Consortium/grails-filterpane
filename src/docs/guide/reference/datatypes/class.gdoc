@@ -9,3 +9,7 @@ NotInList | Not In List
 {note}
 The class attribute is covered by the filter only if a filtered domain class has some implementers (only not abstract implementers are covered). This gives the ability to filter entries based on their domain class.
 {note}
+
+{note}
+Filtering by class is available only if table-per-hierarchy is used.
+{note}
