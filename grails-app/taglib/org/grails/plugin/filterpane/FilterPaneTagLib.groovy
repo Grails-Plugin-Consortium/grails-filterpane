@@ -16,6 +16,8 @@ class FilterPaneTagLib {
 
     static namespace = 'filterpane'
 
+    def grailsApplication
+
     GrailsPluginManager pluginManager
     GrailsConventionGroovyPageLocator groovyPageLocator
 
@@ -643,9 +645,19 @@ class FilterPaneTagLib {
                 if(inList) {
                     map.ctrlAttrs.values = inList
                 } else if(type == 'class') { // property is class type
-                    def domainClasses = sp.domainClass.subClasses.findAll { !Modifier.isAbstract( it.clazz.modifiers ) } // do not add abstract classes
-                    map.ctrlAttrs.values = domainClasses.collect { it.name } // set values
-                    map.ctrlAttrs.keys = domainClasses.collect { it.fullName } // set keys
+                    if (sp.name == 'class') { // class attribute for inheritance
+                        def domainClasses = sp.domainClass.subClasses.findAll { !Modifier.isAbstract( it.clazz.modifiers ) } // do not add abstract classes
+                        map.ctrlAttrs.values = domainClasses.collect { it.name } // set values
+                        map.ctrlAttrs.keys = domainClasses.collect { it.fullName } // set keys
+                    } else { // custom class attribute
+                        def classes = sp.domainClass.clazz.createCriteria().listDistinct {
+                            projections {
+                                distinct(sp.name)
+                            }
+                        }
+                        map.ctrlAttrs.values = classes.collect { it.simpleName } // set values
+                        map.ctrlAttrs.keys = classes.collect { it.name } // set keys
+                    }
                 } else if(sp.type.isEnum()) {
                     //map.ctrlAttrs.values = sp.type.enumConstants as List
                     def valueList = []
