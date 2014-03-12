@@ -700,16 +700,19 @@ class FilterPaneTagLib {
                 } else if(messageSource.getMessage(valueMessageAltPrefix, null, null, locale) != null) {
                     map.ctrlAttrs.valueMessagePrefix = valueMessageAltPrefix
                 }
+
                 map.ctrlType = "select"
 
                 if(map.domainProperty.type.isEnum()) {
+                    if(map.ctrlAttrs.valueMessagePrefix)
+                        map.ctrlAttrs.remove('optionValue')
                     opKeys = ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation]
                     def tempVal = map.ctrlAttrs.value
                     def newValue
                     try {
                         if(tempVal instanceof Object[]) {
                             newValue = tempVal.collect { Enum.valueOf(map.domainProperty.type, it.toString()) }
-                        } else if(tempVal.toString().length() > 0) {
+                        } else if(tempVal?.toString().length() > 0) {
                             newValue = Enum.valueOf(map.domainProperty.type, tempVal.toString())
                         }
                     } catch(IllegalArgumentException iae) {
