@@ -211,7 +211,8 @@ class FilterPaneService {
                 (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
                 (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
-        if(op && value) {
+        //needs null check since '' or 0 are valid filter
+        if(op && value != null) {
             switch (op) {
                 case FilterPaneOperationType.Equal.operation:
                 case FilterPaneOperationType.NotEqual.operation:
