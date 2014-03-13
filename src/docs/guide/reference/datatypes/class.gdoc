@@ -11,5 +11,11 @@ The class attribute is covered by the filter only if a filtered domain class has
 {note}
 
 {note}
-Filtering by class is available only if table-per-hierarchy is used.
+Filtering by class is available only if table-per-hierarchy is true as in the example below
 {note}
+
+{code}
+static mapping = {
+    tablePerHierarchy true
+}
+{code}
