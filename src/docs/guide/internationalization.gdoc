@@ -19,6 +19,12 @@ h3.  Filter Operators
 h3. Property Name Display
 By default, each property's natural name is displayed .  To override this, use keys of the form: @fp.property.text.propertyName@ , where @propertyname@ is the domain property name.  For associated properties, use keys of the form: @fp.property.text.associatedBean.propertyName@ .
 
+h3. Select input form values
+There are three ways to localize the values of a select input form, which is used for enum values, lists etc.:
+# By supplying your own @valueMessagePrefix@ in the @filterPropertyValues@ attribute in the @filterPane@ tag. This way you may use the form @yourValueMessagePrefix.optionId@ the same way as in the @g:select@ tag.
+# On the form @domainName.propertyName.optionId@
+# On the form @fp.property.text.propertyName.optionId@
+
 h3. Filter Button Tag
 If no textKey or appliedTextKey attributes are given, the default keys are checked.
 * fp.tag.filterButton.text
@@ -37,6 +43,7 @@ The filterPane tag's keys are listed below, along with their default values for 
 * fp.tag.filterPane.button.cancel.text=Cancel
 * fp.tag.filterPane.button.clear.text=Clear
 * fp.tag.filterPane.button.apply.text=Apply
+
 
 {note}The full default message bundle can be found in the installed plugin's folder in the messages-filterpane.properties file.{note}
 
