@@ -200,7 +200,7 @@ class FilterPaneTagLib {
                     return domainObj.getPropertyByName(parts[lastPartIndex])
                 }
 
-                domainBean.getPropertyByName(prop)
+                prop != 'class' ? domainBean.getPropertyByName(prop) : null;
             }
 
             //log.debug("=================================================================")
@@ -215,18 +215,18 @@ class FilterPaneTagLib {
                     def domainProp = getDomainProp(prop)
                     def filterValue = filterParams["filter.${prop}"]
                     def filterValueTo
-                    boolean isNumericType = (domainProp.referencedPropertyType
-                                             ? Number.isAssignableFrom(domainProp.referencedPropertyType)
+                    boolean isNumericType = (domainProp?.referencedPropertyType
+                                             ? Number.isAssignableFrom(domainProp?.referencedPropertyType)
                                              : false)
                     boolean isNumericAndBlank = isNumericType && !"".equals(filterValue.toString().trim())
-                    boolean isDateType = (domainProp.referencedPropertyType
-                                          ? FilterPaneUtils.isDateType(domainProp.referencedPropertyType)
+                    boolean isDateType = (domainProp?.referencedPropertyType
+                                          ? FilterPaneUtils.isDateType(domainProp?.referencedPropertyType)
                                           : false)
                     boolean isEnumType = domainProp?.referencedPropertyType?.isEnum()
                     if(filterValue != null && (!isNumericType || isNumericAndBlank) && filterOp?.size() > 0) {
 
                         if(isDateType) {
-                            def clazz = domainProp?.type ?: domainProp.class
+                            def clazz = domainProp?.type ?: domainProp?.class
                             filterValue = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}", filterParams, clazz)
                             if(filterValue) {
                                 def df = renderModel.dateFormat
@@ -246,10 +246,10 @@ class FilterPaneTagLib {
 
                             if(filterValue.class.isArray()) {
                                 filterValue = filterValue.collect {
-                                    Enum.valueOf(domainProp.referencedPropertyType, it.toString())
+                                    Enum.valueOf(domainProp?.referencedPropertyType, it.toString())
                                 }.join(', ')
                             } else {
-                                def enumValue = Enum.valueOf(domainProp.referencedPropertyType, filterValue.toString())
+                                def enumValue = Enum.valueOf(domainProp?.referencedPropertyType, filterValue.toString())
                                 if(enumValue && tempMap.displayProperty) {
                                     filterValue = tempMap.displayProperty == 'name' ? enumValue.name() : enumValue[tempMap.displayProperty]
                                 }
@@ -700,19 +700,19 @@ class FilterPaneTagLib {
                 } else if(messageSource.getMessage(valueMessageAltPrefix, null, null, locale) != null) {
                     map.ctrlAttrs.valueMessagePrefix = valueMessageAltPrefix
                 }
-
                 map.ctrlType = "select"
 
                 if(map.domainProperty.type.isEnum()) {
-                    if(map.ctrlAttrs.valueMessagePrefix)
+                    if(map.ctrlAttrs?.valueMessagePrefix) {
                         map.ctrlAttrs.remove('optionValue')
+                    }
                     opKeys = ['', FilterPaneOperationType.InList.operation, FilterPaneOperationType.NotInList.operation]
                     def tempVal = map.ctrlAttrs.value
-                    def newValue
+                    def newValue = null
                     try {
                         if(tempVal instanceof Object[]) {
                             newValue = tempVal.collect { Enum.valueOf(map.domainProperty.type, it.toString()) }
-                        } else if(tempVal?.toString().length() > 0) {
+                        } else if(tempVal?.toString()?.length() > 0) {
                             newValue = Enum.valueOf(map.domainProperty.type, tempVal.toString())
                         }
                     } catch(IllegalArgumentException iae) {
@@ -749,9 +749,6 @@ class FilterPaneTagLib {
             map.opName = opName
             map.opKeys = opKeys
             map.opValue = params[opName]
-//            def opDropdown = this.select(id: opName, name: opName, from: opKeys, keys: opKeys,
-//            value: params[opName], valueMessagePrefix:'fp.op',
-//            onChange: "filterOpChange('${opName}', '${map.ctrlAttrs.id}');")
             if(params[opName] == FilterPaneOperationType.IsNull.operation || params[opName] == "IsNotNull") {
                 map.ctrlAttrs.style = 'display:none;'
             }
@@ -877,19 +874,19 @@ class FilterPaneTagLib {
         // Take care of the name (label).  Yuck!
         def fieldNameKey = "fp.property.text.${propName}" // Default.
         def fieldNameAltKey = fieldNameKey // default for alt key.
-        def fieldNamei18NTemplateKey = "${sp.domainClass.name}.${sp.name}"
-        def fieldName = sp.naturalName
+        def fieldNamei18NTemplateKey = "${sp?.domainClass?.name}.${sp?.name}"
+        def fieldName = sp?.naturalName
 
         if(isAssociation) { // association.
-            fieldNameKey = "fp.property.text.${sp.domainClass.propertyName}.${sp.name}"
-            fieldNamei18NTemplateKey = "${sp.domainClass.propertyName}.${sp.name}"
+            fieldNameKey = "fp.property.text.${sp?.domainClass?.propertyName}.${sp?.name}"
+            fieldNamei18NTemplateKey = "${sp?.domainClass?.propertyName}.${sp?.name}"
             // GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
             def prefix = ""
             def prefixMethod = "prefix${propName.replaceAll('\\.', '')}"
-            if(sp."${prefixMethod}" && useFullAssociationPath) {
+            if(sp?."${prefixMethod}" && useFullAssociationPath) {
                 prefix = sp."${prefixMethod}"
             } else {
-                prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp.domainClass.clazz.simpleName)}'s "
+                prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp?.domainClass?.clazz?.simpleName)}'s "
             }
             fieldName = "${prefix}${fieldName}"
         }
