@@ -7,9 +7,14 @@ grails.project.dependency.resolution = {
     legacyResolve true
 
     repositories {
+        grailsPlugins()
+        grailsHome()
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://repo.grails.org/grails/libs-releases/"
+        mavenRepo "http://m2repo.spockframework.org/ext/"
+        mavenRepo "http://m2repo.spockframework.org/snapshots/"
     }
 
     dependencies {
