@@ -75,7 +75,7 @@ class FilterPaneService {
         def result = true
         map.each { k, v ->
             if (v instanceof Map) {
-                result &= areAllValuesEmptyRecursively(v)
+                result = result && areAllValuesEmptyRecursively(v)
             } else {
                 log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
                 result = result && v?.toString()?.trim()?.isEmpty()
@@ -93,7 +93,7 @@ class FilterPaneService {
         def domainClass = FilterPaneUtils.resolveDomainClass(grailsApplication, filterClass)
 
         //if (filterProperties != null) {
-        if (filterOpParams != null && filterOpParams.size() > 0) {
+        if (filterOpParams?.size() > 0) {
 
             def c = filterClass.createCriteria()
 
