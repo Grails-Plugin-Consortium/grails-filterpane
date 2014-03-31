@@ -78,7 +78,7 @@ class FilterPaneService {
                 result &= areAllValuesEmptyRecursively(v)
             } else {
                 log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
-                result &= v?.toString()?.trim()?.isEmpty()
+                result = result && v?.toString()?.trim()?.isEmpty()
             }
         }
         result
