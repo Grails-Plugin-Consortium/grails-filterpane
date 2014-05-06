@@ -1,10 +1,10 @@
 package org.grails.plugin.filterpane
 
-import grails.plugin.spock.IntegrationSpec
 import org.hibernate.QueryException
+import spock.lang.Specification
 import spock.lang.Unroll
 
-class FilterPaneServiceSpec extends IntegrationSpec {
+class FilterPaneServiceSpec extends Specification {
 
     def filterPaneService
 

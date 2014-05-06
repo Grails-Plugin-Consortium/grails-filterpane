@@ -1,12 +1,12 @@
 package org.grails.plugin.filterpane
 
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.Specification
 import org.grails.plugin.filterpane.nested.Function
 import org.grails.plugin.filterpane.nested.Part
 import org.grails.plugin.filterpane.nested.Robot
 import spock.lang.Unroll
 
-class FilterPaneServiceNestedSpec extends IntegrationSpec {
+class FilterPaneServiceNestedSpec extends Specification {
 
     def filterPaneService
 

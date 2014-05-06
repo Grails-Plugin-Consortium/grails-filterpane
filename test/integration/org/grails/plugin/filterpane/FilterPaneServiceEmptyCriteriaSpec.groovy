@@ -1,8 +1,8 @@
 package org.grails.plugin.filterpane
 
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.Specification
 
-class FilterPaneServiceEmptyCriteriaSpec extends IntegrationSpec {
+class FilterPaneServiceEmptyCriteriaSpec extends Specification {
 
     def filterPaneService
 

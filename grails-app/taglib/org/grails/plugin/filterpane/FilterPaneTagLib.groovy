@@ -424,7 +424,13 @@ class FilterPaneTagLib {
 
         // sortedProps is a list of Entry instances where the key is the property name and the value is a GrailsDomainClassProperty instance.
         // The list is sorted by order the properties appear in the GrailsDomainClass
-        def domainComparator = new org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator(domain)
+
+        def domainComparator = Class.forName('org.codehaus.groovy.grails.validation.DomainClassPropertyComparator')
+        if(!domainComparator){
+            domainComparator = Class.forName('org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator')
+        }
+        domainComparator.newInstance(domain)
+
         def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
 
         // add 'class' property if domain class has its implementers
@@ -874,7 +880,8 @@ class FilterPaneTagLib {
         // Take care of the name (label).  Yuck!
         def fieldNameKey = "fp.property.text.${propName}" // Default.
         def fieldNameAltKey = fieldNameKey // default for alt key.
-        def fieldNamei18NTemplateKey = "${sp?.domainClass?.name}.${sp?.name}"
+        def className = sp?.domainClass?.name[0]?.toLowerCase() + sp?.domainClass?.name?.substring(1)
+        def fieldNamei18NTemplateKey = "${className}.${sp?.name}"
         def fieldName = sp?.naturalName
 
         if(isAssociation) { // association.

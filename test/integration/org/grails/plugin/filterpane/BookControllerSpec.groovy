@@ -1,8 +1,8 @@
 package org.grails.plugin.filterpane
 
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.Specification
 
-class BookControllerSpec extends IntegrationSpec {
+class BookControllerSpec extends Specification {
 
     def "test emdash filter on controller"() {
         given:

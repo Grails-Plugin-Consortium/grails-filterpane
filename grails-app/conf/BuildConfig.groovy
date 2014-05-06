@@ -18,9 +18,9 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        test ("org.spockframework:spock-grails-support:0.7-groovy-2.0" ) {
-            export = false
-        }
+//        test ("org.spockframework:spock-grails-support:0.7-groovy-2.0" ) {
+//            export = false
+//        }
     }
 
     plugins {
@@ -31,20 +31,20 @@ grails.project.dependency.resolution = {
             export = false
         }
 
-        test ":hibernate:$grailsVersion", {
+        test ":hibernate:3.6.10.13", {
             export = false
         }
 
         test(":code-coverage:1.2.6",
              ":codenarc:0.20",
-             ":build-test-data:2.0.5") {
+             ":build-test-data:2.1.2") {
             export = false
         }
 
-        test(":spock:0.7") {
-            exclude "spock-grails-support"
-            export = false
-        }
+//        test(":spock:0.7") {
+//            exclude "spock-grails-support"
+//            export = false
+//        }
     }
 }
 
