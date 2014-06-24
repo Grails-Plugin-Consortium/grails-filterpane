@@ -17,13 +17,15 @@ h3.  Filter Operators
 * fp.op.Between
 
 h3. Property Name Display
-By default, each property's natural name is displayed .  To override this, use keys of the form: @fp.property.text.propertyName@ , where @propertyname@ is the domain property name.  For associated properties, use keys of the form: @fp.property.text.associatedBean.propertyName@ .
+By default, each property's natural name is displayed.  There are two ways to localize the name of the properties:
+# Use keys of the form: @fp.property.text.propertyName@, where @propertyname@ is the domain property name.  For associated properties, use keys of the form: @fp.property.text.associatedBean.propertyName@.
+# If you want different labels for different domain classes where you use the filter you need to use keys of the form: @domainClassName.propertyName@, where @domainClassName@ is the name of the domain class with a lower case leading character and  @propertyname@ is the domain property name. Example: @myDomain.myProperty@.
 
 h3. Select input form values
 There are three ways to localize the values of a select input form, which is used for enum values, lists etc.:
 # By supplying your own @valueMessagePrefix@ in the @filterPropertyValues@ attribute in the @filterPane@ tag. This way you may use the form @yourValueMessagePrefix.optionId@ the same way as in the @g:select@ tag.
-# On the form @domainName.propertyName.optionId@
-# On the form @fp.property.text.propertyName.optionId@
+# On the form @domainClassName.propertyName.optionId@. If you use this alternative, you also need to label your propertyName on the form @domainClassName.propertyName@ as described above.
+# On the form @fp.property.text.propertyName.optionId@. If you use this alternative, you also need to label your propertyName on the form @fp.property.text.propertyName@ as described above.
 
 h3. Filter Button Tag
 If no textKey or appliedTextKey attributes are given, the default keys are checked.
