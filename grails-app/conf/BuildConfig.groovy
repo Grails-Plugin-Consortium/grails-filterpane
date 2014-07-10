@@ -22,7 +22,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":joda-time:1.4")
+        compile(":joda-time:1.5")
 
         build(':release:3.0.1',
               ':rest-client-builder:2.0.1'){
