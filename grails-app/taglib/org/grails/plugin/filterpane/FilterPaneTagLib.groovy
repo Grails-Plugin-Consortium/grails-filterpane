@@ -4,6 +4,11 @@ import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPi
 
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import org.joda.time.DateTime
+import org.joda.time.Instant
+import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
+import org.joda.time.LocalTime
 import org.joda.time.base.AbstractInstant
 import org.joda.time.base.AbstractPartial
 import org.springframework.web.servlet.support.RequestContextUtils
@@ -471,6 +476,21 @@ class FilterPaneTagLib {
         Map template = getTemplatePath('dateControl')
 
         out << g.render(template: template.path, plugin: template.plugin, model: [ctrlAttrs: model])
+    }
+
+    def datePicker = { attrs, body ->
+        def ctrlAttrs = attrs.ctrlAttrs
+        def type = ctrlAttrs.domainProperty.type
+
+        if (Date.isAssignableFrom(type)) {
+            out << g.datePicker(ctrlAttrs)
+        } else if (DateTime.isAssignableFrom(type) || Instant.isAssignableFrom(type) || LocalDateTime.isAssignableFrom(type)) {
+            out << joda.dateTimePicker(ctrlAttrs) 
+        } else if (LocalTime.isAssignableFrom(type)) {
+            out << joda.timePicker(ctrlAttrs) 
+        } else if (LocalDate.isAssignableFrom(type)) {
+            out << joda.datePicker(ctrlAttrs) 
+        }
     }
 
     def bool = { attrs, body ->
