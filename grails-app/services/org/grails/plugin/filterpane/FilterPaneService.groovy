@@ -1,7 +1,6 @@
 package org.grails.plugin.filterpane
 
 import org.codehaus.groovy.grails.commons.GrailsApplication
-//import org.codehaus.groovy.grails.compiler.GrailsClassLoader
 import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
 
 class FilterPaneService {
