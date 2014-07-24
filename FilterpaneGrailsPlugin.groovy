@@ -1,5 +1,5 @@
 class FilterpaneGrailsPlugin {
-    def version = "2.4.4"
+    def version = "2.4.5"
     def grailsVersion = "2.4 > *"
 
     def author = "Grails Plugin Consortium"

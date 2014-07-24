@@ -195,10 +195,10 @@ class FilterPaneService {
         // GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
         // precision on date picker was 'day', turn this into a between from
         // midnight to 1 ms before midnight of the next day.
-        boolean isDayPrecision = "y".equals(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"])
-        boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual)
+        boolean isDayPrecision = "y".equalsIgnoreCase(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"]) || "y".equalsIgnoreCase(filterParams["${domainProperty?.name}_isDayPrecision"])
+        boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual || op == FilterPaneOperationType.Equal.operation || op == FilterPaneOperationType.NotEqual.operation)
         if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
-            op = (op == FilterPaneOperationType.Equal) ? 'Between' : 'NotBetween'
+            op = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.Equal.operation) ? 'Between' : 'NotBetween'
             value = FilterPaneUtils.getBeginningOfDay(value)
             value2 = FilterPaneUtils.getEndOfDay(value)
             log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
