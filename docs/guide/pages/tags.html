@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>6.2 Tags 2.3.3</title>
+    <title>6.2 Tags 2.4.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -89,7 +89,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.3.3</p>
+                    <p><strong>Version:</strong> 2.4.4</p>
 
                     
                 </div>
@@ -132,8 +132,15 @@ function addJsClass() {
 
 
 <h2 id="includes">6.2.1 includes</h2>
-<h4>includes</h4><p class="paragraph"/><strong class="bold">Deprecated</strong> - Please use the included resources module `filterpane` on the pages you wish to use default functionality/styling.<p class="paragraph"/>The includes tag should be used in the head section of your pages.  It includes the necessary stylesheet and javascript file for the plugin.
-<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>css</td><td>No</td><td>true</td><td>Set to false to exclude the &#60;link&#62; tag for the stylesheet.</td></tr><tr class="table-even"><td>js</td><td>No</td><td>true</td><td>Set to false to exclude the &#60;script&#62; tag that supports the filterPane plugin.</td></tr></table><p class="paragraph"/><h5>Usage (&#62;= 2.1.6)</h5><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
+<h4>includes</h4><p class="paragraph"/><strong class="bold">Deprecated</strong> - Please use the included resources module `filterpane` on the pages you wish to use default functionality/styling.<p class="paragraph"/><strong class="bold">Deprecated</strong> - Style and script include has moved to use asset pipeline.  See usage &#62;= 2.4.3 below.<p class="paragraph"/>The includes tag should be used in the head section of your pages.  It includes the necessary stylesheet and javascript file for the plugin.
+<table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Attribute Name</strong></th><th><strong class="bold">Required</strong></th><th><strong class="bold">Default Value</strong></th><th><strong class="bold">Description</strong></th></tr><tr class="table-odd"><td>css</td><td>No</td><td>true</td><td>Set to false to exclude the &#60;link&#62; tag for the stylesheet.</td></tr><tr class="table-even"><td>js</td><td>No</td><td>true</td><td>Set to false to exclude the &#60;script&#62; tag that supports the filterPane plugin.</td></tr></table><p class="paragraph"/><h5>Usage (&#62;= 2.4.3)</h5><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
+  &#60;meta http&#45;equiv=<span class="java&#45;quote">"Content&#45;Type"</span> content=<span class="java&#45;quote">"text/html; charset=UTF&#45;8"</span>/&#62;
+  &#60;meta name=<span class="java&#45;quote">"layout"</span> content=<span class="java&#45;quote">"main"</span>/&#62;
+  &#60;title&#62;Robot List&#60;/title&#62;
+  &#60;asset:javascript src=<span class="java&#45;quote">"fp.js"</span>/&#62;
+  &#60;asset:stylesheet src=<span class="java&#45;quote">"fp.css"</span>/&#62;
+&#60;/head&#62;</pre></div><p class="paragraph"/>
+<h5>Usage (&#62;= 2.1.6)</h5><p class="paragraph"/><div class="code"><pre>&#60;head&#62;
   &#60;meta http&#45;equiv=<span class="java&#45;quote">"Content&#45;Type"</span> content=<span class="java&#45;quote">"text/html; charset=UTF&#45;8"</span>/&#62;
   &#60;meta name=<span class="java&#45;quote">"layout"</span> content=<span class="java&#45;quote">"main"</span>/&#62;
   &#60;title&#62;Robot List&#60;/title&#62;

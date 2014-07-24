@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>7 Internationalization i18n 2.3.3</title>
+    <title>7 Internationalization i18n 2.4.4</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -89,7 +89,7 @@ function addJsClass() {
 
                     <p><strong>Authors:</strong> Grails Plugin Consortium</p>
 
-                    <p><strong>Version:</strong> 2.3.3</p>
+                    <p><strong>Version:</strong> 2.4.4</p>
 
                     
                 </div>
@@ -116,12 +116,16 @@ The following keys are supported in message bundles for internationalizing the t
 <li>fp.op.LessThanEquals</li>
 <li>fp.op.Between</li>
 </ul><p class="paragraph"/><h3>Property Name Display</h3>
-By default, each property's natural name is displayed .  To override this, use keys of the form: <code>fp.property.text.propertyName</code> , where <code>propertyname</code> is the domain property name.  For associated properties, use keys of the form: <code>fp.property.text.associatedBean.propertyName</code> .<p class="paragraph"/><h3>Select input form values</h3>
+By default, each property's natural name is displayed.  There are two ways to localize the name of the properties:
+<ol>
+<li>Use keys of the form: <code>fp.property.text.propertyName</code>, where <code>propertyname</code> is the domain property name.  For associated properties, use keys of the form: <code>fp.property.text.associatedBean.propertyName</code>.</li>
+<li>If you want different labels for different domain classes where you use the filter you need to use keys of the form: <code>domainClassName.propertyName</code>, where <code>domainClassName</code> is the name of the domain class with a lower case leading character and  <code>propertyname</code> is the domain property name. Example: <code>myDomain.myProperty</code>.</li>
+</ol><p class="paragraph"/><h3>Select input form values</h3>
 There are three ways to localize the values of a select input form, which is used for enum values, lists etc.:
 <ol>
 <li>By supplying your own <code>valueMessagePrefix</code> in the <code>filterPropertyValues</code> attribute in the <code>filterPane</code> tag. This way you may use the form <code>yourValueMessagePrefix.optionId</code> the same way as in the <code>g:select</code> tag.</li>
-<li>On the form <code>domainName.propertyName.optionId</code></li>
-<li>On the form <code>fp.property.text.propertyName.optionId</code></li>
+<li>On the form <code>domainClassName.propertyName.optionId</code>. If you use this alternative, you also need to label your propertyName on the form <code>domainClassName.propertyName</code> as described above.</li>
+<li>On the form <code>fp.property.text.propertyName.optionId</code>. If you use this alternative, you also need to label your propertyName on the form <code>fp.property.text.propertyName</code> as described above.</li>
 </ol><p class="paragraph"/><h3>Filter Button Tag</h3>
 If no textKey or appliedTextKey attributes are given, the default keys are checked.
 <ul class="star">
