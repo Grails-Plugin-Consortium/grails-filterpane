@@ -565,6 +565,10 @@ class FilterPaneTagLib {
      *          The controler that contains the action to use. Optional, default is current controller.
      * @param action
      *          The action to use for filtering. Optional, default is <i>filter</i>.
+     * @param sort
+     *          The attribute to sort upon after filtering
+     * @param order
+     *          The sort order to use after filtering
      * @param *
      *          Additionally you may use all the optional parameters/attrs that you can use to the tag g:link.
      * @body The body of this tag should contain the text to display within the link.
@@ -575,6 +579,9 @@ class FilterPaneTagLib {
         def label = body()
         def controller = attrs.controller
         def action = attrs.action ?: 'filter'
+        // Only copy default search params if it is the same controller    
+        def sort = attrs.sort ?: (controller == "$controllerName" ? params.sort : null)
+        def order = attrs.sort ?: (controller == "$controllerName" ? params.order : null)
 
         def linkParams = [:]
         if (filterParams) {
@@ -586,8 +593,8 @@ class FilterPaneTagLib {
         if (!values instanceof Map) {
             throw new IllegalArgumentException("Mandatory argument 'values' needs to be of type Map.")
         }
-        linkParams.sort = params.sort
-        linkParams.order = params.order
+        linkParams.sort = sort
+        linkParams.order = order
         for (String field : values.keySet()) {
             def value = values[field]
 
