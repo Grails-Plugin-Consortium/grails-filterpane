@@ -42,7 +42,7 @@ class FilterPaneService {
                     def nextFilterParams = rawValue
                     def nextFilterOpParams = filterOp
 
-                    if (!areAllValuesEmptyRecursively(nextFilterParams)) {
+                    if (!areAllValuesEmptyRecursively(nextFilterParams) && !areAllValuesEmptyRecursively(nextFilterOpParams)) {
                         criteria."${propName}" {
                             // Are any of the values non-empty?
                             log.debug("== Adding association ${propName}")
