@@ -269,13 +269,13 @@ class FilterPaneTagLib {
                         def lcFilterOp = filterOp.toString().toLowerCase()
                         switch (lcFilterOp) {
 
-                            case FilterPaneOperationType.IsNull.operation:
-                            case FilterPaneOperationType.IsNotNull.operation:
+                            case FilterPaneOperationType.IsNull.operation.toLowerCase():
+                            case FilterPaneOperationType.IsNotNull.operation.toLowerCase():
                                 filterValue = ''
                                 break
-                            case FilterPaneOperationType.Between.operation:
+                            case FilterPaneOperationType.Between.operation.toLowerCase():
                                 filterValueTo = filterParams["filter.${prop}To"]
-                                if (filterValueTo == 'struct') {
+                                if (filterValueTo == 'date.struct' || filterValueTo == 'struct') {
                                     filterValueTo = FilterPaneUtils.parseDateFromDatePickerParams("filter.${prop}To", params)
                                     if (filterValueTo) {
                                         def df = renderModel.dateFormat
