@@ -233,7 +233,12 @@ class FilterPaneUtils {
     static extractFilterParams(params, boolean datesToStruct) {
         def ret = [:]
         params.each { entry ->
-            if (entry.key.startsWith("filter.") || entry.key.equals("filterProperties") || entry.key.equals("filterBean")) {
+            if (entry.key.startsWith("filter.")
+                    || entry.key.equals("filterProperties")
+                    || entry.key.equals("filterBean")
+                    || entry.key.equals("listDistinct")
+                    || entry.key.equals("uniqueCountColumn")
+            ) {
                 def val = entry.value
                 if (datesToStruct && val instanceof Date) {
                     val = 'struct'

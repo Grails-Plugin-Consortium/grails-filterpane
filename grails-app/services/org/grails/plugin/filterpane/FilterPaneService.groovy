@@ -165,7 +165,7 @@ class FilterPaneService {
             } // end criteria
 
             Closure doListOperation = { p ->
-                (p?.listDistinct == true ?
+                (p?.boolean("listDistinct") == true ?
                         c.listDistinct(criteriaClosure) : c.list(criteriaClosure))
             }
 
