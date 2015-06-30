@@ -1,5 +1,6 @@
 package org.grails.plugin.filterpane
 
+import grails.core.GrailsApplication
 import org.apache.commons.lang.StringUtils
 import grails.core.GrailsDomainClass
 import org.grails.compiler.injection.GrailsAwareClassLoader
@@ -25,7 +26,7 @@ class FilterPaneTagLib {
 
     static namespace = 'filterpane'
 
-    def grailsApplication
+    GrailsApplication grailsApplication
 
     GrailsPluginManager pluginManager
     GrailsConventionGroovyPageLocator groovyPageLocator
