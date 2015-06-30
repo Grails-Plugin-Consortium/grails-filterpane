@@ -1,6 +1,6 @@
 package org.grails.plugin.filterpane
 
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.*
 import spock.lang.Specification
 import spock.lang.Unroll

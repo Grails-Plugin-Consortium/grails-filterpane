@@ -1,7 +1,7 @@
 package org.grails.plugin.filterpane
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
+import grails.core.GrailsApplication
+import org.grails.compiler.injection.GrailsAwareClassLoader
 
 class FilterPaneService {
 
@@ -132,7 +132,7 @@ class FilterPaneService {
                     def defaultSort
                     try {
                         def gdb
-                        Class clz = new GrailsAwareClassLoader().loadClass('org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder')
+                        Class clz = new GrailsAwareClassLoader().loadClass('org.grails.orm.hibernate.cfg.GrailsDomainBinder')
                         if (clz) {
                             gdb = clz.newInstance()
                             if (gdb?.class?.simpleName == 'GrailsDomainBinder') {
@@ -185,7 +185,7 @@ class FilterPaneService {
     }
 
     private addCriterion(criteria, propertyName, op, value, value2, filterParams, domainProperty) {
-        if(!op){
+        if (!op) {
             log.debug('Skipping due to null operation')
             return;
         }
@@ -212,7 +212,7 @@ class FilterPaneService {
                 (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
         //needs null check since '' or 0 are valid filter
-        if(op && value != null) {
+        if (op && value != null) {
             switch (op) {
                 case FilterPaneOperationType.Equal.operation:
                 case FilterPaneOperationType.NotEqual.operation:
@@ -352,52 +352,79 @@ class FilterPaneService {
                 newValue = newValue.toBoolean()
             } else if ("byte".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { new Byte(it) } }
-                    else { newValue = new Byte(newValue) } // no isByte()
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { new Byte(it) }
+                    } else {
+                        newValue = new Byte(newValue)
+                    } // no isByte()
                 } catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() } }
-                else { newValue.isInteger() ? newValue.toInteger() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() }
+                } else {
+                    newValue.isInteger() ? newValue.toInteger() : null
+                }
             } else if ("long".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { it.toLong() } }
-                    else { newValue = newValue.toLong() }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { it.toLong() }
+                    } else {
+                        newValue = newValue.toLong()
+                    }
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("double".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() } }
-                else { newValue.isDouble() ? newValue.toDouble() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() }
+                } else {
+                    newValue.isDouble() ? newValue.toDouble() : null
+                }
             } else if ("float".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() } }
-                else { newValue.isFloat() ? newValue.toFloat() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() }
+                } else {
+                    newValue.isFloat() ? newValue.toFloat() : null
+                }
             } else if ("short".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { it.toShort() } }
-                    else { newValue = newValue.toShort() }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { it.toShort() }
+                    } else {
+                        newValue = newValue.toShort()
+                    }
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("bigdecimal".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() } }
-                else { newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() }
+                } else {
+                    newValue.isBigDecimal() ? newValue.toBigDecimal() : null
+                }
             } else if ("biginteger".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() } }
-                else { newValue.isBigInteger() ? newValue.toBigInteger() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() }
+                } else {
+                    newValue.isBigInteger() ? newValue.toBigInteger() : null
+                }
             } else if (FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
             } else if ("currency".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { Currency.getInstance(it.toString()) } }
-                    else { newValue = Currency.getInstance(newValue.toString()) }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { Currency.getInstance(it.toString()) }
+                    } else {
+                        newValue = Currency.getInstance(newValue.toString())
+                    }
                 } catch (IllegalArgumentException iae) {
                     // Do nothing.
                     log.debug iae

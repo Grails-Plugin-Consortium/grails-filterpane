@@ -1,10 +1,10 @@
 package org.grails.plugin.filterpane
 
 import org.apache.commons.lang.StringUtils
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
-import org.codehaus.groovy.grails.plugins.GrailsPluginManager
-import org.codehaus.groovy.grails.web.pages.discovery.GrailsConventionGroovyPageLocator
+import grails.core.GrailsDomainClass
+import org.grails.compiler.injection.GrailsAwareClassLoader
+import grails.plugins.GrailsPluginManager
+import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.joda.time.DateTime
 import org.joda.time.Instant
 import org.joda.time.LocalDate
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.support.RequestContextUtils
 
 import java.lang.reflect.Modifier
 
-import static org.codehaus.groovy.grails.io.support.GrailsResourceUtils.appendPiecesForUri
+import static org.grails.io.support.GrailsResourceUtils.appendPiecesForUri
 
 /**
  * @author skrenek
@@ -435,17 +435,17 @@ class FilterPaneTagLib {
         // sortedProps is a list of Entry instances where the key is the property name and the value is a GrailsDomainClassProperty instance.
         // The list is sorted by order the properties appear in the GrailsDomainClass
 
-        Class clz = new GrailsAwareClassLoader().loadClass('org.codehaus.groovy.grails.validation.DomainClassPropertyComparator')
-        clz = clz ?: new GrailsAwareClassLoader().loadClass('org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator')
+        Class clz = new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
+        clz = clz ?: new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
         def constructor = clz.getConstructor(GrailsDomainClass)
         def domainComparator = constructor.newInstance(domain)
 
-//        def domainComparator = Class.forName('org.codehaus.groovy.grails.validation.DomainClassPropertyComparator')
+//        def domainComparator = Class.forName('org.grails.validation.DomainClassPropertyComparator')
 //        if(!domainComparator){
-//            domainComparator = Class.forName('org.codehaus.groovy.grails.scaffolding.DomainClassPropertyComparator')
+//            domainComparator = Class.forName('org.grails.validation.DomainClassPropertyComparator')
 //        }
 //        domainComparator.newInstance(domain)
-//        def domainComparator = new org.codehaus.groovy.grails.validation.DomainClassPropertyComparator(domain)
+//        def domainComparator = new org.grails.validation.DomainClassPropertyComparator(domain)
 
         def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
 

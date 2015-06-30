@@ -2,7 +2,7 @@ package org.grails.plugin.filterpane
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import grails.core.GrailsDomainClass
 import org.joda.time.*
 import org.joda.time.base.AbstractInstant
 import org.joda.time.base.AbstractPartial
