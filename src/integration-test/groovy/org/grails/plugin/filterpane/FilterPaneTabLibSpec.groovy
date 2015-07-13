@@ -1,10 +1,12 @@
 package org.grails.plugin.filterpane
 
 import grails.test.mixin.TestFor
+import grails.test.mixin.integration.Integration
 import org.grails.taglib.GrailsTagException
 import org.springframework.web.context.request.RequestContextHolder
 import spock.lang.Specification
 
+@Integration
 @TestFor(FilterPaneTagLib)
 class FilterPaneTabLibSpec extends Specification {
 
