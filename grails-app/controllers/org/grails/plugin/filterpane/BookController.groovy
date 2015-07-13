@@ -2,7 +2,7 @@ package org.grails.plugin.filterpane
 
 class BookController {
 
-    def filterPaneService
+    FilterPaneService filterPaneService
 
     def filter() {
         if (!params.max) params.max = 10

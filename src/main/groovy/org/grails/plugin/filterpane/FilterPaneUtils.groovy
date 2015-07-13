@@ -1,5 +1,6 @@
 package org.grails.plugin.filterpane
 
+import grails.core.GrailsApplication
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import grails.core.GrailsDomainClass
@@ -260,7 +261,7 @@ class FilterPaneUtils {
         isApplied
     }
 
-    static resolveDomainClass(grailsApplication, bean) {
+    static resolveDomainClass(GrailsApplication grailsApplication, bean) {
         String beanName
         def result = null
 
