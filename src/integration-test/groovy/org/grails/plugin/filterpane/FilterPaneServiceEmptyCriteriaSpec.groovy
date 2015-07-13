@@ -1,10 +1,22 @@
 package org.grails.plugin.filterpane
 
+import grails.test.mixin.Mock
+import grails.test.mixin.integration.Integration
+import grails.util.Holders
+import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
+@Mock([Book])
+@Integration
 class FilterPaneServiceEmptyCriteriaSpec extends Specification {
 
-    def filterPaneService
+    @Autowired
+    FilterPaneService filterPaneService
+
+    def setup(){
+        filterPaneService = new FilterPaneService()
+        filterPaneService.grailsApplication= Holders.getGrailsApplication()
+    }
 
     def "test finding by empty filter value by criteria"() {
         given:
@@ -36,7 +48,7 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
         def params = ['filter': [op: [title: 'Equal'], title: '']]
         def book = Book.findOrSaveWhere(title: '')
         book.title = '' //this isn't being set up findorsave
-        book.save()
+        book.save(flush: true)
         Book.findOrSaveWhere(title: 'Hello')
 
         when:
