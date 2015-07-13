@@ -1,14 +1,28 @@
 package org.grails.plugin.filterpane
 
+import grails.test.mixin.Mock
+import grails.test.mixin.integration.Integration
+import grails.util.Holders
+import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
+import spock.lang.IgnoreRest
 import spock.lang.Specification
 import org.grails.plugin.filterpane.nested.Function
 import org.grails.plugin.filterpane.nested.Part
 import org.grails.plugin.filterpane.nested.Robot
 import spock.lang.Unroll
 
+@Mock([Robot, Function, Part])
+@Integration
 class FilterPaneServiceNestedSpec extends Specification {
 
-    def filterPaneService
+    @Autowired
+    FilterPaneService filterPaneService
+
+    def setup() {
+        filterPaneService = new FilterPaneService()
+        filterPaneService.grailsApplication = Holders.getGrailsApplication()
+    }
 
     def "test the recursive nesting of filtering count"() {
         given:
