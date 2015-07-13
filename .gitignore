@@ -8,3 +8,4 @@ plugin.xml
 web-app/WEB-INF
 .gradle/
 build/
+/out
