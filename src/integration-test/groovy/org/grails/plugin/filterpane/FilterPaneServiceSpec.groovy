@@ -1,20 +1,22 @@
 package org.grails.plugin.filterpane
 
-import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
 import grails.util.Holders
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.orm.hibernate4.HibernateQueryException
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Integration
 @Rollback
-@TestFor(FilterPaneService)
 class FilterPaneServiceSpec extends Specification {
+    @Autowired
+    FilterPaneService service
 
     def setup() {
-        service.grailsApplication = Holders.grailsApplication
+        service = new FilterPaneService()
+        service.grailsApplication = Holders.getGrailsApplication()
     }
 
     def "test nested criteria call dot notation"() {
