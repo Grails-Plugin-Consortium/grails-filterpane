@@ -1,37 +1,42 @@
 package org.grails.plugin.filterpane
 
-import grails.test.mixin.Mock
 import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 import grails.util.Holders
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
-@Mock([Book])
 @Integration
+@Rollback
 class FilterPaneServiceEmptyCriteriaSpec extends Specification {
 
     @Autowired
     FilterPaneService filterPaneService
 
-    def setup(){
+    def setup() {
         filterPaneService = new FilterPaneService()
-        filterPaneService.grailsApplication= Holders.getGrailsApplication()
+        filterPaneService.grailsApplication = Holders.getGrailsApplication()
     }
 
     def "test finding by empty filter value by criteria"() {
-        given:
-        def c = Book.createCriteria()
-        def book0 = Book.findOrSaveWhere(title: null)
-        def book1 = Book.findOrSaveWhere(title: '')
-        def book2 = Book.findOrSaveWhere(title: 'Hello')
-        book1.title = ''
-        book1.save(flush: true)
+        setup:
+        def books
+        Book book0, book1, book2
+        Book.withNewSession {
+            book0 = new Book(title: null).save(flush: true)
+            book1 = new Book(title: '').save(flush: true)
+            book2 = new Book(title: 'Hello').save(flush: true)
+            book1.title = ''
+            book1.save(flush: true)
+        }
 
         when:
-        def books = c.list() {
-            or {
-                isNull('title')
-                eq('title', '')
+        Book.withNewSession {
+            books = Book.createCriteria().list() {
+                or {
+                    isNull('title')
+                    eq('title', '')
+                }
             }
         }
 
