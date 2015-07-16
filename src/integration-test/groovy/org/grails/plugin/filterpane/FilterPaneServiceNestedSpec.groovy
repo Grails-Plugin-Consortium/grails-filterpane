@@ -1,19 +1,17 @@
 package org.grails.plugin.filterpane
 
-import grails.test.mixin.Mock
 import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 import grails.util.Holders
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
-import spock.lang.IgnoreRest
 import spock.lang.Specification
 import org.grails.plugin.filterpane.nested.Function
 import org.grails.plugin.filterpane.nested.Part
 import org.grails.plugin.filterpane.nested.Robot
 import spock.lang.Unroll
 
-@Mock([Robot, Function, Part])
 @Integration
+@Rollback
 class FilterPaneServiceNestedSpec extends Specification {
 
     @Autowired
@@ -35,6 +33,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -58,6 +57,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -81,6 +81,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -104,6 +105,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -127,6 +129,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -135,9 +138,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -161,6 +166,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -169,9 +175,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -195,6 +203,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -203,9 +212,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
         when:
         def robots = filterPaneService.filter(params, Robot)
@@ -228,6 +239,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -236,9 +248,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -262,6 +276,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -270,9 +285,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
         when:
         def robots = filterPaneService.filter(params, Robot)
@@ -295,6 +312,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -303,9 +321,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
 
         when:
@@ -331,6 +351,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -339,11 +360,12 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
         def criteria = Robot.createCriteria()
-
 
         when:
         def robots = criteria.listDistinct {
@@ -380,6 +402,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -388,9 +411,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
         when:
         def robotCount = 0
@@ -441,6 +466,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'treads')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flight')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'jonny5')
                 .addToParts(Part.findOrSaveWhere(name: 'eye')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'vising'))
@@ -449,9 +475,11 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .addToParts(Part.findOrSaveWhere(name: 'tread')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'motion'))
                                     .addToFunctions(Function.findOrSaveWhere(name: 'flying')))
+                .save(flush:true, failOnError:true)
         Robot.findOrSaveWhere(name: 'supreme commander')
                 .addToParts(Part.findOrSaveWhere(name: 'laser')
                                     .addToFunctions(Function.findOrSaveWhere(name: 'zapping')))
+                .save(flush:true, failOnError:true)
 
         when:
         def robotCount = 0
