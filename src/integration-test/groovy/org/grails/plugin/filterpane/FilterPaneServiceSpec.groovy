@@ -1,57 +1,57 @@
 package org.grails.plugin.filterpane
 
-import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 import grails.util.Holders
-import org.hibernate.QueryException
+import org.springframework.orm.hibernate4.HibernateQueryException
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Integration
-@Mock([Book, Author])
+@Rollback
 @TestFor(FilterPaneService)
 class FilterPaneServiceSpec extends Specification {
 
-    def setup(){
-        service.grailsApplication= Holders.getGrailsApplication()
+    def setup() {
+        service.grailsApplication = Holders.grailsApplication
     }
 
     def "test nested criteria call dot notation"() {
-        given:
-        Book.findOrSaveWhere(title: 'i like turtles', coAuthor: Author.findOrSaveWhere(firstName: 'Co', lastName: 'Author'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
-        Book.findOrSaveWhere(title: 'think about it')
-
-        def c = Book.createCriteria()
+        setup:
+        def books
+        Book.withNewSession {
+            createBookWithAuthors()
+        }
 
         when:
-        def books = c.list() {
-            and {
-                eq('coAuthor.firstName', 'Cool')
+        Book.withNewSession {
+            books = Book.createCriteria().list {
+                and {
+                    eq('coAuthor.firstName', 'Cool')
+                }
             }
         }
 
         then:
-        thrown(QueryException)
+        thrown(HibernateQueryException)
     }
 
     def "test nested criteria call"() {
-        given:
-        Book.findOrSaveWhere(title: 'i like turtles', coAuthor: Author.findOrSaveWhere(firstName: 'Co', lastName: 'Author'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
-        Book.findOrSaveWhere(title: 'think about it')
-
-        def c = Book.createCriteria()
+        setup:
+        def books
+        Book.withNewSession {
+            createBookWithAuthors()
+        }
 
         when:
-        def books = c.listDistinct {
-            and {
-                'authors' {
-                    eq('lastName', 'Dude')
-                    order('lastName', 'asc')
+        Book.withNewSession {
+            books = Book.createCriteria().listDistinct {
+                and {
+                    'authors' {
+                        eq('lastName', 'Dude')
+                        order('lastName', 'asc')
+                    }
                 }
             }
         }
@@ -62,20 +62,20 @@ class FilterPaneServiceSpec extends Specification {
     }
 
     def "test nested criteria call without distinct"() {
-        given:
-        Book.findOrSaveWhere(title: 'i like turtles', coAuthor: Author.findOrSaveWhere(firstName: 'Co', lastName: 'Author'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
-        Book.findOrSaveWhere(title: 'think about it')
-
-        def c = Book.createCriteria()
+        setup:
+        def books
+        Book.withNewSession {
+            createBookWithAuthors()
+        }
 
         when:
-        def books = c.list {
-            and {
-                'authors' {
-                    eq('lastName', 'Dude')
-                    order('lastName', 'asc')
+        Book.withNewSession {
+            books = Book.createCriteria().list {
+                and {
+                    'authors' {
+                        eq('lastName', 'Dude')
+                        order('lastName', 'asc')
+                    }
                 }
             }
         }
@@ -88,7 +88,7 @@ class FilterPaneServiceSpec extends Specification {
     def "test emdash filtering"() {
         given:
         def params = ['filter': [op: [title: 'ILike'], title: 'how']]
-        Book.findOrSaveWhere(title: 'Hello�how are you')
+        new Book(title: 'Hello�how are you').save(flush: true)
 
         when:
         def results = service.filter(params, Book)
@@ -169,8 +169,6 @@ class FilterPaneServiceSpec extends Specification {
         def book2 = Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
-
-        println book2.authors
 
         when:
         List<Book> books = (List<Book>) service.filter(params, Book)
@@ -415,7 +413,6 @@ class FilterPaneServiceSpec extends Specification {
     }
 
 
-
     def "get book by single bookType InList"() {
         given:
         def params = [filter: [op: ['bookType': 'InList'], 'bookType': [BookType.Fiction.toString()].toArray()]]
@@ -482,5 +479,20 @@ class FilterPaneServiceSpec extends Specification {
         Book.list().size() == 3
         books.size() == 1
         books[0].bookType == BookType.Reference
+    }
+
+    void cleanupSpec() {
+        Book.withNewSession {
+            Book.executeUpdate('delete Book ')
+            Author.executeUpdate('delete Author ')
+        }
+    }
+
+    private void createBookWithAuthors() {
+        new Book(title: 'i like turtles', coAuthor: new Author(firstName: 'Co', lastName: 'Author'))
+                .addToAuthors(new Author(firstName: 'Cool', lastName: 'Dude'))
+                .addToAuthors(new Author(firstName: 'Another', lastName: 'Dude'))
+                .save(failOnError: true, flush: true)
+        new Book(title: 'think about it').save(flush: true)
     }
 }

@@ -17,7 +17,7 @@ class Author {
 
     static constraints = {
         firstName blank: false
-        firstName blank: false
+        lastName blank: false
         favoriteGenre nullable: true
         publisher nullable: true
         age nullable: true
