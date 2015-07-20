@@ -92,11 +92,11 @@ class FilterPaneTagLib {
         }
 
         if (showCss) {
-            out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"${g.resource(dir: 'css', plugin: 'filterpane', file: 'fp.css')}\" />\n"
+            out << "<asset:stylesheet src=\"fp.css\"/>\n"
         }
 
         if (showJs) {
-            out << "<script type=\"text/javascript\" src=\"${g.resource(dir: 'js', plugin: 'filterpane', file: 'fp.js')}\"></script>"
+            out << "<asset:javascript src=\"fp.js\"/>"
         }
     }
 

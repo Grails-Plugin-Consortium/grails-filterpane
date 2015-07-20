@@ -15,7 +15,7 @@ class FilterPaneTabLibSpec extends Specification {
         def output = applyTemplate('<filterpane:includes />', [:])
 
         then:
-        output == """<link rel="stylesheet" type="text/css" href="/css/fp.css" />\n<script type="text/javascript" src="/js/fp.js"></script>"""
+        output == """<asset:stylesheet src="fp.css"/>\n<asset:javascript src="fp.js"/>"""
     }
 
     def "test is filtered no output"() {
