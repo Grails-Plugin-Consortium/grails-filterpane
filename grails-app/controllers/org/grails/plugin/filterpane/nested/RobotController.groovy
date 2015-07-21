@@ -1,10 +1,11 @@
 package org.grails.plugin.filterpane.nested
 
+import org.grails.plugin.filterpane.FilterPaneService
 import org.grails.plugin.filterpane.FilterPaneUtils
 
 class RobotController {
 
-    def filterPaneService
+    FilterPaneService filterPaneService
 
     def filter() {
         if (!params.max) params.max = 10
