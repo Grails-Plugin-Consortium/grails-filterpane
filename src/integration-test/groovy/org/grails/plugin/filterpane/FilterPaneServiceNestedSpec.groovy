@@ -1,8 +1,9 @@
 package org.grails.plugin.filterpane
 
+import grails.core.GrailsApplication
+import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
-import grails.util.Holders
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 import org.grails.plugin.filterpane.nested.Function
@@ -12,14 +13,14 @@ import spock.lang.Unroll
 
 @Integration
 @Rollback
+@TestFor(FilterPaneService)
 class FilterPaneServiceNestedSpec extends Specification {
 
     @Autowired
-    FilterPaneService filterPaneService
+    GrailsApplication grailsApplication
 
     def setup() {
-        filterPaneService = new FilterPaneService()
-        filterPaneService.grailsApplication = Holders.getGrailsApplication()
+        service.grailsApplication = grailsApplication
     }
 
     def "test the recursive nesting of filtering count"() {
@@ -37,7 +38,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robotCount = filterPaneService.count(params, Robot)
+        def robotCount = service.count(params, Robot)
 
         then: 'count will be technically wrong since unique column not specified'
         Function.list().size() == 4
@@ -61,7 +62,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robotCount = filterPaneService.count(params, Robot)
+        def robotCount = service.count(params, Robot)
 
         then: 'distinct by parent unique id should correct count'
         Function.list().size() == 4
@@ -85,7 +86,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
 
         then: 'count will be technically wrong since listDistinct not specified'
         Function.list().size() == 4
@@ -109,7 +110,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
 
         then: 'distinct by parent unique id should correct count'
         Function.list().size() == 4
@@ -146,7 +147,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robotCount = filterPaneService.count(params, Robot)
+        def robotCount = service.count(params, Robot)
 
         then: 'count will be technically wrong since unique column not specified'
         Function.list().size() == 8
@@ -183,7 +184,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robotCount = filterPaneService.count(params, Robot)
+        def robotCount = service.count(params, Robot)
 
         then: 'distinct by parent unique id should correct count'
         Function.list().size() == 8
@@ -219,7 +220,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .save(flush:true, failOnError:true)
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
 
         then: 'count will be technically wrong since listDistinct not specified'
         Function.list().size() == 8
@@ -256,7 +257,7 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
 
         then: 'distinct by parent unique id should correct count'
         Function.list().size() == 8
@@ -292,7 +293,7 @@ class FilterPaneServiceNestedSpec extends Specification {
                 .save(flush:true, failOnError:true)
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
 
         then: 'count will be technically wrong since listDistinct not specified'
         Function.list().size() == 8
@@ -329,8 +330,8 @@ class FilterPaneServiceNestedSpec extends Specification {
 
 
         when:
-        def robots = filterPaneService.filter(params, Robot)
-        def robotCount = filterPaneService.count(params, Robot)
+        def robots = service.filter(params, Robot)
+        def robotCount = service.count(params, Robot)
 
         then: 'distinct by parent unique id should correct count'
         Function.list().size() == 8
@@ -419,9 +420,9 @@ class FilterPaneServiceNestedSpec extends Specification {
 
         when:
         def robotCount = 0
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
         if(distinct && distinctColumn) {
-            robotCount = filterPaneService.count(params, Robot)
+            robotCount = service.count(params, Robot)
         }
 
         then:
@@ -483,9 +484,9 @@ class FilterPaneServiceNestedSpec extends Specification {
 
         when:
         def robotCount = 0
-        def robots = filterPaneService.filter(params, Robot)
+        def robots = service.filter(params, Robot)
         if(distinct && distinctColumn) {
-            robotCount = filterPaneService.count(params, Robot)
+            robotCount = service.count(params, Robot)
         }
 
         then:

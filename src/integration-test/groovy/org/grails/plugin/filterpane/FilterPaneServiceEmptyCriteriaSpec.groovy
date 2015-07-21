@@ -1,8 +1,8 @@
 package org.grails.plugin.filterpane
 
+import grails.core.GrailsApplication
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
-import grails.util.Holders
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
@@ -12,10 +12,12 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
 
     @Autowired
     FilterPaneService filterPaneService
+    @Autowired
+    GrailsApplication grailsApplication
 
     def setup() {
         filterPaneService = new FilterPaneService()
-        filterPaneService.grailsApplication = Holders.getGrailsApplication()
+        filterPaneService.grailsApplication = grailsApplication
     }
 
     def "test finding by empty filter value by criteria"() {
