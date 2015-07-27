@@ -198,13 +198,17 @@ class FilterPaneService {
         boolean isDayPrecision = "y".equalsIgnoreCase(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"]) || "y".equalsIgnoreCase(filterParams["${domainProperty?.name}_isDayPrecision"])
         boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual || op == FilterPaneOperationType.Equal.operation || op == FilterPaneOperationType.NotEqual.operation)
         boolean isGreaterThan = (op == FilterPaneOperationType.GreaterThan || op == FilterPaneOperationType.GreaterThan.operation)
+        boolean isLessThanEquals = (op == FilterPaneOperationType.LessThanEquals || op == FilterPaneOperationType.LessThanEquals.operation)
+        boolean isBetween = (op == FilterPaneOperationType.Between || op == FilterPaneOperationType.Between.operation)
         if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
             op = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.Equal.operation) ? 'Between' : 'NotBetween'
             value = FilterPaneUtils.getBeginningOfDay(value)
             value2 = FilterPaneUtils.getEndOfDay(value)
             log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
-        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isGreaterThan) {
+        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && (isGreaterThan || isLessThanEquals)) {
             value = FilterPaneUtils.getEndOfDay(value)
+        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isBetween) {
+            value2 = FilterPaneUtils.getEndOfDay(value2)
         }
 
         def criteriaMap = [(FilterPaneOperationType.Equal.operation): 'eq', (FilterPaneOperationType.NotEqual.operation): 'ne',
