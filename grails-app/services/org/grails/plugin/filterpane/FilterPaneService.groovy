@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
 class FilterPaneService {
 
     static transactional = false
+    static final NULL_OP = [FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation]
 
     GrailsApplication grailsApplication
 
@@ -42,7 +43,8 @@ class FilterPaneService {
                     def nextFilterParams = rawValue
                     def nextFilterOpParams = filterOp
 
-                    if (!areAllValuesEmptyRecursively(nextFilterParams) && !areAllValuesEmptyRecursively(nextFilterOpParams)) {
+                    if ((!areAllValuesEmptyRecursively(nextFilterParams) && !areAllValuesEmptyRecursively(nextFilterOpParams))
+                            || anyValueContainsNullOpRecursively(nextFilterOpParams)) {
                         criteria."${propName}" {
                             // Are any of the values non-empty?
                             log.debug("== Adding association ${propName}")
@@ -79,6 +81,18 @@ class FilterPaneService {
             } else {
                 log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
                 result = result && v?.toString()?.trim()?.isEmpty()
+            }
+        }
+        result
+    }
+
+    private Boolean anyValueContainsNullOpRecursively(Map map) {
+        def result = false
+        map.each { k, v ->
+            if (v instanceof Map) {
+                result = result || anyValueContainsNullOpRecursively(v)
+            } else {
+                result = result || v?.toString() in NULL_OP
             }
         }
         result
@@ -219,7 +233,7 @@ class FilterPaneService {
                 (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
         //needs null check since '' or 0 are valid filter
-        if(op && value != null) {
+        if((op && value != null) || (op in NULL_OP && value == null)) {
             switch (op) {
                 case FilterPaneOperationType.Equal.operation:
                 case FilterPaneOperationType.NotEqual.operation:
@@ -367,7 +381,7 @@ class FilterPaneService {
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() } }
-                else { newValue.isInteger() ? newValue.toInteger() : null }
+                else { newValue = newValue.isInteger() ? newValue.toInteger() : null }
             } else if ("long".equals(clsName)) {
                 try {
                     if(newValue instanceof Object[]) { newValue = newValue.collect { it.toLong() } }
