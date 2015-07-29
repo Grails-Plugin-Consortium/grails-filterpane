@@ -163,4 +163,18 @@ class FilterPaneTabLibSpec extends Specification {
         then:
         thrown(RuntimeException)
     }
+
+
+    def "test filter criteria between"() {
+        given:
+        def params = ['filter.op.foo':'yes']
+
+
+        when:
+        def output = applyTemplate('<filterpane:currentCriteria domainBean="Book"/>', params)
+
+        then:
+        output == ''
+
+    }
 }
