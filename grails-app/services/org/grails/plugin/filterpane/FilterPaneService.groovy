@@ -1,7 +1,7 @@
 package org.grails.plugin.filterpane
 
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader;
+import grails.core.GrailsApplication
+import org.grails.compiler.injection.GrailsAwareClassLoader
 
 class FilterPaneService {
 
@@ -146,7 +146,7 @@ class FilterPaneService {
                     def defaultSort
                     try {
                         def gdb
-                        Class clz = new GrailsAwareClassLoader().loadClass('org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder')
+                        Class clz = new GrailsAwareClassLoader().loadClass('org.grails.orm.hibernate.cfg.GrailsDomainBinder')
                         if (clz) {
                             gdb = clz.newInstance()
                             if (gdb?.class?.simpleName == 'GrailsDomainBinder') {
@@ -199,7 +199,7 @@ class FilterPaneService {
     }
 
     private addCriterion(criteria, propertyName, op, value, value2, filterParams, domainProperty) {
-        if(!op){
+        if (!op) {
             log.debug('Skipping due to null operation')
             return;
         }
