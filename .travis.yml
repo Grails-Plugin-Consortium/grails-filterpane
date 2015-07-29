@@ -1,12 +1,9 @@
 language: groovy
 jdk:
-- openjdk7
-services:
-- redis-server
-before_script:
-- rm -rf target
-script: ./travis-build.sh
-env:
-  global:
-  - GIT_NAME="Christian Oestreich"
-  - GIT_EMAIL="acetrike@yahoo.com"
+  - oraclejdk7
+
+branches:
+  only:
+    - master
+
+script: ./gradlew clean test assemble
