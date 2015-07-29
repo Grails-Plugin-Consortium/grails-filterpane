@@ -6,7 +6,6 @@ import org.grails.compiler.injection.GrailsAwareClassLoader
 class FilterPaneService {
 
     static transactional = false
-    static final NULL_OP = [FilterPaneOperationType.IsNull.operation, FilterPaneOperationType.IsNotNull.operation]
 
     GrailsApplication grailsApplication
 
@@ -43,8 +42,7 @@ class FilterPaneService {
                     def nextFilterParams = rawValue
                     def nextFilterOpParams = filterOp
 
-                    if ((!areAllValuesEmptyRecursively(nextFilterParams) && !areAllValuesEmptyRecursively(nextFilterOpParams))
-                            || anyValueContainsNullOpRecursively(nextFilterOpParams)) {
+                    if (!areAllValuesEmptyRecursively(nextFilterParams) && !areAllValuesEmptyRecursively(nextFilterOpParams)) {
                         criteria."${propName}" {
                             // Are any of the values non-empty?
                             log.debug("== Adding association ${propName}")
@@ -81,18 +79,6 @@ class FilterPaneService {
             } else {
                 log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
                 result = result && v?.toString()?.trim()?.isEmpty()
-            }
-        }
-        result
-    }
-
-    private Boolean anyValueContainsNullOpRecursively(Map map) {
-        def result = false
-        map.each { k, v ->
-            if (v instanceof Map) {
-                result = result || anyValueContainsNullOpRecursively(v)
-            } else {
-                result = result || v?.toString() in NULL_OP
             }
         }
         result
@@ -212,28 +198,24 @@ class FilterPaneService {
         boolean isDayPrecision = "y".equalsIgnoreCase(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"]) || "y".equalsIgnoreCase(filterParams["${domainProperty?.name}_isDayPrecision"])
         boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual || op == FilterPaneOperationType.Equal.operation || op == FilterPaneOperationType.NotEqual.operation)
         boolean isGreaterThan = (op == FilterPaneOperationType.GreaterThan || op == FilterPaneOperationType.GreaterThan.operation)
-        boolean isLessThanEquals = (op == FilterPaneOperationType.LessThanEquals || op == FilterPaneOperationType.LessThanEquals.operation)
-        boolean isBetween = (op == FilterPaneOperationType.Between || op == FilterPaneOperationType.Between.operation)
         if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
             op = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.Equal.operation) ? 'Between' : 'NotBetween'
             value = FilterPaneUtils.getBeginningOfDay(value)
             value2 = FilterPaneUtils.getEndOfDay(value)
             log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
-        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && (isGreaterThan || isLessThanEquals)) {
+        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isGreaterThan) {
             value = FilterPaneUtils.getEndOfDay(value)
-        } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isBetween) {
-            value2 = FilterPaneUtils.getEndOfDay(value2)
         }
 
         def criteriaMap = [(FilterPaneOperationType.Equal.operation): 'eq', (FilterPaneOperationType.NotEqual.operation): 'ne',
-                (FilterPaneOperationType.LessThan.operation): 'lt', (FilterPaneOperationType.LessThanEquals.operation): 'le',
-                (FilterPaneOperationType.GreaterThan.operation): 'gt', (FilterPaneOperationType.GreaterThanEquals.operation): 'ge',
-                (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike',
-                (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
-                (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
+                           (FilterPaneOperationType.LessThan.operation): 'lt', (FilterPaneOperationType.LessThanEquals.operation): 'le',
+                           (FilterPaneOperationType.GreaterThan.operation): 'gt', (FilterPaneOperationType.GreaterThanEquals.operation): 'ge',
+                           (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike',
+                           (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
+                           (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
         //needs null check since '' or 0 are valid filter
-        if((op && value != null) || (op in NULL_OP && value == null)) {
+        if (op && value != null) {
             switch (op) {
                 case FilterPaneOperationType.Equal.operation:
                 case FilterPaneOperationType.NotEqual.operation:
@@ -373,52 +355,79 @@ class FilterPaneService {
                 newValue = newValue.toBoolean()
             } else if ("byte".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { new Byte(it) } }
-                    else { newValue = new Byte(newValue) } // no isByte()
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { new Byte(it) }
+                    } else {
+                        newValue = new Byte(newValue)
+                    } // no isByte()
                 } catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() } }
-                else { newValue = newValue.isInteger() ? newValue.toInteger() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() }
+                } else {
+                    newValue.isInteger() ? newValue.toInteger() : null
+                }
             } else if ("long".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { it.toLong() } }
-                    else { newValue = newValue.toLong() }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { it.toLong() }
+                    } else {
+                        newValue = newValue.toLong()
+                    }
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("double".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() } }
-                else { newValue.isDouble() ? newValue.toDouble() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() }
+                } else {
+                    newValue.isDouble() ? newValue.toDouble() : null
+                }
             } else if ("float".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() } }
-                else { newValue.isFloat() ? newValue.toFloat() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() }
+                } else {
+                    newValue.isFloat() ? newValue.toFloat() : null
+                }
             } else if ("short".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { it.toShort() } }
-                    else { newValue = newValue.toShort() }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { it.toShort() }
+                    } else {
+                        newValue = newValue.toShort()
+                    }
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
                     log.debug e
                 }
             } else if ("bigdecimal".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() } }
-                else { newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() }
+                } else {
+                    newValue.isBigDecimal() ? newValue.toBigDecimal() : null
+                }
             } else if ("biginteger".equals(clsName)) {
-                if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() } }
-                else { newValue.isBigInteger() ? newValue.toBigInteger() : null }
+                if (newValue instanceof Object[]) {
+                    newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() }
+                } else {
+                    newValue.isBigInteger() ? newValue.toBigInteger() : null
+                }
             } else if (FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
             } else if ("currency".equals(clsName)) {
                 try {
-                    if(newValue instanceof Object[]) { newValue = newValue.collect { Currency.getInstance(it.toString()) } }
-                    else { newValue = Currency.getInstance(newValue.toString()) }
+                    if (newValue instanceof Object[]) {
+                        newValue = newValue.collect { Currency.getInstance(it.toString()) }
+                    } else {
+                        newValue = Currency.getInstance(newValue.toString())
+                    }
                 } catch (IllegalArgumentException iae) {
                     // Do nothing.
                     log.debug iae
