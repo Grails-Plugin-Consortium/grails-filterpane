@@ -23,22 +23,15 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
     def "test finding by empty filter value by criteria"() {
         setup:
         def books
-        Book book0, book1, book2
-        Book.withNewSession {
-            book0 = new Book(title: null).save(flush: true)
-            book1 = new Book(title: '').save(flush: true)
-            book2 = new Book(title: 'Hello').save(flush: true)
-            book1.title = ''
-            book1.save(flush: true)
-        }
+        Book book0 = new Book(title: null).save(flush: true)
+        Book book1 = new Book(title: "").save(flush: true)
+        Book book2 = new Book(title: 'Hello').save(flush: true)
 
         when:
-        Book.withNewSession {
-            books = Book.createCriteria().list() {
-                or {
-                    isNull('title')
-                    eq('title', '')
-                }
+        books = Book.createCriteria().list() {
+            or {
+                isNull('title')
+                eq('title', '')
             }
         }
 

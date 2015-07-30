@@ -3,11 +3,13 @@ package org.grails.plugins.filterpane
 import grails.core.GrailsApplication
 import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 
 @Integration
 @TestFor(BookController)
+@Rollback
 class BookControllerSpec extends Specification {
     @Autowired
     FilterPaneService filterPaneService

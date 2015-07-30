@@ -3,6 +3,8 @@ grails:
     profile: web-plugin
     codegen:
         defaultPackage: org.grails.plugins.filterpane
+    databinding:
+        convertEmptyStringsToNull: false
 info:
     app:
         name: '@info.app.name@'
@@ -78,4 +80,4 @@ dataSource:
     username: sa
     password: ''
     dbCreate: 'update'
-    url: 'jdbc:h2:mem:testDb'
+    url: 'jdbc:h2:mem:testDb;DB_CLOSE_ON_EXIT=FALSE'

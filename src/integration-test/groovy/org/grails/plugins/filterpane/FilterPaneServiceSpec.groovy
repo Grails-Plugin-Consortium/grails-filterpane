@@ -24,9 +24,9 @@ class FilterPaneServiceSpec extends Specification {
     def "test nested criteria call dot notation"() {
         setup:
         def books
-        Book.withNewSession {
+//        Book.withNewSession {
             createBookWithAuthors()
-        }
+//        }
 
         when:
         Book.withNewSession {
@@ -103,11 +103,9 @@ class FilterPaneServiceSpec extends Specification {
     }
 
     def "filter books no count"() {
-        given:
+        setup:
         def params = ['filter': [op: [title: 'ILike'], title: 'think']]
-        Book.findOrSaveWhere(title: 'i like to think')
-        Book.findOrSaveWhere(title: 'think about it')
-        Book.findOrSaveWhere(title: 'i love turtles')
+        setupFilterBooksNoCount()
 
         when:
         def results = service.filter(params, Book)
@@ -115,6 +113,12 @@ class FilterPaneServiceSpec extends Specification {
         then:
         Book.list().size() == 3
         2 == results?.size()
+    }
+
+    private void setupFilterBooksNoCount() {
+        Book.findOrSaveWhere(title: 'i like to think')
+        Book.findOrSaveWhere(title: 'think about it')
+        Book.findOrSaveWhere(title: 'i love turtles')
     }
 
     def "get books by id"() {
@@ -493,10 +497,11 @@ class FilterPaneServiceSpec extends Specification {
     }
 
     private void createBookWithAuthors() {
-        new Book(title: 'i like turtles', coAuthor: new Author(firstName: 'Co', lastName: 'Author'))
-                .addToAuthors(new Author(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(new Author(firstName: 'Another', lastName: 'Dude'))
-                .save(failOnError: true, flush: true)
+        Book book = new Book(title: 'i like turtles', coAuthor: new Author(firstName: 'Co', lastName: 'Author'))
+        book.authors = []
+        book.authors << new Author(firstName: 'Cool', lastName: 'Dude')
+        book.authors << new Author(firstName: 'Another', lastName: 'Dude')
+        book.save(failOnError: true, flush: true)
         new Book(title: 'think about it').save(flush: true)
     }
 }
