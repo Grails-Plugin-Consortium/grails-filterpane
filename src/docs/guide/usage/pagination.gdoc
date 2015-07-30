@@ -13,7 +13,7 @@ Also in the example above, filterParams is set in the model map of the render ca
 render( view:'list',
     model:[ bookList: filterPaneService.filter( params, Book ),
         bookCount: filterPaneService.count( params, Book ),
-        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        filterParams: org.grails.plugins.filterpane.FilterPaneUtils.extractFilterParams(params),
         params:params ] )
 {code}
 

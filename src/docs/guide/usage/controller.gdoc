@@ -13,7 +13,7 @@ def filter = {
     render( view:'list',
         model:[ domainClassList: filterPaneService.filter( params, DomainClass ),
         domainClassCount: filterPaneService.count( params, DomainClass ),
-        filterParams: org.grails.plugin.filterpane.FilterPaneUtils.extractFilterParams(params),
+        filterParams: org.grails.plugins.filterpane.FilterPaneUtils.extractFilterParams(params),
         params:params ] )
 }
 {code}

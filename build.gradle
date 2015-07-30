@@ -74,3 +74,23 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
+
+bintray {
+    user = System.getenv("BINTRAY_USER") ?: project.hasProperty("bintrayUser") ? project.bintrayUser : ''
+    key = System.getenv("BINTRAY_KEY") ?: project.hasProperty("bintrayKey") ? project.bintrayKey : ''
+    publications = ['maven']
+    pkg {
+        repo = 'grails-filterpane'
+        userOrg = 'grails-plugin-consortium'
+        name = "org.grails.plugins:$project.name"
+        desc = "Grails $project.name plugin"
+        websiteUrl = "http://grails.org/plugin/$project.name"
+        issueTrackerUrl = "https://github.com/Grails-Plugin-Consortium/$project.name/issues"
+        vcsUrl = "https://github.com/Grails-Plugin-Consortium/${project.name}"
+        licenses = ['Apache-2.0']
+        publicDownloadNumbers = true
+    }
+}
+
+
+bintrayUpload.dependsOn build, sourcesJar, javadocJar

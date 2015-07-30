@@ -64,7 +64,7 @@ h4. New Feature
     * [GRAILSPLUGINS-1909|http://jira.codehaus.org/browse/GRAILSPLUGINS-1909] - Support for deeper assocations
 
 There are several breaking changes when migrating to 2.0.  Please take note!
-* Package names for all classes have changed to a more standard one: org.grails.plugin.filterpane
+* Package names for all classes have changed to a more standard one: org.grails.plugins.filterpane
 * Class Renames
 *# FilterService has been renamed to FilterPaneService to match the plugin name and to remove ambiguity with other plugins / services
 *# FilterUtils has been renamed to FilterPaneUtils for the same reasons as above.
