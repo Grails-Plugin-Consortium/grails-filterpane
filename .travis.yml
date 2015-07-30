@@ -7,4 +7,4 @@ branches:
   only:
     - master
 
-script: ./gradlew clean test assemble
+script: ./gradlew clean check assemble
