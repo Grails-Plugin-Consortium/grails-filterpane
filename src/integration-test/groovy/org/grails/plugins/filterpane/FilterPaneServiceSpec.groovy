@@ -11,15 +11,11 @@ import spock.lang.Unroll
 @Integration
 @Rollback
 class FilterPaneServiceSpec extends Specification {
+
     @Autowired
-    FilterPaneService service
+    FilterPaneService filterPaneService
     @Autowired
     GrailsApplication grailsApplication
-
-    def setup() {
-        service = new FilterPaneService()
-        service.grailsApplication = grailsApplication
-    }
 
     def "test nested criteria call dot notation"() {
         setup:
@@ -95,7 +91,7 @@ class FilterPaneServiceSpec extends Specification {
         new Book(title: 'Hello�how are you').save(flush: true)
 
         when:
-        def results = service.filter(params, Book)
+        def results = filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 1
@@ -108,7 +104,7 @@ class FilterPaneServiceSpec extends Specification {
         setupFilterBooksNoCount()
 
         when:
-        def results = service.filter(params, Book)
+        def results = filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 3
@@ -128,7 +124,7 @@ class FilterPaneServiceSpec extends Specification {
         def params = ['filter': [op: [id: 'Equal'], id: book.id]]
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == 1
@@ -146,7 +142,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -163,7 +159,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be fixed due to using distinct column on parent'
         Book.list().size() == 3
@@ -179,7 +175,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then: 'since non-distinct count will be = number of authors'
         Book.list().size() == 2
@@ -198,7 +194,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 2
@@ -216,7 +212,7 @@ class FilterPaneServiceSpec extends Specification {
         }
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == 5
@@ -235,7 +231,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -252,7 +248,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -269,7 +265,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -286,7 +282,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -303,7 +299,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -320,7 +316,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -337,7 +333,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -354,7 +350,7 @@ class FilterPaneServiceSpec extends Specification {
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
 
         when:
-        def books = service.count(params, Book)
+        def books = filterPaneService.count(params, Book)
 
         then: 'count will be = number of authors in book since unique column not specified'
         Book.list().size() == 3
@@ -371,7 +367,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: null)
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         books.size() == listCount
@@ -429,7 +425,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(bookType: BookType.NonFiction)
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 3
@@ -445,7 +441,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(bookType: BookType.NonFiction)
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 3
@@ -463,7 +459,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(bookType: BookType.NonFiction)
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 3
@@ -481,7 +477,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(bookType: BookType.NonFiction)
 
         when:
-        List<Book> books = (List<Book>) service.filter(params, Book)
+        List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
 
         then:
         Book.list().size() == 3
@@ -491,8 +487,8 @@ class FilterPaneServiceSpec extends Specification {
 
     void cleanupSpec() {
         Book.withNewSession {
-            Book.executeUpdate('delete Book ')
-            Author.executeUpdate('delete Author ')
+            Book.executeUpdate('delete Book')
+            Author.executeUpdate('delete Author')
         }
     }
 

@@ -41,9 +41,7 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
     def "test finding by empty filter value"() {
         given:
         def params = ['filter': [op: [title: 'Equal'], title: '']]
-        def book = Book.findOrSaveWhere(title: '')
-        book.title = '' //this isn't being set up findorsave
-        book.save(flush: true)
+        Book.findOrSaveWhere(title: '')
         Book.findOrSaveWhere(title: 'Hello')
 
         when:
@@ -57,7 +55,7 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
     def "test finding by empty filter value null value in params"() {
         given:
         def params = ['filter': [op: [title: 'IsNull'], title: '']]
-        Book.findOrSaveWhere(title: '')
+        Book.findOrSaveWhere(title: null)
         Book.findOrSaveWhere(title: 'Hello')
 
         when:
