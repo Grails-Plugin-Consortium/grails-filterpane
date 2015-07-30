@@ -80,4 +80,4 @@ dataSource:
     username: sa
     password: ''
     dbCreate: 'update'
-    url: 'jdbc:h2:mem:testDb;DB_CLOSE_ON_EXIT=FALSE'
+    url: 'jdbc:h2:mem:testDb'
