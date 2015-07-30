@@ -15,11 +15,6 @@ class FilterPaneServiceEmptyCriteriaSpec extends Specification {
     @Autowired
     GrailsApplication grailsApplication
 
-    def setup() {
-        filterPaneService = new FilterPaneService()
-        filterPaneService.grailsApplication = grailsApplication
-    }
-
     def "test finding by empty filter value by criteria"() {
         setup:
         def books
