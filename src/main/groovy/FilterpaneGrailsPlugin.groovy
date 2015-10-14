@@ -1,7 +1,7 @@
 import grails.plugins.Plugin
 
 class FilterpaneGrailsPlugin extends Plugin {
-    def version = "3.0.0-SNAPSHOT"
+    def version = "3.0.0"
     def grailsVersion = "3.0.2 > *"
 
     def author = "Grails Plugin Consortium"
