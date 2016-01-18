@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane.nested
+package org.grails.plugins.filterpane.test.nested
 
 import org.grails.plugins.filterpane.FilterPaneService
 import org.grails.plugins.filterpane.FilterPaneUtils

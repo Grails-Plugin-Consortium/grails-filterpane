@@ -16,7 +16,7 @@ plugins {
 	id "com.jfrog.bintray" version "1.1"
 }
 
-version "3.0.0"
+version "3.0.2"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -92,5 +92,9 @@ bintray {
 	}
 }
 
+jar {
+	exclude 'org/grails/plugins/filterpane/test/**'
+}
 
-bintrayUpload.dependsOn build, sourcesJar, javadocJar
+
+bintrayUpload.dependsOn sourcesJar, javadocJar

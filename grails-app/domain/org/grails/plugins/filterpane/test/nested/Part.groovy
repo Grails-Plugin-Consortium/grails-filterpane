@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane.nested
+package org.grails.plugins.filterpane.test.nested
 
 class Part {
 

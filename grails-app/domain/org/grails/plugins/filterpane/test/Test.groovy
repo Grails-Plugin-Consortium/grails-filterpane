@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane
+package org.grails.plugins.filterpane.test
 
 class Test {
     String title

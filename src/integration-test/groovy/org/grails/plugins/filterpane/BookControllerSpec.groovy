@@ -1,9 +1,14 @@
 package org.grails.plugins.filterpane
 
 import grails.core.GrailsApplication
-import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
+import org.grails.plugins.filterpane.test.Author
+import org.grails.plugins.filterpane.test.Book
+import org.grails.plugins.filterpane.test.BookController
+import org.grails.plugins.filterpane.test.BookType
+import org.grails.plugins.filterpane.test.FavoriteGenre
+import org.grails.plugins.filterpane.test.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Ignore
 import spock.lang.Specification

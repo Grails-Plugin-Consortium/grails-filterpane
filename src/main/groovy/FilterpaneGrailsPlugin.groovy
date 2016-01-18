@@ -29,6 +29,9 @@ class FilterpaneGrailsPlugin extends Plugin {
         'grails-app/views/book/**',
         'src/docs/**',
         'codenarc.properties',
-        'grails-app/views/error.gsp'
+        'grails-app/views/error.gsp',
+        'grails-app/views/index.gsp',
+        'grails-app/views/notFound.gsp',
+        'grails-app/views/layouts/**'
     ]
 }
