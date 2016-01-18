@@ -393,10 +393,10 @@ class FilterPaneService {
                 }
             } else if ("double".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() } }
-                else { newValue.isDouble() ? newValue.toDouble() : null }
+                else { newValue = newValue.isDouble() ? newValue.toDouble() : null }
             } else if ("float".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() } }
-                else { newValue.isFloat() ? newValue.toFloat() : null }
+                else { newValue = newValue.isFloat() ? newValue.toFloat() : null }
             } else if ("short".equals(clsName)) {
                 try {
                     if(newValue instanceof Object[]) { newValue = newValue.collect { it.toShort() } }
@@ -408,10 +408,10 @@ class FilterPaneService {
                 }
             } else if ("bigdecimal".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() } }
-                else { newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
+                else { newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
             } else if ("biginteger".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() } }
-                else { newValue.isBigInteger() ? newValue.toBigInteger() : null }
+                else { newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null }
             } else if (FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
@@ -428,3 +428,4 @@ class FilterPaneService {
         newValue
     }
 }
+
