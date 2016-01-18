@@ -24,13 +24,13 @@ class FilterPaneService {
         keyList.addAll(filterOpParams.keySet())
         keyList = keyList.sort() // Sort them to get nested properties next to each other.
 
-        log.debug("op Keys = ${keyList}")
+        log.trace("op Keys = ${keyList}")
 
         // op = map entry.  op.key = property name.  op.value = operator.
         // params[op.key] is the value
         keyList.each { String propName ->
-            log.debug("\n=============================================================================.")
-            log.debug("== ${propName}")
+            log.trace("\n=============================================================================.")
+            log.trace("== ${propName}")
 
             // Skip associated property entries.  (They'll have a dot in them.)  We'll use the map instead later.
             if (!propName.contains(".")) {
@@ -47,7 +47,7 @@ class FilterPaneService {
                             || anyValueContainsNullOpRecursively(nextFilterOpParams)) {
                         criteria."${propName}" {
                             // Are any of the values non-empty?
-                            log.debug("== Adding association ${propName}")
+                            log.trace("== Adding association ${propName}")
                             def nextDomainProp = FilterPaneUtils.resolveDomainProperty(domainClass, propName)
                             def nextDomainClass = FilterPaneUtils.resolveReferencedDomainClass(nextDomainProp)
                             // If they want to sort by an associated property, need to do it here.
@@ -63,13 +63,13 @@ class FilterPaneService {
                     def thisDomainProp = FilterPaneUtils.resolveDomainProperty(domainClass, propName)
                     def val = parseValue(thisDomainProp, rawValue, filterParams, null)
                     def val2 = parseValue(thisDomainProp, rawValue2, filterParams, "${propName}To")
-                    log.debug("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
+                    log.trace("== propName is ${propName}, rawValue is ${rawValue}, val is ${val} of type ${val?.class} val2 is ${val2} of type ${val2?.class}")
                     addCriterion(criteria, propName, filterOp, val, val2, filterParams, thisDomainProp)
                 }
             } else {
-                log.debug "value used ${propName} is a dot notation should switch to a nested map like [filter: [op: ['authors': ['lastName': FilterPaneOperationType.Equal]], 'authors': ['lastName': 'Dude']]]"
+                log.trace "value used ${propName} is a dot notation should switch to a nested map like [filter: [op: ['authors': ['lastName': FilterPaneOperationType.Equal]], 'authors': ['lastName': 'Dude']]]"
             }
-            log.debug("==============================================================================='\n")
+            log.trace("==============================================================================='\n")
         }
     }
 
@@ -79,7 +79,7 @@ class FilterPaneService {
             if (v instanceof Map) {
                 result = result && areAllValuesEmptyRecursively(v)
             } else {
-                log.debug "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
+                log.trace "${v} is empty ${v?.toString()?.trim()?.isEmpty()}"
                 result = result && v?.toString()?.trim()?.isEmpty()
             }
         }
@@ -99,7 +99,7 @@ class FilterPaneService {
     }
 
     private doFilter(params, Class filterClass, Boolean doCount) {
-        log.debug("filtering... params = ${params.toMapString()}")
+        log.trace("filtering... params = ${params.toMapString()}")
         //def filterProperties = params?.filterProperties?.tokenize(',')
         def filterParams = params.filter ? params.filter : params
         def filterOpParams = filterParams.op
@@ -162,7 +162,7 @@ class FilterPaneService {
                             order(params.sort, params.order ?: 'asc')
                         }
                     } else if (defaultSort != null) {
-                        log.debug('No sort specified and default is specified on domain. Using it.')
+                        log.trace('No sort specified and default is specified on domain. Using it.')
                         // Grails >2.3 uses SortConfig for default sort
                         if (defaultSort instanceof String) {
                             // backward support for older grails
@@ -173,7 +173,7 @@ class FilterPaneService {
                             }
                         }
                     } else {
-                        log.debug('No sort parameter or default sort specified.')
+                        log.trace('No sort parameter or default sort specified.')
                     }
                 }
             } // end criteria
@@ -200,10 +200,10 @@ class FilterPaneService {
 
     private addCriterion(criteria, propertyName, op, value, value2, filterParams, domainProperty) {
         if(!op){
-            log.debug('Skipping due to null operation')
+            log.trace('Skipping due to null operation')
             return;
         }
-        log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
+        log.trace("Adding ${propertyName} ${op} ${value} value2 ${value2}")
 //        boolean added = true
 
         // GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
@@ -218,7 +218,7 @@ class FilterPaneService {
             op = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.Equal.operation) ? 'Between' : 'NotBetween'
             value = FilterPaneUtils.getBeginningOfDay(value)
             value2 = FilterPaneUtils.getEndOfDay(value)
-            log.debug("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
+            log.trace("Date criterion is Equal to day precision.  Changing it to between ${value} and ${value2}")
         } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && (isGreaterThan || isLessThanEquals)) {
             value = FilterPaneUtils.getEndOfDay(value)
         } else if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isBetween) {
@@ -327,7 +327,7 @@ class FilterPaneService {
         if (newValue != null) {
             Class cls = domainProperty?.referencedPropertyType ?: domainProperty.type
             String clsName = cls.simpleName.toLowerCase()
-            log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} value is '${newValue}', clsName is ${clsName}")
+            log.trace("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} value is '${newValue}', clsName is ${clsName}")
 
             if ("class".equals(clsName)) {
                 def tempVal = newValue
@@ -365,7 +365,7 @@ class FilterPaneService {
                         newValue = Enum.valueOf(cls, tempVal.toString())
                     }
                 } catch (IllegalArgumentException iae) {
-                    log.debug("Enum valueOf failed. value is ${tempVal}", iae)
+                    log.trace("Enum valueOf failed. value is ${tempVal}", iae)
                     // Ignore this.  val is not a valid enum value (probably an empty string).
                 }
             } else if ("boolean".equals(clsName)) {
@@ -377,7 +377,7 @@ class FilterPaneService {
                     else { newValue = new Byte(newValue) } // no isByte()
                 } catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.trace e
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isInteger() }.collect { it.toInteger() } }
@@ -389,14 +389,14 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.trace e
                 }
             } else if ("double".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isDouble() }.collect { it.toDouble() } }
-                else { newValue.isDouble() ? newValue.toDouble() : null }
+                else { newValue = newValue.isDouble() ? newValue.toDouble() : null }
             } else if ("float".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isFloat() }.collect { it.toFloat() } }
-                else { newValue.isFloat() ? newValue.toFloat() : null }
+                else { newValue = newValue.isFloat() ? newValue.toFloat() : null }
             } else if ("short".equals(clsName)) {
                 try {
                     if(newValue instanceof Object[]) { newValue = newValue.collect { it.toShort() } }
@@ -404,14 +404,14 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.trace e
                 }
             } else if ("bigdecimal".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigDecimal() }.collect { it.toBigDecimal() } }
-                else { newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
+                else { newValue = newValue.isBigDecimal() ? newValue.toBigDecimal() : null }
             } else if ("biginteger".equals(clsName)) {
                 if(newValue instanceof Object[]) { newValue = newValue.grep { it.isBigInteger() }.collect { it.toBigInteger() } }
-                else { newValue.isBigInteger() ? newValue.toBigInteger() : null }
+                else { newValue = newValue.isBigInteger() ? newValue.toBigInteger() : null }
             } else if (FilterPaneUtils.isDateType(cls)) {
                 def paramName = associatedPropertyParamName ?: domainProperty.name
                 newValue = FilterPaneUtils.parseDateFromDatePickerParams(paramName, params, cls)
@@ -421,7 +421,7 @@ class FilterPaneService {
                     else { newValue = Currency.getInstance(newValue.toString()) }
                 } catch (IllegalArgumentException iae) {
                     // Do nothing.
-                    log.debug iae
+                    log.trace iae
                 }
             }
         }
