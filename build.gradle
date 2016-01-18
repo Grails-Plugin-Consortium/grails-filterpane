@@ -82,7 +82,7 @@ bintray {
 	pkg {
 		repo = 'grails-plugins'
 		userOrg = 'ctoestreich'
-		name = "org.grails.plugins:grails-filterpane"
+		name = "filterpane"
 		desc = "Grails Filterpane Plugin"
 		websiteUrl = "http://grails.org/plugin/grails-filterpane"
 		issueTrackerUrl = "https://github.com/Grails-Plugin-Consortium/grails-filterpane/issues"
