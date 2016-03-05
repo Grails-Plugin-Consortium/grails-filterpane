@@ -80,6 +80,8 @@ var grailsFilterPane = {
                     el.selectedIndex = 0;
                 } else if (el.type === 'text' || el.type === 'textarea') {
                     el.value = '';
+                } else if(el.type == 'radio' || el.type == 'checkbox') {
+                    el.checked = false
                 }
             }
         }
