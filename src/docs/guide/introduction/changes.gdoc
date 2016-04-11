@@ -2,6 +2,8 @@ h2. Change Log
 
 {table}
 *Date* | *Version* | *Notes* | *Grails Versions* | *Template Changes*
+2016-03-15 | 3.0.3 | Bug fix merge for Add line to clear radio and checkbox  | 3.x | No
+2015-06-01 | 3.0.0 | Grails 3.x version | 3.x | No
 2014-05-12 | 2.4.7 | Merging in changes for GPFILTERPANE-130, GPFILTERPANE-131, listDistinct and pt_BR language | 1.3.x | No
 2014-05-12 | 2.4.3 | Migrating to grails 2.3.8 support | 1.3.x | No
 2014-03-12 | 2.3.3 | Merging fix for exception thrown in IllegalArgumentException, JIRA 118 | 1.3.x | No

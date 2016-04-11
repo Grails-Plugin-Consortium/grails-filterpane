@@ -1,7 +1,7 @@
 import grails.plugins.Plugin
 
 class FilterpaneGrailsPlugin extends Plugin {
-    def version = "3.0.0"
+    def version = "3.0.4"
     def grailsVersion = "3.0.2 > *"
 
     def author = "Grails Plugin Consortium"
@@ -18,7 +18,7 @@ class FilterpaneGrailsPlugin extends Plugin {
 
     def license = 'APACHE'
 
-    def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPFILTERPANE']
+    def issueManagement = [system: 'github', url: 'https://github.com/Grails-Plugin-Consortium/grails-filterpane/issues']
     def scm = [url: "https://github.com/Grails-Plugin-Consortium/grails-filterpane"]
 
     def pluginExcludes = [
