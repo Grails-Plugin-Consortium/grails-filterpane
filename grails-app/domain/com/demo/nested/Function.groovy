@@ -7,5 +7,5 @@ class Function {
 
     String name = 'function'
 
-    static belongsTo = [Part]
+    static belongsTo = [part: Part]
 }

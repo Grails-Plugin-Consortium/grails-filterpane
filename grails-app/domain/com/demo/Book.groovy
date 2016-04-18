@@ -28,6 +28,8 @@ class Book {
         lastUpdated(nullable: true)
         readPriority(inList: ['Low', 'Normal', 'High'])
         cost(min: 0.00)
+        authors nullable: true
+        bookmarks nullable: true
     }
 
     static mapping = {

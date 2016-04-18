@@ -5,7 +5,7 @@ class Part {
     String name = 'part'
 
     static hasMany = [functions: Function]
-    static belongsTo = [Robot]
+    static belongsTo = [robot: Robot]
 
     static constraints = {
         functions nullable: true
