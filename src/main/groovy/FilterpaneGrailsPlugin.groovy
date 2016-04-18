@@ -1,7 +1,6 @@
 import grails.plugins.Plugin
 
 class FilterpaneGrailsPlugin extends Plugin {
-    def version = "3.0.4"
     def grailsVersion = "3.0.2 > *"
 
     def author = "Grails Plugin Consortium"
@@ -32,6 +31,7 @@ class FilterpaneGrailsPlugin extends Plugin {
         'grails-app/views/error.gsp',
         'grails-app/views/index.gsp',
         'grails-app/views/notFound.gsp',
-        'grails-app/views/layouts/**'
+        'grails-app/views/layouts/**',
+        '**/com/demo/**'
     ]
 }

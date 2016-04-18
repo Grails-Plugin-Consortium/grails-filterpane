@@ -1,17 +1,17 @@
-package org.grails.plugins.filterpane.test.nested
+package com.demo
 
 import org.grails.plugins.filterpane.FilterPaneService
 import org.grails.plugins.filterpane.FilterPaneUtils
 
-class RobotController {
+class BookController {
 
     FilterPaneService filterPaneService
 
     def filter() {
         if (!params.max) params.max = 10
-        render view:'list',
-               model: [robotList: filterPaneService.filter(params, Robot),
-                       robotCount: filterPaneService.count(params, Robot),
+        render view: 'list',
+               model: [bookList    : filterPaneService.filter(params, Book),
+                       bookCount   : filterPaneService.count(params, Book),
                        filterParams: FilterPaneUtils.extractFilterParams(params), params:params]
     }
 }

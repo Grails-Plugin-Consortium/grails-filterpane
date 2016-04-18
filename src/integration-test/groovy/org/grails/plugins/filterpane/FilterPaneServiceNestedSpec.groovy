@@ -5,9 +5,9 @@ import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
-import org.grails.plugins.filterpane.test.nested.Function
-import org.grails.plugins.filterpane.test.nested.Part
-import org.grails.plugins.filterpane.test.nested.Robot
+import com.demo.nested.Function
+import com.demo.nested.Part
+import com.demo.nested.Robot
 import spock.lang.Unroll
 
 @Integration

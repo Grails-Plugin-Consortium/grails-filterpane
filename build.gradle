@@ -13,16 +13,15 @@ buildscript {
 
 plugins {
 	id "io.spring.dependency-management" version "0.5.1.RELEASE"
-	id "com.jfrog.bintray" version "1.1"
+	id "com.jfrog.bintray" version "1.2"
 }
 
-version "3.0.4"
+version "3.0.6"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 // Used for publishing to central repository, remove if not needed
@@ -58,11 +57,9 @@ dependencies {
 	provided "org.springframework.boot:spring-boot-starter-tomcat"
 	provided "org.grails:grails-dependencies"
 	provided "org.grails:grails-web-boot"
-
-	compile 'org.grails.plugins:hibernate'
-	compile "org.grails.plugins:cache"
-	compile "org.hibernate:hibernate-ehcache"
-
+	provided 'org.grails.plugins:hibernate'
+	provided "org.grails.plugins:cache"
+	provided "org.hibernate:hibernate-ehcache"
 	provided 'javax.servlet:javax.servlet-api:3.1.0'
 
 	testCompile "org.grails:grails-plugin-testing"
@@ -93,7 +90,7 @@ bintray {
 }
 
 jar {
-	exclude 'org/grails/plugins/filterpane/test/**'
+	exclude "com/demo/**"
 }
 
 

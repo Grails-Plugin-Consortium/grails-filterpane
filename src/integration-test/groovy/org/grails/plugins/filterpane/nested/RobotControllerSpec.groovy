@@ -4,10 +4,10 @@ import grails.core.GrailsApplication
 import grails.test.mixin.TestFor
 import grails.test.mixin.integration.Integration
 import org.grails.plugins.filterpane.FilterPaneService
-import org.grails.plugins.filterpane.test.nested.Function
-import org.grails.plugins.filterpane.test.nested.Part
-import org.grails.plugins.filterpane.test.nested.Robot
-import org.grails.plugins.filterpane.test.nested.RobotController
+import com.demo.nested.Function
+import com.demo.nested.Part
+import com.demo.nested.Robot
+import com.demo.nested.RobotController
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 

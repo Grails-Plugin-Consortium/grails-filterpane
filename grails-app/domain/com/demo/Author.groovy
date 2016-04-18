@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane.test
+package com.demo
 
 class Author {
     String firstName = 'first'

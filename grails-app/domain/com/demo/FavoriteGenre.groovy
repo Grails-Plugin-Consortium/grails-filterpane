@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane.test
+package com.demo
 
 enum FavoriteGenre {
     SciFi('Science Fiction'), Fantasy(), Romance(), Mystery(), Fiction(), Reference(), Satire()

@@ -1,4 +1,4 @@
-package org.grails.plugins.filterpane.test
+package com.demo
 
 /**
  * @author steve.krenek
