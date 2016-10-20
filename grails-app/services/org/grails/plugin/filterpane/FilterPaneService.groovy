@@ -169,7 +169,9 @@ class FilterPaneService {
                             order(defaultSort, params.order ?: 'asc')
                         } else {
                             defaultSort.namesAndDirections?.each { name, direction ->
-                                order(name, direction ?: 'asc')
+                                if (name.indexOf('.') < 0) { // if not an association..
+                                    order(name, direction ?: 'asc')
+                                }
                             }
                         }
                     } else {
