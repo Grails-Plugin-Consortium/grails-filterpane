@@ -7,9 +7,10 @@ class Author {
     Publisher publisher
     int age = -1
     Date birthdate = new Date()
+    Book book
 
     static hasMany = [books: Book]
-    static belongsTo = [book: Book]
+    static belongsTo = Book
 
     String toString() {
         "${lastName}, ${firstName}"

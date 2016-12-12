@@ -187,7 +187,7 @@ class FilterPaneService {
     private addCriterion(criteria, propertyName, op, value, value2, filterParams, domainProperty) {
         if (!op) {
             log.debug('Skipping due to null operation')
-            return;
+            return
         }
         log.debug("Adding ${propertyName} ${op} ${value} value2 ${value2}")
 //        boolean added = true
@@ -213,6 +213,8 @@ class FilterPaneService {
                            (FilterPaneOperationType.Like.operation): 'like', (FilterPaneOperationType.ILike.operation): 'ilike',
                            (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
                            (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
+
+        println "Operation $op maps ${criteriaMap.get(op)}"
 
         //needs null check since '' or 0 are valid filter
         if (op && value != null) {

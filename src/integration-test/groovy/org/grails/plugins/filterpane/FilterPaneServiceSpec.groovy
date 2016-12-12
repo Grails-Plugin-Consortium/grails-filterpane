@@ -1,11 +1,11 @@
 package org.grails.plugins.filterpane
 
-import grails.core.GrailsApplication
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import com.demo.Author
 import com.demo.Book
 import com.demo.BookType
+import grails.core.GrailsApplication
+import grails.test.mixin.integration.Integration
+import grails.transaction.Rollback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.orm.hibernate4.HibernateQueryException
 import spock.lang.Specification
@@ -24,7 +24,7 @@ class FilterPaneServiceSpec extends Specification {
         setup:
         def books
 //        Book.withNewSession {
-            createBookWithAuthors()
+        createBookWithAuthors()
 //        }
 
         when:
@@ -140,9 +140,9 @@ class FilterPaneServiceSpec extends Specification {
         def params = ['filter': [op: ['authors': ['lastName': 'ILike']], 'authors': ['lastName': 'Dude']]]
         Book.findOrSaveWhere(title: 'i hate bears')
         Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -155,11 +155,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title and unique column"() {
         given:
         def params = ['uniqueCountColumn': 'id', 'filter': [op: ['authors': ['lastName': 'ILike']], 'authors': ['lastName': 'Dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -172,10 +172,10 @@ class FilterPaneServiceSpec extends Specification {
     def "get author for book by association filter"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'Equal']], 'authors': ['lastName': 'Dude']]]
-        Book.findOrSaveWhere(title: 'i like turtlesbearsrabbits')
-        def book2 = Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i like turtlesbearsrabbits').save(flush: true)
+        def book2 = Book.findOrCreateWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
@@ -191,10 +191,10 @@ class FilterPaneServiceSpec extends Specification {
     def "get author for book by association filter using listDistinct"() {
         given:
         def params = [listDistinct: true, filter: [op: ['authors': ['lastName': 'Equal']], 'authors': ['lastName': 'Dude']]]
-        Book.findOrSaveWhere(title: 'i like turtlesbearsrabbits')
-        def book2 = Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i like turtlesbearsrabbits').save(flush: true)
+        def book2 = Book.findOrCreateWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
@@ -227,11 +227,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using begins with"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'BeginsWith']], 'authors': ['lastName': 'Dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -244,11 +244,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using begins with invalid case"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'BeginsWith']], 'authors': ['lastName': 'dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -261,11 +261,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using begins with case insensitive"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'IBeginsWith']], 'authors': ['lastName': 'dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -278,11 +278,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using begins with case insensitive caps"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'IBeginsWith']], 'authors': ['lastName': 'DUDE']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -295,11 +295,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using ends with"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'EndsWith']], 'authors': ['lastName': 'Dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -329,11 +329,11 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using ends with case insensitive"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'IEndsWith']], 'authors': ['lastName': 'dude']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles').save(flush: true)
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -346,16 +346,16 @@ class FilterPaneServiceSpec extends Specification {
     def "get author count for book by title using ends with case insensitive caps"() {
         given:
         def params = ['filter': [op: ['authors': ['lastName': 'IEndsWith']], 'authors': ['lastName': 'DUDE']]]
-        Book.findOrSaveWhere(title: 'i hate bears')
-        Book.findOrSaveWhere(title: 'i hate zombies')
-        Book.findOrSaveWhere(title: 'i like turtles')
+        Book.findOrCreateWhere(title: 'i hate bears').save(flush: true)
+        Book.findOrCreateWhere(title: 'i hate zombies').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
 
-        then: 'count will be = number of authors in book since unique column not specified'
+        then:
         Book.list().size() == 3
         books == 1
     }
@@ -364,10 +364,10 @@ class FilterPaneServiceSpec extends Specification {
     def "test all the operators filtering #operator #title"() {
         given:
         def params = ['filter': [op: ['title': operator], 'title': title]]
-        Book.findOrSaveWhere(title: 'i like turtlesbearsrabbits')
-        Book.findOrSaveWhere(title: 'i like turtles bears rabbits')
-        Book.findOrSaveWhere(title: 'i like zombies')
-        Book.findOrSaveWhere(title: null)
+        Book.findOrCreateWhere(title: 'i like turtlesbearsrabbits').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like turtles bears rabbits').save(flush: true)
+        Book.findOrCreateWhere(title: 'i like zombies').save(flush: true)
+        Book.findOrCreateWhere(title: null).save(flush: true)
 
         when:
         List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
@@ -496,11 +496,14 @@ class FilterPaneServiceSpec extends Specification {
     }
 
     private void createBookWithAuthors() {
-        Book book = new Book(title: 'i like turtles', coAuthor: new Author(firstName: 'Co', lastName: 'Author'))
+        Book book = new Book(title: 'i like turtles')
+        Author coAuthor = new Author(firstName: 'Co', lastName: 'Author').save(failOnError: true, flush: true)
+        coAuthor.book = book
         book.authors = []
         book.authors << new Author(firstName: 'Cool', lastName: 'Dude')
         book.authors << new Author(firstName: 'Another', lastName: 'Dude')
         book.save(failOnError: true, flush: true)
+        coAuthor.save(failOnError: true, flush: true)
         new Book(title: 'think about it').save(flush: true)
     }
 }

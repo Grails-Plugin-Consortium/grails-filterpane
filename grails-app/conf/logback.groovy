@@ -9,11 +9,15 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
+logger("org.grails.plugins.filterpane", DEBUG, ["STDOUT"], false)
+logger("org.hibernate.SQL", DEBUG, ["STDOUT"], false)
+logger("org.hibernate.type.descriptor.sql.BasicBinder", TRACE, ["STDOUT"], false)
+
 root(ERROR, ['STDOUT'])
 
-if(Environment.current == Environment.DEVELOPMENT) {
+if (Environment.current == Environment.DEVELOPMENT) {
     def targetDir = BuildSettings.TARGET_DIR
-    if(targetDir) {
+    if (targetDir) {
 
         appender("FULL_STACKTRACE", FileAppender) {
 
@@ -23,6 +27,6 @@ if(Environment.current == Environment.DEVELOPMENT) {
                 pattern = "%level %logger - %msg%n"
             }
         }
-        logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false )
+        logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
     }
 }

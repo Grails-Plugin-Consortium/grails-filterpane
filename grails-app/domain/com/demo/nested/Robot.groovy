@@ -7,6 +7,6 @@ class Robot {
     static hasMany = [parts: Part]
 
     static constraints = {
-        parts nullable:  true
+        parts nullable: true
     }
 }
