@@ -157,11 +157,6 @@ class FilterPaneService {
                         log.info ex
                         log.info("No mapping property found on filterClass ${filterClass}")
                     }
-                    if (params.sort) {
-                        if (params.sort.indexOf('.') < 0) { // if not an association..
-                            order(params.sort, params.order ?: 'asc')
-                        }
-                    } else if (defaultSort != null) {
                         log.debug('No sort specified and default is specified on domain. Using it.')
                         // Grails >2.3 uses SortConfig for default sort
                         if (defaultSort instanceof String) {
