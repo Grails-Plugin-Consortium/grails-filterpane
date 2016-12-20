@@ -56,6 +56,11 @@ class FilterPaneService {
                             if (!doCount && params.sort && sort.size() > 1 && sort.get(sort.size() - 2) == propName) {
                                 order(sort.get(sort.size() - 1), params.order ?: 'asc')
                             }
+							/*
+							 * fix for filter with sort when filter is not a filterOp, but sort is association,
+							 * remove the sort param, so it is not added again later in doFilter (would cause duplicate criteria exception from hibernate).
+							 */
+							params.sort = ""
                             filterParse(criteria, nextDomainClass, params, nextFilterParams, nextFilterOpParams, doCount)
                         }
                     }
@@ -157,6 +162,27 @@ class FilterPaneService {
                         log.info ex
                         log.info("No mapping property found on filterClass ${filterClass}")
                     }
+					if (params.sort) {
+						if (params.sort.indexOf('.') < 0) { // if not an association..
+							order(params.sort, params.order ?: 'asc')
+						} else {
+
+							/* 
+							 * Sort for one to many,  
+							 * if we have a filter for domain.name but a sort on domain.subdomain.name, then the sort will not work.
+							 * filterParse adds sort for filter.op but if we get here we did not have an op and would get no sorting.
+							 */
+							log.debug("sort is association, params.sort ${params.sort}, params.order ${params.order}")
+
+							int sortIndex = params.sort.lastIndexOf(".")
+							def filterpaneSortAlias = params.sort.substring(0, sortIndex)
+							def filterpaneSortParam = params.sort.substring(sortIndex+1)
+							log.debug("sortIndex: ${sortIndex}, filterpaneSortAlias: ${filterpaneSortAlias}, filterpaneSortParam: ${filterpaneSortParam}")
+							c.createAlias(filterpaneSortAlias, "filterpaneSortAlias")
+							order("filterpaneSortAlias.${filterpaneSortParam}", params.order ?:'desc')
+
+						}
+					} else if (defaultSort != null) {
                         log.debug('No sort specified and default is specified on domain. Using it.')
                         // Grails >2.3 uses SortConfig for default sort
                         if (defaultSort instanceof String) {
