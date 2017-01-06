@@ -16,12 +16,13 @@ plugins {
 	id "com.jfrog.bintray" version "1.2"
 }
 
-version "3.0.6"
+version "3.0.7"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 // Used for publishing to central repository, remove if not needed
@@ -51,6 +52,10 @@ dependencyManagement {
 }
 
 dependencies {
+	compile "org.grails:grails-core"
+
+	provided "org.grails:grails-plugin-services"
+	provided "org.grails:grails-plugin-domain-class"
 	provided 'org.springframework.boot:spring-boot-starter-logging'
 	provided "org.springframework.boot:spring-boot-starter-actuator"
 	provided "org.springframework.boot:spring-boot-autoconfigure"
@@ -63,6 +68,9 @@ dependencies {
 	provided 'javax.servlet:javax.servlet-api:3.1.0'
 
 	testCompile "org.grails:grails-plugin-testing"
+	testCompile "org.grails.plugins:geb"
+	testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+	testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
 	console "org.grails:grails-console"
 	compile "org.grails.plugins:joda-time:2.0.0"

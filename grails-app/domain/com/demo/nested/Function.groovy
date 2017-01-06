@@ -7,7 +7,7 @@ class Function {
 
     String name = 'function'
 
-    static belongsTo = [part: Part]
+    static belongsTo = [Part]
 
     @Override
     String toString() {

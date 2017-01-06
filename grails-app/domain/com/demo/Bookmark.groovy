@@ -6,8 +6,6 @@ class Bookmark {
     int page
     Date dateCreated
 
-    static belongsTo = Book
-
     static constraints = {
         book()
         page()
