@@ -214,7 +214,7 @@ class FilterPaneService {
                            (FilterPaneOperationType.IBeginsWith.operation): 'ilike', (FilterPaneOperationType.BeginsWith.operation): 'like',
                            (FilterPaneOperationType.IEndsWith.operation): 'ilike', (FilterPaneOperationType.EndsWith.operation): 'like']
 
-        println "Operation $op maps ${criteriaMap.get(op)}"
+        log.debug "Operation $op maps ${criteriaMap.get(op)}"
 
         //needs null check since '' or 0 are valid filter
         if (op && value != null) {
