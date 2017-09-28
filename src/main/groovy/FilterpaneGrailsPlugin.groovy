@@ -32,6 +32,7 @@ class FilterpaneGrailsPlugin extends Plugin {
         'grails-app/views/index.gsp',
         'grails-app/views/notFound.gsp',
         'grails-app/views/layouts/**',
+        'org/grails/plugins/filterpane/test/**',
         '**/com/demo/**'
     ]
 }
