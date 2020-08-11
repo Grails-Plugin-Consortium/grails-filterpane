@@ -1,16 +1,12 @@
 package org.grails.plugins.filterpane
 
 import grails.core.GrailsApplication
-import org.apache.commons.lang.StringUtils
 import grails.core.GrailsDomainClass
-import org.grails.compiler.injection.GrailsAwareClassLoader
 import grails.plugins.GrailsPluginManager
+import org.apache.commons.lang.StringUtils
+import org.grails.compiler.injection.GrailsAwareClassLoader
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
-import org.joda.time.DateTime
-import org.joda.time.Instant
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.LocalTime
+import org.joda.time.*
 import org.joda.time.base.AbstractInstant
 import org.joda.time.base.AbstractPartial
 import org.springframework.web.servlet.support.RequestContextUtils
@@ -326,7 +322,7 @@ class FilterPaneTagLib {
         def renderModel = [customForm: false]
 
         // Validate required info
-        GrailsDomainClass domain = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domain)
+        def domain = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domain)
         if (domain == null) {
             log.error("Unable to resolve domain class for ${attrs.domain}")
             return

@@ -1,16 +1,15 @@
 package org.grails.plugins.filterpane
 
-import grails.test.mixin.TestFor
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
+import grails.testing.web.taglib.TagLibUnitTest
 import org.grails.taglib.GrailsTagException
 import org.springframework.web.context.request.RequestContextHolder
 import spock.lang.Specification
 
 @Integration
-@TestFor(FilterPaneTagLib)
 @Rollback
-class FilterPaneTabLibSpec extends Specification {
+class FilterPaneTabLibSpec extends Specification implements TagLibUnitTest<FilterPaneTagLib> {
 
     def "test includes with no params"() {
         when:
