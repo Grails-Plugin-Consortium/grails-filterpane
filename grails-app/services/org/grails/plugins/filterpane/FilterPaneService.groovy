@@ -364,7 +364,7 @@ class FilterPaneService {
                     } // no isByte()
                 } catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -382,7 +382,7 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("double".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -406,7 +406,7 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("bigdecimal".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -432,7 +432,7 @@ class FilterPaneService {
                     }
                 } catch (IllegalArgumentException iae) {
                     // Do nothing.
-                    log.debug iae
+                    log.debug('', iae)
                 }
             }
         }

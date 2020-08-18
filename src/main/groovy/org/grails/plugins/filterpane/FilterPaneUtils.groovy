@@ -279,6 +279,10 @@ class FilterPaneUtils {
 
         if (beanName) {
             result = grailsApplication.mappingContext.getPersistentEntity(beanName)
+            if (!result) {
+                def className = grailsApplication.domainClasses.find { it.clazz.simpleName == beanName }?.clazz?.name
+                result = grailsApplication.mappingContext.getPersistentEntity(className)
+            }
         }
         result
     }
@@ -325,14 +329,12 @@ class FilterPaneUtils {
     static resolveSubDomainsProperties(domainClass) {
         log.debug("resolveSubDomainProperties($domainClass)")
         def subClassPersistentProps = []
-        domainClass.associations.each { association->
-            def subDomain = association.getAssociatedEntity()
-            if (!association.isBasic()) {
-                def newProps = subDomain.persistentProperties.findAll {
-                    !subClassPersistentProps.contains(it) && !domainClass.persistentProperties.contains(it)
-                }
-                subClassPersistentProps.addAll(newProps)
+        domainClass.mappingContext.getChildEntities(domainClass).each { subDomain->
+            def newProps = subDomain.getPersistentProperties().findAll {
+                !subClassPersistentProps.contains(it) && !domainClass.persistentProperties.contains(it)
             }
+
+            subClassPersistentProps.addAll(newProps)
         }
 
         return subClassPersistentProps

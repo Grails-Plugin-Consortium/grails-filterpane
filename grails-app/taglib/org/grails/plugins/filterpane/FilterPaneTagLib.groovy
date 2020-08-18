@@ -1,10 +1,10 @@
 package org.grails.plugins.filterpane
 
 import grails.core.GrailsApplication
-import grails.core.GrailsDomainClass
 import grails.plugins.GrailsPluginManager
+import grails.util.GrailsNameUtils
 import org.apache.commons.lang.StringUtils
-import org.grails.compiler.injection.GrailsAwareClassLoader
+import org.grails.datastore.mapping.model.types.Association
 import org.grails.web.gsp.io.GrailsConventionGroovyPageLocator
 import org.joda.time.*
 import org.joda.time.base.AbstractInstant
@@ -360,7 +360,7 @@ class FilterPaneTagLib {
            */
 
         def finalProps = [:]
-        List persistentProps = domain.persistentProperties as List
+        List persistentProps = (domain.persistentProperties + domain.associations).unique() as List
         List additionalPropNames = resolveListAttribute(attrs.additionalProperties)
         List excludePropNames = resolveListAttribute(attrs.excludeProperties)
         List associatedPropNames = resolveListAttribute(attrs.associatedProperties)
@@ -377,7 +377,7 @@ class FilterPaneTagLib {
 
         // Extract out the associations.  These are handled separately from simple properties.
         List associatedProps = persistentProps.findAll {
-            it.association == true && !it.type.isEnum()
+            it instanceof Association && !it.type.isEnum()
         }
         persistentProps.removeAll(associatedProps)
 
@@ -432,10 +432,10 @@ class FilterPaneTagLib {
         // sortedProps is a list of Entry instances where the key is the property name and the value is a GrailsDomainClassProperty instance.
         // The list is sorted by order the properties appear in the GrailsDomainClass
 
-        Class clz = new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
-        clz = clz ?: new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
-        def constructor = clz.getConstructor(GrailsDomainClass)
-        def domainComparator = constructor.newInstance(domain)
+//        Class clz = new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
+//        clz = clz ?: new GrailsAwareClassLoader().loadClass('org.grails.validation.DomainClassPropertyComparator')
+//        def constructor = clz.getConstructor(GrailsDomainClass)
+//        def domainComparator = constructor.newInstance(domain)
 
 //        def domainComparator = Class.forName('org.grails.validation.DomainClassPropertyComparator')
 //        if(!domainComparator){
@@ -444,10 +444,12 @@ class FilterPaneTagLib {
 //        domainComparator.newInstance(domain)
 //        def domainComparator = new org.grails.validation.DomainClassPropertyComparator(domain)
 
-        def sortedProps = finalProps.entrySet().asList().sort { a, b -> domainComparator.compare(a.value, b.value) }
+        // TODO - just sort by keys for now
+        def sortedProps = finalProps.entrySet().asList().sort { a, b -> a.key <=> b.key }
 
         // add 'class' property if domain class has its implementers
-        if (domain.hasSubClasses() && !excludePropNames.contains("class")) {
+        boolean hasSubClasses = !grailsApplication.mappingContext.getChildEntities(domain).isEmpty()
+        if (hasSubClasses && !excludePropNames.contains("class")) {
             // class property should be as a first in a sorted props
             sortedProps.add(0, new MapEntry("class", [name: "class", type: Class, domainClass: domain, naturalName: "Class"]))
             // fake GrailsDomainClassProperty object
@@ -494,11 +496,11 @@ class FilterPaneTagLib {
         if (Date.isAssignableFrom(type)) {
             out << g.datePicker(ctrlAttrs)
         } else if (DateTime.isAssignableFrom(type) || Instant.isAssignableFrom(type) || LocalDateTime.isAssignableFrom(type)) {
-            out << joda.dateTimePicker(ctrlAttrs) 
+            out << joda.dateTimePicker(ctrlAttrs)
         } else if (LocalTime.isAssignableFrom(type)) {
-            out << joda.timePicker(ctrlAttrs) 
+            out << joda.timePicker(ctrlAttrs)
         } else if (LocalDate.isAssignableFrom(type)) {
-            out << joda.datePicker(ctrlAttrs) 
+            out << joda.datePicker(ctrlAttrs)
         }
     }
 
@@ -576,7 +578,7 @@ class FilterPaneTagLib {
         def label = body()
         def controller = attrs.controller
         def action = attrs.action ?: 'filter'
-        // Only copy default search params if it is the same controller    
+        // Only copy default search params if it is the same controller
         def sort = attrs.sort ?: (controller == "$controllerName" ? params.sort : null)
         def order = attrs.sort ?: (controller == "$controllerName" ? params.order : null)
 
@@ -659,7 +661,8 @@ class FilterPaneTagLib {
 
 
             def name = "filter.${propertyKey}"
-            map.ctrlAttrs = [name: name, value: params[name], opName: opName, domain: sp.domainClass.name, propertyName: sp.name]//, domainProperty:sp]
+            def domain = sp.getOwner().getJavaClass().name
+            map.ctrlAttrs = [name: name, value: params[name], opName: opName, domain: domain, propertyName: sp.name]//, domainProperty:sp]
             addFilterPropertyValues(attrs, map.ctrlAttrs, propertyKey)
 
             def opKeys = []
@@ -667,7 +670,8 @@ class FilterPaneTagLib {
 
             // If the property is not nullable, no need to allow them to filter
             // in is or is not null.
-            def constrainedProperty = sp.domainClass.constrainedProperties[sp.name]
+            def constrainedProperty = grailsApplication.mappingContext.getEntityValidator(sp.getOwner())?.getConstrainedProperties()?.get(sp.name)
+//            def constrainedProperty = sp.domainClass.constrainedProperties[sp.name]
             if ((constrainedProperty && !constrainedProperty.isNullable()) || sp.name == 'id') {
                 opKeys.remove(FilterPaneOperationType.IsNotNull.operation)
                 opKeys.remove(FilterPaneOperationType.IsNull.operation)
@@ -688,13 +692,13 @@ class FilterPaneTagLib {
                     map.ctrlAttrs.values = inList
                 } else if (type == 'class') { // property is class type
                     if (sp.name == 'class') { // class attribute for inheritance
-                        def domainClasses = sp.domainClass.subClasses.findAll {
-                            !Modifier.isAbstract(it.clazz.modifiers)
+                        def domainClasses = grailsApplication.mappingContext.getChildEntities(sp.getOwner()).findAll {
+                            !Modifier.isAbstract(it.getJavaClass().modifiers)
                         } // do not add abstract classes
-                        map.ctrlAttrs.values = domainClasses.collect { it.name } // set values
-                        map.ctrlAttrs.keys = domainClasses.collect { it.fullName } // set keys
+                        map.ctrlAttrs.values = domainClasses.collect { it.getJavaClass().simpleName } // set values
+                        map.ctrlAttrs.keys = domainClasses.collect { it.name } // set keys
                     } else { // custom class attribute
-                        def classes = sp.domainClass.clazz.createCriteria().listDistinct {
+                        def classes = sp.getOwner().getJavaClass().createCriteria().listDistinct {
                             projections {
                                 distinct(sp.name)
                             }
@@ -736,7 +740,7 @@ class FilterPaneTagLib {
                 map.ctrlAttrs.noSelection = ['': '']
 
                 def valueMessagePrefix = map.ctrlAttrs.valueMessagePrefix ?: "fp.property.text.${sp.name}"
-                def valueMessageAltPrefix = "${sp.domainClass.propertyName}.${sp.name}"
+                def valueMessageAltPrefix = "${sp.getOwner().getDecapitalizedName()}.${sp.name}"
                 def messageSource = grailsAttributes.getApplicationContext().getBean("messageSource")
                 def locale = RequestContextUtils.getLocale(request)
                 if (messageSource.getMessage(valueMessagePrefix, null, null, locale) != null) {
@@ -760,8 +764,7 @@ class FilterPaneTagLib {
                             newValue = Enum.valueOf(map.domainProperty.type, tempVal.toString())
                         }
                     } catch (IllegalArgumentException iae) {
-                        log.debug("Enum valueOf failed. value is ${tempVal}")
-                        log.debug iae
+                        log.debug("Enum valueOf failed. value is ${tempVal}", iae)
                         // Ignore this.  val is not a valid enum value (probably an empty string).
                     }
                     map.ctrlAttrs.value = newValue
@@ -877,12 +880,12 @@ class FilterPaneTagLib {
 
         while (association && index < parts.size()) {
             refDomain = FilterPaneUtils.resolveReferencedDomainClass(association)
-            fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.clazz.simpleName)}'s "
+            fieldNamePrefix += "${grails.util.GrailsNameUtils.getNaturalName(refDomain.getJavaClass().simpleName)}'s "
             refProperty = ("id".equalsIgnoreCase(parts[index]) || "identifier".equalsIgnoreCase(parts[index])) ?
-                    refDomain.identifier :
+                    refDomain.identity :
                     refDomain.persistentProperties.find { it.name == parts[index] }
             //log.debug("refDomain is ${refDomain}, refProperty is ${refProperty}, parts[${index}] = ${parts[index]}")
-            association = (refProperty?.association == true && refProperty?.type?.isEnum() == false) ? refProperty : null
+            association = (refProperty instanceof Association && refProperty?.type?.isEnum() == false) ? refProperty : null
             index += 1
         }
 
@@ -892,7 +895,7 @@ class FilterPaneTagLib {
             refProperty = subClassPersistentProps.find { it.name == parts[parts.size() - 1] } // last attribute matter
         }
 
-        if (refProperty && !refProperty.association) {
+        if (refProperty && !(refProperty instanceof Association)) {
             log.debug("adding association ${dottedName}")
             def prefixMethod = "getPrefix${dottedName.replaceAll('\\.', '')}"
             refProperty.metaClass."${prefixMethod}" = { -> fieldNamePrefix }
@@ -918,20 +921,20 @@ class FilterPaneTagLib {
         // Take care of the name (label).  Yuck!
         def fieldNameKey = "fp.property.text.${propName}" // Default.
         def fieldNameAltKey = fieldNameKey // default for alt key.
-        def className = StringUtils.uncapitalize(sp?.domainClass?.name)
+        def className = StringUtils.uncapitalize(sp?.getOwner()?.getJavaClass()?.simpleName)
         def fieldNamei18NTemplateKey = "${className}.${sp?.name}"
-        def fieldName = sp?.naturalName
+        def fieldName = GrailsNameUtils.getNaturalName(sp?.name)
 
         if (isAssociation) { // association.
-            fieldNameKey = "fp.property.text.${sp?.domainClass?.propertyName}.${sp?.name}"
-            fieldNamei18NTemplateKey = "${sp?.domainClass?.propertyName}.${sp?.name}"
+            fieldNameKey = "fp.property.text.${sp?.getOwner()?.getJavaClass()?.simpleName}.${sp?.name}"
+            fieldNamei18NTemplateKey = "${sp?.getOwner()?.getDecapitalizedName()}.${sp?.name}"
             // GRAILSPLUGINS-2027 Fix.  associated properties displaying package name.
             def prefix = ""
             def prefixMethod = "prefix${propName.replaceAll('\\.', '')}"
             if (sp?."${prefixMethod}" && useFullAssociationPath) {
                 prefix = sp."${prefixMethod}"
             } else {
-                prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp?.domainClass?.clazz?.simpleName)}'s "
+                prefix = "${grails.util.GrailsNameUtils.getNaturalName(sp?.getOwner()?.getJavaClass()?.simpleName)}'s "
             }
             fieldName = "${prefix}${fieldName}"
         }
