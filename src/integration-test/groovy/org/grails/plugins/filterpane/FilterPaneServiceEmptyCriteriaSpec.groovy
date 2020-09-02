@@ -1,9 +1,9 @@
 package org.grails.plugins.filterpane
 
-import grails.core.GrailsApplication
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import com.demo.Book
+import grails.core.GrailsApplication
+import grails.gorm.transactions.Rollback
+import grails.test.mixin.integration.Integration
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 

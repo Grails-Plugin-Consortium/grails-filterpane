@@ -1,13 +1,13 @@
 package org.grails.plugins.filterpane
 
-import grails.core.GrailsApplication
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
 import com.demo.Author
 import com.demo.Book
 import com.demo.BookType
+import grails.core.GrailsApplication
+import grails.gorm.transactions.Rollback
+import grails.test.mixin.integration.Integration
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.orm.hibernate4.HibernateQueryException
+import org.springframework.orm.hibernate5.HibernateQueryException
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -23,12 +23,12 @@ class FilterPaneServiceSpec extends Specification {
     def "test nested criteria call dot notation"() {
         setup:
         def books
-//        Book.withNewSession {
+//        Book.withSession {
         createBookWithAuthors()
 //        }
 
         when:
-        Book.withNewSession {
+        Book.withSession {
             books = Book.createCriteria().list {
                 and {
                     eq('coAuthor.firstName', 'Cool')
@@ -43,12 +43,12 @@ class FilterPaneServiceSpec extends Specification {
     def "test nested criteria call"() {
         setup:
         def books
-        Book.withNewSession {
+        Book.withSession {
             createBookWithAuthors()
         }
 
         when:
-        Book.withNewSession {
+        Book.withSession {
             books = Book.createCriteria().listDistinct {
                 and {
                     'authors' {
@@ -67,12 +67,12 @@ class FilterPaneServiceSpec extends Specification {
     def "test nested criteria call without distinct"() {
         setup:
         def books
-        Book.withNewSession {
+        Book.withSession {
             createBookWithAuthors()
         }
 
         when:
-        Book.withNewSession {
+        Book.withSession {
             books = Book.createCriteria().list {
                 and {
                     'authors' {
@@ -142,7 +142,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -159,7 +159,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -175,7 +175,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i like turtlesbearsrabbits')
         def book2 = Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
@@ -194,7 +194,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i like turtlesbearsrabbits')
         def book2 = Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Dude')).save(flush: true)
 
         when:
         List<Book> books = (List<Book>) filterPaneService.filter(params, Book)
@@ -231,7 +231,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -265,7 +265,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -282,7 +282,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -299,7 +299,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -333,7 +333,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -350,7 +350,7 @@ class FilterPaneServiceSpec extends Specification {
         Book.findOrSaveWhere(title: 'i hate zombies')
         Book.findOrSaveWhere(title: 'i like turtles')
                 .addToAuthors(Author.findOrSaveWhere(firstName: 'Cool', lastName: 'Dude One'))
-                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude'))
+                .addToAuthors(Author.findOrSaveWhere(firstName: 'Another', lastName: 'Another Dude')).save(flush: true)
 
         when:
         def books = filterPaneService.count(params, Book)
@@ -489,10 +489,10 @@ class FilterPaneServiceSpec extends Specification {
     }
 
     void cleanupSpec() {
-        Book.withNewSession {
-            Book.executeUpdate('delete Book')
-            Author.executeUpdate('delete Author')
-        }
+//        Book.withSession {
+//            Book.executeUpdate('delete Book')
+//            Author.executeUpdate('delete Author')
+//        }
     }
 
     private void createBookWithAuthors() {

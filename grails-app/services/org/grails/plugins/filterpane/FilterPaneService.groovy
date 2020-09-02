@@ -140,7 +140,7 @@ class FilterPaneService {
                             }
                         }
                     } catch (Exception ex) {
-                        log.info ex
+                        log.info("Error", ex)
                         log.info("No mapping property found on filterClass ${filterClass}")
                     }
                     if (params.sort) {
@@ -195,7 +195,7 @@ class FilterPaneService {
         // GRAILSPLUGINS-1320.  If value is instance of Date and op is Equal and
         // precision on date picker was 'day', turn this into a between from
         // midnight to 1 ms before midnight of the next day.
-        boolean isDayPrecision = "y".equalsIgnoreCase(filterParams["${domainProperty?.domainClass?.name}.${domainProperty?.name}_isDayPrecision"]) || "y".equalsIgnoreCase(filterParams["${domainProperty?.name}_isDayPrecision"])
+        boolean isDayPrecision = "y".equalsIgnoreCase(filterParams["${domainProperty?.name}.${domainProperty?.name}_isDayPrecision"]) || "y".equalsIgnoreCase(filterParams["${domainProperty?.name}_isDayPrecision"])
         boolean isOpAlterable = (op == FilterPaneOperationType.Equal || op == FilterPaneOperationType.NotEqual || op == FilterPaneOperationType.Equal.operation || op == FilterPaneOperationType.NotEqual.operation)
         boolean isGreaterThan = (op == FilterPaneOperationType.GreaterThan || op == FilterPaneOperationType.GreaterThan.operation)
         if (value != null && isDayPrecision && Date.isAssignableFrom(value.class) && isOpAlterable) {
@@ -309,9 +309,9 @@ class FilterPaneService {
 
         // GRAILSPLUGINS-1717.  Groovy truth treats empty strings as false.  Compare against null.
         if (newValue != null) {
-            Class cls = domainProperty?.referencedPropertyType ?: domainProperty.type
+            Class cls =  domainProperty?.type
             String clsName = cls.simpleName.toLowerCase()
-            log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, refPropType is ${domainProperty.referencedPropertyType} value is '${newValue}', clsName is ${clsName}")
+            log.debug("cls is enum? ${cls.isEnum()}, domainProperty is ${domainProperty}, type is ${domainProperty.type}, value is '${newValue}', clsName is ${clsName}")
 
             if ("class".equals(clsName)) {
                 def tempVal = newValue
@@ -339,7 +339,7 @@ class FilterPaneService {
                 } else if (tempVal.toString().length() > 0) {
                     newValue = resolveClassValue(tempVal.toString())
                 }
-            } else if (domainProperty.isEnum()) {
+            } else if (Enum.class.isAssignableFrom(cls)) {
                 def tempVal = newValue
                 newValue = null // default to null.  If it's valid, it'll get replaced with the real value.
                 try {
@@ -364,7 +364,7 @@ class FilterPaneService {
                     } // no isByte()
                 } catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("int".equals(clsName) || "integer".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -382,7 +382,7 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("double".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -406,7 +406,7 @@ class FilterPaneService {
                 } //no isShort()
                 catch (NumberFormatException e) {
                     newValue = null
-                    log.debug e
+                    log.debug('', e)
                 }
             } else if ("bigdecimal".equals(clsName)) {
                 if (newValue instanceof Object[]) {
@@ -432,7 +432,7 @@ class FilterPaneService {
                     }
                 } catch (IllegalArgumentException iae) {
                     // Do nothing.
-                    log.debug iae
+                    log.debug('', iae)
                 }
             }
         }

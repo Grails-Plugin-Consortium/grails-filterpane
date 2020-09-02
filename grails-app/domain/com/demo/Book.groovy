@@ -4,7 +4,7 @@ class Book {
 
     static hasMany = [bookmarks: Bookmark, authors: Author]
 
-    Author coAuthor
+//    Author coAuthor
     String title
     BookType bookType
     Date releaseDate
@@ -18,7 +18,7 @@ class Book {
 
     static constraints = {
         title(blank: true, nullable: true)
-        coAuthor(nullable: true)
+//        coAuthor(nullable: true)
         bookType(nullable: true)
         releaseDate(nullable:  true)
         price(nullable:  true)

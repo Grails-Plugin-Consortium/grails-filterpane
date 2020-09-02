@@ -1,13 +1,13 @@
 package org.grails.plugins.filterpane
 
-import grails.core.GrailsApplication
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
-import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Specification
 import com.demo.nested.Function
 import com.demo.nested.Part
 import com.demo.nested.Robot
+import grails.core.GrailsApplication
+import grails.gorm.transactions.Rollback
+import grails.test.mixin.integration.Integration
+import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Specification
 import spock.lang.Unroll
 
 @Integration

@@ -1,6 +1,6 @@
 package org.grails.plugins.filterpane
 
-import grails.transaction.Rollback
+
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.*
 import spock.lang.Specification
