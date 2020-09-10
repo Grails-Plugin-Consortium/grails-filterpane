@@ -159,7 +159,7 @@ class FilterPaneTagLib {
             def dc = FilterPaneUtils.resolveDomainClass(grailsApplication, attrs.domainBean)
 
             if (dc) {
-                count = dc.clazz.count()
+                count = dc.getJavaClass().count()
             }
         }
         attrs.total = count
